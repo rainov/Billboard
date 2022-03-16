@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import AddExpenseView
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,6 +13,6 @@ fun ViewContainer(){
     if (!userVM.signedIn.value) {
         LogRegView( userVM )
     } else {
-        Text( text = "You are signed in")
+        AddExpenseView()
     }
 }
