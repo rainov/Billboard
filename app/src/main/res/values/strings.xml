@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BillBoard</string>
+    <string name="registered_user_text">Registered? Sign in</string>
+    <string name="all_inputs_required">All input fields are required!</string>
+    <string name="passwords_not_match">Passwords do not match!</string>
+    <string name="register_text">Register</string>
+    <string name="new_user_text">New user</string>
+    <string name="sign_in_text">Sign in</string>
 </resources>

@@ -15,7 +15,7 @@ import com.example.billboard.R
 
 
 @Composable
-fun AddExpenseView(id : String) {
+fun AddExpenseView(groupId : String) {
 
     var menuExpanded by remember { mutableStateOf(false) }
 

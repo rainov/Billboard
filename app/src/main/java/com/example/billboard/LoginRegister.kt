@@ -1,16 +1,21 @@
 package com.example.billboard.ui.theme
 
-import android.util.Log
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.example.billboard.R
 import com.example.billboard.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun LogRegView( userVM: UserViewModel){
+
+    val context = LocalContext.current
 
     var username by remember { mutableStateOf("") }
     var registerSwitch by remember { mutableStateOf(false) }
@@ -19,24 +24,39 @@ fun LogRegView( userVM: UserViewModel){
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
 
+    var fieldError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
     val auth = FirebaseAuth.getInstance()
 
     fun login( email: String, password: String) {
-        auth.signInWithEmailAndPassword( email, password)
-            .addOnSuccessListener(){
-                Log.d("tag", "success")
-                userVM.signIn()
-            }
+        if ( email.isNotEmpty() && password.isNotEmpty() ) {
+            fieldError = false
+            auth.signInWithEmailAndPassword( email, password)
+                .addOnSuccessListener(){
+                    userVM.signIn()
+                }
+        } else {
+            errorMessage = context.getString(R.string.all_inputs_required)
+            fieldError = true
+        }
     }
 
     fun register( email: String, password: String, repeatPass: String) {
-        if ( password == repeatPass ) {
-            auth.createUserWithEmailAndPassword( email, password)
-                .addOnSuccessListener(){
-                    Log.d("tag", "success")
-                }
+        if( username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && repeatPass.isNotEmpty() ) {
+            if ( password == repeatPass ) {
+                fieldError = false
+                auth.createUserWithEmailAndPassword( email, password)
+                    .addOnSuccessListener(){
+                        userVM.signIn()
+                    }
+            } else {
+                errorMessage = context.getString(R.string.passwords_not_match)
+                fieldError = true
+            }
         } else {
-            repeatPassword = "passwords do not match"
+            errorMessage = context.getString(R.string.all_inputs_required)
+            fieldError = true
         }
     }
 
@@ -49,9 +69,12 @@ fun LogRegView( userVM: UserViewModel){
         if ( registerSwitch ) {
             OutlinedTextField(value = repeatPassword, onValueChange = { repeatPassword = it }, label = { Text( text = "Repeat password")})
         }
+        if( fieldError ) {
+            Text( text = errorMessage )
+        }
         if ( !registerSwitch ) {
             OutlinedButton(onClick = { login( email, password) }) {
-                Text( text = "Sign in")
+                Text( text = stringResource(R.string.sign_in_text))
             }
             OutlinedButton(
                 onClick = {
@@ -62,12 +85,12 @@ fun LogRegView( userVM: UserViewModel){
                     username = ""
                 }
             ) {
-                Text( text = "New user")
+                Text( text = stringResource(R.string.new_user_text))
             }
         }
         if ( registerSwitch ) {
             OutlinedButton(onClick = { register( email, password, repeatPassword) }) {
-                Text( text = "Register")
+                Text( text = stringResource(R.string.register_text))
             }
             OutlinedButton(
                 onClick = {
@@ -77,8 +100,9 @@ fun LogRegView( userVM: UserViewModel){
                 }
             )
             {
-                Text( text = "Registered? Sign in")
+                Text( text = stringResource(R.string.registered_user_text))
             }
         }
+
     }
 }
