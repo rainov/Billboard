@@ -9,10 +9,14 @@ import com.example.billboard.ui.theme.LogRegView
 
 @Composable
 fun ViewContainer(){
+    AddExpenseView(groupid = "LmApyzhdAiRlPkvTDoHC")
+    /*
     val userVM: UserViewModel = viewModel()
     if (!userVM.signedIn.value) {
         LogRegView( userVM )
     } else {
-        AddExpenseView()
+        //AddExpenseView()
+        ExpenseView("gg91lhqquxXWURdaxUop")
     }
+     */
 }
