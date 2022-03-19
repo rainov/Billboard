@@ -15,11 +15,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+<<<<<<< HEAD
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+=======
+import androidx.navigation.NavController
+>>>>>>> 770032df31dd613a54248c61b6856d145fbd7941
 
 @Composable
-fun ExpenseView(id : String) {
+fun ExpenseView(id : String, expenseNavControl: NavController) {
     //TODO fetch expense info in database
 
     val expenseName = remember { mutableStateOf("") }
@@ -47,7 +51,7 @@ fun ExpenseView(id : String) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "back icon",
-                modifier = Modifier.clickable {  /*TODO add navigation*/  })
+                modifier = Modifier.clickable {  expenseNavControl.navigate("group")  })
             OutlinedButton(onClick = { /*TODO Delete function if USER is an admin*/ }) {
                 Text("Delete this expense")
             }

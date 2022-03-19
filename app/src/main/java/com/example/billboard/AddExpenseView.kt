@@ -22,7 +22,11 @@ import java.util.*
 
 
 @Composable
+<<<<<<< HEAD
 fun AddExpenseView(id : String = "", groupid : String) {
+=======
+fun AddExpenseView(groupId : String) {
+>>>>>>> 770032df31dd613a54248c61b6856d145fbd7941
 
     var menuExpanded by remember { mutableStateOf(false) }
 
