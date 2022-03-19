@@ -19,7 +19,7 @@ fun ExpenseView( expense: DocumentSnapshot, expenseNavControl: NavController) {
 //    //TODO fetch expense info in database
 //
     val expenseName = expense.get("name")
-    val expenseAmount = expense.get("value")
+    val expenseAmount = expense.get("amount")
     val expensePayer = expense.get("payer")
     val expenseRest = expense.get("rest") as List<String>
 

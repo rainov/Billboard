@@ -38,9 +38,7 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: QueryDoc
 
     val expenseNavControl = rememberNavController()
 
-    //NavHost(navController = expenseNavControl, startDestination = groupInfo.get("name").toString() ) {
     NavHost(navController = expenseNavControl, startDestination = "group" ) {
-        //composable( route = groupInfo.get("name").toString() ) {
         composable( route = "group" ) {
             GroupView( groupInfo, expenses, expenseNavControl, navControl )
         }

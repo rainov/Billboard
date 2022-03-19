@@ -1,16 +1,25 @@
 package com.example.billboard.ui.theme
 
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 import com.example.billboard.R
+import com.example.billboard.TopBar
 import com.example.billboard.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
+
 
 @Composable
 fun LogRegView( userVM: UserViewModel){
@@ -60,49 +69,204 @@ fun LogRegView( userVM: UserViewModel){
         }
     }
 
-    Column() {
-        if( registerSwitch ) {
-            OutlinedTextField(value = username, onValueChange = { username = it}, label = { Text( text = "Username")})
-        }
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text( text = "Email")})
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text( text = "Password")})
-        if ( registerSwitch ) {
-            OutlinedTextField(value = repeatPassword, onValueChange = { repeatPassword = it }, label = { Text( text = "Repeat password")})
-        }
-        if( fieldError ) {
-            Text( text = errorMessage )
-        }
-        if ( !registerSwitch ) {
-            OutlinedButton(onClick = { login( email, password) }) {
-                Text( text = stringResource(R.string.sign_in_text))
-            }
-            OutlinedButton(
-                onClick = {
-                    registerSwitch = !registerSwitch
-                    email = ""
-                    password = ""
-                    repeatPassword = ""
-                    username = ""
-                }
-            ) {
-                Text( text = stringResource(R.string.new_user_text))
-            }
-        }
-        if ( registerSwitch ) {
-            OutlinedButton(onClick = { register( email, password, repeatPassword) }) {
-                Text( text = stringResource(R.string.register_text))
-            }
-            OutlinedButton(
-                onClick = {
-                    registerSwitch = !registerSwitch
-                    email = ""
-                    password = ""
-                }
-            )
-            {
-                Text( text = stringResource(R.string.registered_user_text))
-            }
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
+            //Logo start
+            Spacer( modifier = Modifier.height(20.dp))
+            TopBar( false )
+            Spacer( modifier = Modifier.height(20.dp))
+            //Logo end
+
+            //Username start
+            if( registerSwitch ) {
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = { Text(text = stringResource(R.string.username)) },
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Bilboard_green,
+                        cursorColor = Color.White,
+                        textColor = Color.White,
+                        focusedLabelColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .height(64.dp)
+                        .padding(0.dp),
+                    shape = MaterialTheme.shapes.large
+                )
+            }
+            //Username end
+
+            //Email start
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text(text = stringResource(R.string.email)) },
+                trailingIcon = { Icon(
+                    painter = painterResource(R.drawable.mail_icon),
+                    contentDescription = "mail icon",
+                    Modifier.padding(15.dp)
+                )},
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Bilboard_green,
+                    cursorColor = Color.White,
+                    textColor = Color.White,
+                    focusedLabelColor = Color.White
+                ),
+                modifier = Modifier
+                    .height(64.dp),
+                shape = MaterialTheme.shapes.large
+            )
+            //Email end
+
+            //Password start
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text(text = stringResource(R.string.password)) },
+                trailingIcon = { Icon(
+                    painter = painterResource(R.drawable.password_eye),
+                    contentDescription = "eye password",
+                    Modifier.padding(15.dp)
+                )},
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Bilboard_green,
+                    cursorColor = Color.White,
+                    textColor = Color.White,
+                    focusedLabelColor = Color.White
+                ),
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.height(64.dp),
+                shape = MaterialTheme.shapes.large,
+                keyboardOptions = KeyboardOptions( keyboardType = KeyboardType.Password)
+            )
+            //Password end
+
+            //Repeat password start
+            if ( registerSwitch ) {
+                OutlinedTextField(
+                    value = repeatPassword,
+                    onValueChange = { repeatPassword = it },
+                    label = { Text(text = stringResource(R.string.repeat_password)) },
+                    trailingIcon = { Icon(
+                        painter = painterResource(R.drawable.password_eye),
+                        contentDescription = "eye password",
+                        Modifier.padding(15.dp)
+                    )},
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Bilboard_green,
+                        cursorColor = Color.White,
+                        textColor = Color.White,
+                        focusedLabelColor = Color.White
+                    ),
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions( keyboardType = KeyboardType.Password),
+                    modifier = Modifier.height(64.dp),
+                    shape = MaterialTheme.shapes.large,
+                    textStyle = TextStyle( color = Bilboard_green )
+                )
+            }
+            //Repeat password end
+
+            //Error messages star
+            Spacer(modifier = Modifier.height(5.dp))
+            if( fieldError ) {
+                Text( text = errorMessage )
+            }
+            //Error messages end
+
+            //SignIn button start
+            if ( !registerSwitch ) {
+                OutlinedButton(
+                    onClick = {
+                        login( email, password)
+                    },
+                    modifier = Modifier
+                        .width(280.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                ) {
+                    Text( text = stringResource(R.string.sign_in_text))
+                }
+                //SignIn button end
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                //Change to register view start
+                OutlinedButton(
+                    onClick = {
+                        registerSwitch = !registerSwitch
+                        email = ""
+                        password = ""
+                        repeatPassword = ""
+                        username = ""
+                        fieldError = false
+                    },
+                    modifier = Modifier
+                        .width(280.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Color.White )
+                ) {
+                    Text( text = stringResource(R.string.new_user_text))
+                }
+                //Change to register view end
+            }
+
+            //Register Button start
+            if ( registerSwitch ) {
+                OutlinedButton(
+                    onClick = {
+                        register( email, password, repeatPassword)
+                    },
+                    modifier = Modifier
+                        .width(280.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                ) {
+                    Text( text = stringResource(R.string.register_text))
+                }
+                //Register button end
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                //Change to signIn start
+                OutlinedButton(
+                    onClick = {
+                        registerSwitch = !registerSwitch
+                        email = ""
+                        password = ""
+                        fieldError = false
+                    },
+                    modifier = Modifier
+                        .width(280.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Color.White )
+                )
+                {
+                    Text( text = stringResource(R.string.registered_user_text))
+                }
+                //Change to signIn end
+            }
+        }
     }
+
 }
