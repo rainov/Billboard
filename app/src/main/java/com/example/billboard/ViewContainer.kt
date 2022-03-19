@@ -30,17 +30,18 @@ fun ViewContainer(){
         }
 
     val userVM: UserViewModel = viewModel()
+
     if (!userVM.signedIn.value) {
         LogRegView( userVM )
     } else {
         val navControl = rememberNavController()
-        NavHost(navController = navControl, startDestination = "MainScreen" ) {
-            composable( route = "MainScreen" ){
-                MainScreen( navControl, groups )
+        NavHost(navController = navControl, startDestination = "MainScreen") {
+            composable(route = "MainScreen") {
+                MainScreen(navControl, groups)
             }
             groups.forEach { groupInfo ->
-                composable( route = groupInfo.get("name").toString()) {
-                    GroupViewNavigationContainer( navControl, groupInfo)
+                composable(route = groupInfo.get("name").toString()) {
+                    GroupViewNavigationContainer(navControl, groupInfo)
                 }
             }
         }

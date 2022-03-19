@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import AddExpenseView
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
@@ -43,11 +44,14 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: QueryDoc
         composable( route = "group" ) {
             GroupView( groupInfo, expenses, expenseNavControl, navControl )
         }
+        composable( route = "addExpense") {
+            AddExpenseView( groupInfo, expenseNavControl )
+        }
         expenses.forEach { expense ->
             composable( route = expense.get("name").toString()) {
                 //Here you can pass the expense as an argument to the ExpenseView screen, and you have all the information about it
                 //so no need to fetch it there :D
-                ExpenseView( expense.id, expenseNavControl )
+                ExpenseView( expense, expenseNavControl )
             }
         }
     }
