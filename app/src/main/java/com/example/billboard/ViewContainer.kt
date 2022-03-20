@@ -13,10 +13,6 @@ import com.google.firebase.ktx.Firebase
 
 @Composable
 fun ViewContainer(){
-<<<<<<< HEAD
-    AddExpenseView(groupid = "LmApyzhdAiRlPkvTDoHC")
-    /*
-=======
 
     val firestore = Firebase.firestore
 
@@ -33,15 +29,11 @@ fun ViewContainer(){
             Log.d("mss", groups.toString())
         }
 
->>>>>>> 770032df31dd613a54248c61b6856d145fbd7941
+
     val userVM: UserViewModel = viewModel()
     if (!userVM.signedIn.value) {
         LogRegView( userVM )
     } else {
-<<<<<<< HEAD
-        //AddExpenseView()
-        ExpenseView("gg91lhqquxXWURdaxUop")
-=======
         val navControl = rememberNavController()
         NavHost(navController = navControl, startDestination = "MainScreen" ) {
             composable( route = "MainScreen" ){
@@ -53,7 +45,6 @@ fun ViewContainer(){
                 }
             }
         }
->>>>>>> 770032df31dd613a54248c61b6856d145fbd7941
     }
-     */
+
 }

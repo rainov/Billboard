@@ -15,31 +15,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-<<<<<<< HEAD
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-=======
 import androidx.navigation.NavController
->>>>>>> 770032df31dd613a54248c61b6856d145fbd7941
+import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun ExpenseView(id : String, expenseNavControl: NavController) {
-    //TODO fetch expense info in database
+fun ExpenseView(expense : DocumentSnapshot, expenseNavControl: NavController) {
 
-    val expenseName = remember { mutableStateOf("") }
-    val expenseAmount = remember { mutableStateOf("") }
-    val expensePayer = remember { mutableStateOf("") }
-    val expenseRest = remember { mutableStateOf(listOf<String>()) }
-
-    getExpenseLine(expenseName, expenseAmount, expensePayer, expenseRest, id)
+    val expenseName = expense.get("name").toString()
+    val expenseAmount = expense.get("amount").toString()
+    val expensePayer = expense.get("payer").toString()
+    val expenseRest = expense.get("rest") as List<String>
 
     Column(){
-        Text(text = "Expense details : ${expenseName.value}")
+        Text(text = "Expense details : $expenseName")
         //TODO need to discuss about default currency, can the user choose one or the group
-        Text(text = "${expenseAmount.value} €")
-        Text(text = "Payer member : ${expensePayer.value}")
+        Text(text = "$expenseAmount €")
+        Text(text = "Payer member : $expensePayer")
         Text(text = "Members who have to pay :")
-        expenseRest.value.forEach { member ->
+        expenseRest.forEach { member ->
             Row(){
                 Text(text = member)
                 Button(onClick = { /*TODO if the user is an admin I can erase the member debt*/ }) {Text(text = "Erase debt")}
@@ -55,7 +50,8 @@ fun ExpenseView(id : String, expenseNavControl: NavController) {
             OutlinedButton(onClick = { /*TODO Delete function if USER is an admin*/ }) {
                 Text("Delete this expense")
             }
-            OutlinedButton(onClick = { /*TODO Edit function if USER is an admin -> AddExpenseView(id) */}) {
+            OutlinedButton(onClick = {
+                expenseNavControl.navigate("editExpense/${expense.id}/${expenseName}/${expenseAmount}/${expensePayer}/${expenseRest.joinToString(",")}") }) {
                 Text("Edit this expense")
             }
         }
@@ -90,4 +86,3 @@ fun getExpenseLine(expenseName : MutableState<String>,
 
         }
 }
-
