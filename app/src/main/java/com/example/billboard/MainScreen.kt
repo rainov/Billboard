@@ -12,10 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun MainScreen( navControl: NavController, groups: MutableList<QueryDocumentSnapshot>) {
+fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>) {
 
     Scaffold(
         topBar = { TopBar(true ) },
@@ -25,7 +25,7 @@ fun MainScreen( navControl: NavController, groups: MutableList<QueryDocumentSnap
 }
 
 @Composable
-fun MainScreenContent( navControl: NavController, groups: MutableList<QueryDocumentSnapshot>) {
+fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>) {
     Column() {
         groups.forEach { group ->
             Spacer(modifier = Modifier.height(5.dp))
@@ -34,11 +34,7 @@ fun MainScreenContent( navControl: NavController, groups: MutableList<QueryDocum
                     .width(240.dp)
                     .height(36.dp)
                     .clickable {
-                        navControl.navigate(
-                            group
-                                .get("name")
-                                .toString()
-                        )
+                        navControl.navigate( group.id )
                     }
             ) {
                 Text(text = group.get("name").toString())

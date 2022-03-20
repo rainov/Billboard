@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import com.example.billboard.R
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -24,7 +25,7 @@ import java.util.*
 
 @Composable
 
-fun AddExpenseView(groupInfo: QueryDocumentSnapshot, expenseNavControl: NavController) {
+fun AddExpenseView(groupInfo: DocumentSnapshot, expenseNavControl: NavController) {
 
     var menuExpanded by remember { mutableStateOf(false) }
 

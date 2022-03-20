@@ -1,40 +1,23 @@
 package com.example.billboard
 
 import AddExpenseView
-import android.util.Log
+
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 @Composable
-fun GroupViewNavigationContainer( navControl: NavController, groupInfo: QueryDocumentSnapshot) {
-    val firestore = Firebase.firestore
+fun GroupViewNavigationContainer( navControl: NavController, groupInfo: DocumentSnapshot) {
 
-    var expenses by remember { mutableStateOf(mutableListOf<DocumentSnapshot>()) }
-    val expenseIds: List<String> = groupInfo.get("expenses") as List<String>
-    val tempExpenses by remember {mutableStateOf(mutableListOf<DocumentSnapshot>())}
-    expenseIds.forEach { id ->
-        firestore
-            .collection("expenses")
-            .document(id)
-            .get()
-            .addOnSuccessListener { expense ->
-                if( !tempExpenses.contains(expense) ) {
-                    tempExpenses.add(expense)
-                    Log.d("mss", expense.toString())
-                }
-            }
-        Log.d("temp", tempExpenses.toString())
-    }
-    expenses = tempExpenses
+    val expensesVM: ExpensesViewModel = viewModel()
 
-    Log.d("exp", expenses.toString())
+    expensesVM.getExpenses( groupInfo.id )
+
+    val expenses = expensesVM.expenses.value
 
     val expenseNavControl = rememberNavController()
 

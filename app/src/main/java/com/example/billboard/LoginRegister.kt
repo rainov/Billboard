@@ -1,4 +1,4 @@
-package com.example.billboard.ui.theme
+package com.example.billboard
 
 
 import androidx.compose.foundation.layout.*
@@ -15,14 +15,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.billboard.R
-import com.example.billboard.TopBar
-import com.example.billboard.UserViewModel
+import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
-fun LogRegView( userVM: UserViewModel){
+fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel){
 
     val context = LocalContext.current
 
@@ -42,7 +40,9 @@ fun LogRegView( userVM: UserViewModel){
         if ( email.isNotEmpty() && password.isNotEmpty() ) {
             fieldError = false
             auth.signInWithEmailAndPassword( email, password)
-                .addOnSuccessListener(){
+                .addOnSuccessListener {
+                    groupsVM.setEmail(email)
+                    groupsVM.getGroups()
                     userVM.signIn()
                 }
         } else {
@@ -56,7 +56,9 @@ fun LogRegView( userVM: UserViewModel){
             if ( password == repeatPass ) {
                 fieldError = false
                 auth.createUserWithEmailAndPassword( email, password)
-                    .addOnSuccessListener(){
+                    .addOnSuccessListener {
+                        groupsVM.setEmail(email)
+                        groupsVM.getGroups()
                         userVM.signIn()
                     }
             } else {

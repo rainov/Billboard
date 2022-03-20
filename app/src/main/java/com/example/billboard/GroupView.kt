@@ -14,10 +14,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QueryDocumentSnapshot
 
 @Composable
-fun GroupView( groupInfo: QueryDocumentSnapshot, expenses: MutableList<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController) {
+fun GroupView( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true) },
@@ -27,7 +26,8 @@ fun GroupView( groupInfo: QueryDocumentSnapshot, expenses: MutableList<DocumentS
 }
 
 @Composable
-fun GroupViewContent( groupInfo: QueryDocumentSnapshot, expenses: MutableList<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController){
+fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController){
+
     Column(){
         Column(){
             Text(text = "Name: ${groupInfo.get("name").toString()}", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
