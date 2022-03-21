@@ -1,11 +1,7 @@
 package com.example.billboard
 
 import AddExpenseView
-<<<<<<< HEAD
 import android.util.Log
-=======
-
->>>>>>> 94210a1a64dca181564c42fd804cf79676c897cf
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -32,7 +28,7 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
             GroupView( groupInfo, expenses, expenseNavControl, navControl )
         }
         composable( route = "addExpense") {
-            AddExpenseView( groupInfo, expenseNavControl )
+            AddExpenseView(groupInfo = groupInfo, expenseNavControl = expenseNavControl )
         }
         expenses.forEach { expense ->
             composable( route = expense.get("name").toString()) {
@@ -42,7 +38,7 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
             }
         }
         composable(route = "addExpense"){
-            AddExpenseView(groupid = groupInfo.id, expenseNavControl = expenseNavControl)
+            AddExpenseView(groupInfo = groupInfo, expenseNavControl = expenseNavControl)
         }
         composable(route = "editExpense/{expenseid}/{expensename}/{expenseamount}/{expensepayer}/{expenserest}",
         arguments = listOf(
@@ -69,8 +65,13 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
                 amount = it.arguments?.getString("expenseamount")!!,
                 payer = it.arguments?.getString("expensepayer")!!,
                 rest = it.arguments?.getString("expenserest")!!,
-                groupid = groupInfo.id,
+                groupInfo = groupInfo,
                 expenseNavControl = expenseNavControl)
+        }
+
+        //TODO Add new group navigation
+        composable(route = "createGroup"){
+            createGroup()
         }
     }
 }

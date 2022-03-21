@@ -15,16 +15,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-<<<<<<< HEAD
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.R
 import com.example.billboard.getExpenseLine
-=======
-import androidx.navigation.NavController
-import com.example.billboard.R
->>>>>>> 94210a1a64dca181564c42fd804cf79676c897cf
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QueryDocumentSnapshot
@@ -35,11 +30,7 @@ import java.util.*
 
 @Composable
 
-<<<<<<< HEAD
-fun AddExpenseView(id: String = "", name: String = "", amount: String = "", payer: String = "", rest: String = "", groupid: String, expenseNavControl: NavController) {
-=======
-fun AddExpenseView(groupInfo: DocumentSnapshot, expenseNavControl: NavController) {
->>>>>>> 94210a1a64dca181564c42fd804cf79676c897cf
+fun AddExpenseView(id: String = "", name: String = "", amount: String = "", payer: String = "", rest: String = "", groupInfo: DocumentSnapshot, expenseNavControl: NavController) {
 
     var menuExpanded by remember { mutableStateOf(false) }
 
@@ -122,7 +113,6 @@ fun AddExpenseView(groupInfo: DocumentSnapshot, expenseNavControl: NavController
         }
         Button(onClick = {
             if(expenseName.isNotEmpty() && expenseAmount.isNotEmpty() && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()){
-<<<<<<< HEAD
                 if(id.isNotEmpty()){
                     editExpenseLine(
                         id = id,
@@ -137,7 +127,7 @@ fun AddExpenseView(groupInfo: DocumentSnapshot, expenseNavControl: NavController
                         amount = expenseAmount,
                         payer = payerMember,
                         membersWhoPay = membersWhoPay,
-                        groupid = groupid,
+                        groupid = groupInfo.id,
                         expenseNavControl = expenseNavControl
                     )
                 }}
@@ -147,16 +137,6 @@ fun AddExpenseView(groupInfo: DocumentSnapshot, expenseNavControl: NavController
             } else {
                 Text(text = "Add a new expense line")
             }
-=======
-            addExpenseLine(
-                name = expenseName,
-                amount = expenseAmount,
-                payer = payerMember,
-                membersWhoPay = membersWhoPay,
-                groupid = groupInfo.id)
-            }}){
-            Text(text = "Add a new expense line")
->>>>>>> 94210a1a64dca181564c42fd804cf79676c897cf
         }
         if(fieldError) {
             Text(text = errorMessage, fontSize = 24.sp, color = Color.Red, fontWeight = FontWeight.Bold)

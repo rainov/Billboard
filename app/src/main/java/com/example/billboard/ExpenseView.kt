@@ -1,73 +1,138 @@
 package com.example.billboard
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-<<<<<<< HEAD
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-=======
->>>>>>> 94210a1a64dca181564c42fd804cf79676c897cf
 import androidx.navigation.NavController
+import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-<<<<<<< HEAD
-fun ExpenseView(expense : DocumentSnapshot, expenseNavControl: NavController) {
+fun ExpenseView( expense: DocumentSnapshot, expenseNavControl: NavController) {
+
+    Scaffold(
+        topBar = { TopBar(showMenu = true) },
+        content = { ExpenseViewContent(expense, expenseNavControl) }
+    )
+
+}
+
+@Composable
+fun ExpenseViewContent( expense: DocumentSnapshot, expenseNavControl: NavController) {
 
     val expenseName = expense.get("name").toString()
     val expenseAmount = expense.get("amount").toString()
     val expensePayer = expense.get("payer").toString()
-=======
-fun ExpenseView( expense: DocumentSnapshot, expenseNavControl: NavController) {
-//    //TODO fetch expense info in database
-//
-    val expenseName = expense.get("name")
-    val expenseAmount = expense.get("amount")
-    val expensePayer = expense.get("payer")
->>>>>>> 94210a1a64dca181564c42fd804cf79676c897cf
+
     val expenseRest = expense.get("rest") as List<String>
 
-    Column(){
-        Text(text = "Expense details : $expenseName")
-        //TODO need to discuss about default currency, can the user choose one or the group
-        Text(text = "$expenseAmount €")
-        Text(text = "Payer member : $expensePayer")
-        Text(text = "Members who have to pay :")
-        expenseRest.forEach { member ->
-            Row(){
-                Text(text = member)
-                Button(onClick = { /*TODO if the user is an admin I can erase the member debt*/ }) {Text(text = "Erase debt")}
-            }
-        }
-        Row(
-            horizontalArrangement = Arrangement.Start
-        ){
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = "back icon",
-                modifier = Modifier.clickable {  expenseNavControl.navigate("group")  })
-            OutlinedButton(onClick = { /*TODO Delete function if USER is an admin*/ }) {
-                Text("Delete this expense")
-            }
-            OutlinedButton(onClick = {
-                expenseNavControl.navigate("editExpense/${expense.id}/${expenseName}/${expenseAmount}/${expensePayer}/${expenseRest.joinToString(",")}") }) {
-                Text("Edit this expense")
-            }
-        }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
 
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(text = expenseName, textAlign = TextAlign.Center, fontSize = 30.sp)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            //TODO need to discuss about default currency, can the user choose one or the group
+            Text(text = "Amount paid $expenseAmount €")
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(text = "Payer member : $expensePayer")
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(text = "Members who have to pay :")
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            expenseRest.forEach { member ->
+                Row() {
+                    Text(text = member, modifier = Modifier.padding(15.dp))
+                    OutlinedButton(
+                        onClick = {
+                            /*TODO if the user is an admin he can erase the member debt*/
+                        },
+                        modifier = Modifier
+                            .width(150.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                    ) {
+                        Text( text = "Erase debt")
+                        Spacer(modifier = Modifier.height(5.dp))
+                    }
+
+                }
+            }
+        }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, false)
+                    .padding(5.dp),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "back icon",
+                    modifier = Modifier.clickable { expenseNavControl.navigate("group") })
+                OutlinedButton(
+                    onClick = {
+                        /* TODO Delete function */
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                ) {
+                    Text( text = "Delete")
+                }
+                OutlinedButton(
+                    onClick = {
+                        expenseNavControl.navigate(
+                            "editExpense/${expense.id}/${expenseName}/${expenseAmount}/${expensePayer}/${
+                                expenseRest.joinToString(
+                                    ","
+                                )
+                            }"
+                        )
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                ) {
+                    Text( text = "Edit")
+                }
+            }
+
+        }
     }
-}
 
-<<<<<<< HEAD
+
 fun getExpenseLine(expenseName : MutableState<String>,
                    expenseAmount : MutableState<String>,
                    expensePayer : MutableState<String>,
@@ -95,7 +160,7 @@ fun getExpenseLine(expenseName : MutableState<String>,
 
         }
 }
-=======
+
 //fun getExpenseLine(expenseName : MutableState<String>,
 //                   expenseAmount : MutableState<String>,
 //                   expensePayer : MutableState<String>,
@@ -124,4 +189,3 @@ fun getExpenseLine(expenseName : MutableState<String>,
 //        }
 //}
 
->>>>>>> 94210a1a64dca181564c42fd804cf79676c897cf
