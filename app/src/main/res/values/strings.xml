@@ -6,4 +6,8 @@
     <string name="register_text">Register</string>
     <string name="new_user_text">New user</string>
     <string name="sign_in_text">Sign in</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
 </resources>
