@@ -29,7 +29,9 @@ fun AddEditExpenseView(
                    groupInfo: DocumentSnapshot,
                    expenseNavControl: NavController,
                    expensesViewModel: ExpensesViewModel,
-                   expense : ExpenseClass) {
+                   expense : ExpenseClass,
+                   groupsVM: GroupsViewModel
+) {
 
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
@@ -37,12 +39,12 @@ fun AddEditExpenseView(
     val groupMembers = remember { mutableStateOf(listOf<String>()) }
     getGroupMembers(groupInfo.id, groupMembers)
 
-
     var fieldError by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    val errorMessage by remember { mutableStateOf("") }
 
     var expenseName by remember { mutableStateOf(expense.name)}
     var expenseAmount by remember { mutableStateOf(expense.amount)}
+
     var payerMember by remember { mutableStateOf(expense.payer) }
     val membersWhoPay by remember { mutableStateOf(expense.rest) }
 
@@ -71,7 +73,9 @@ fun AddEditExpenseView(
             Text(text = "Add a new expense line")
         }
         OutlinedTextField(value = expenseName, onValueChange = { expenseName = it}, label = { Text(text = "Expense name") })
+
         OutlinedTextField(value = expenseAmount.toString(), onValueChange = { expenseAmount = it.toDouble() }, label = { Text(text = "Expense amount") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
+
         Column() {
             OutlinedTextField(
                 value = payerMember,
@@ -107,23 +111,32 @@ fun AddEditExpenseView(
         groupMembers.value.forEach { member ->
             if (member != payerMember) {
                 Row() {
-                    CheckBox(member, membersWhoPay)
+                    CheckBox(member, membersWhoPay, expense)
                     Text(member)
                 }
             }
         }
 
         Button(onClick = {
+
             if(expenseName.isNotEmpty() && expenseAmount.toString().isNotEmpty() && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()){
+
                 expense.name = expenseName
                 expense.amount = expenseAmount
                 expense.payer = payerMember
                 expense.rest = membersWhoPay
-
-                expensesViewModel.addExpenseLine(
+                if(expense.expid.isNotEmpty()){
+                    expensesViewModel.editExpenseLine(
                         expense,
                         expenseNavControl
                     )
+                } else {
+                    expensesViewModel.addExpenseLine(
+                        expense,
+                        expenseNavControl,
+                        groupsVM
+                    )
+                }
                 }
         else {fieldError = true}}){
             if(expense.expid.isNotEmpty()){
@@ -148,8 +161,12 @@ fun AddEditExpenseView(
 }
 
 @Composable
-fun CheckBox(member : String, membersWhoPay : MutableList<String>){
+fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : ExpenseClass){
     val checkState = remember {mutableStateOf(false)}
+    if(expense.expid.isNotEmpty() && expense.rest.contains(member)){
+        checkState.value = true
+    }
+
     Checkbox(
         checked = checkState.value,
         onCheckedChange = { checkState.value = it; if(checkState.value) membersWhoPay.add(member) else membersWhoPay.remove(member)  }
@@ -161,7 +178,7 @@ fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
         .document(groupid)
         .get()
         .addOnSuccessListener {
-            var members = mutableListOf<String>()
+            val members = mutableListOf<String>()
             val list = it.get("members") as? List<String>
             list!!.forEach { element ->
                 members.add(element.substringBefore("@"))

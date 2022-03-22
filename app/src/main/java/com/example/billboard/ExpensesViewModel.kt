@@ -3,16 +3,14 @@ package com.example.billboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.*
 
 class ExpensesViewModel: ViewModel() {
 
     var expenses = mutableListOf<ExpenseClass>()
 
-    fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController){
+    fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
 
         val fstore = Firebase.firestore.collection("expenses")
 
@@ -21,6 +19,24 @@ class ExpensesViewModel: ViewModel() {
 
                 Log.d("Add new expense", it.id)
                 fstore.document(it.id).update("expid",it.id)
+                groupsVM.getGroups()
+                expenseNavControl.navigate("group")
+
+            }
+    }
+
+    fun editExpenseLine( expense : ExpenseClass, expenseNavControl: NavController ){
+
+        val firestore = Firebase.firestore.collection("expenses").document(expense.expid)
+
+        firestore.update("name",expense.name)
+        firestore.update("amount",expense.amount)
+        firestore.update("payer",expense.payer)
+        firestore.update("rest",expense.rest)
+            .addOnSuccessListener {
+                Log.d("Edit expense", expense.expid)
+                //groupsVM.getGroups()
+                expenseNavControl.navigate("group")
             }
     }
 

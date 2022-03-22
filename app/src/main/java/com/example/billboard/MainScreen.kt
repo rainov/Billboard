@@ -22,7 +22,7 @@ fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, group
         scaffoldState = scState,
         topBar = { TopBar(true, scState ) },
         content = { MainScreenContent( navControl, groups, groupsVM) },
-        drawerContent = { Text( text = " hahaha ")}
+        drawerContent = { DrawerMainScreen( scState ) }
     )
 
 }

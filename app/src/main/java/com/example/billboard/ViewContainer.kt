@@ -40,7 +40,7 @@ fun ViewContainer(){
             groups.forEach { groupInfo ->
                 //changed the navigation parameter to group ID so there are no conflicts if we have groups with the same name
                 composable(route = groupInfo.id) {
-                    GroupViewNavigationContainer( navControl, groupInfo, scState )
+                    GroupViewNavigationContainer( navControl, groupInfo, scState, groupsVM )
                 }
             }
         }
