@@ -1,7 +1,7 @@
 package com.example.billboard
 
 import AddExpenseView
-import android.util.Log
+import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -13,7 +13,12 @@ import androidx.navigation.navArgument
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun GroupViewNavigationContainer( navControl: NavController, groupInfo: DocumentSnapshot) {
+fun GroupViewNavigationContainer(
+    navControl: NavController,
+    groupInfo: DocumentSnapshot,
+    groupsVM: GroupsViewModel,
+    scState: ScaffoldState
+) {
 
     val expensesVM: ExpensesViewModel = viewModel()
 
@@ -25,7 +30,7 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
 
     NavHost(navController = expenseNavControl, startDestination = "group" ) {
         composable( route = "group" ) {
-            GroupView( groupInfo, expenses, expenseNavControl, navControl )
+            GroupView( groupInfo, expenses, expenseNavControl, navControl, groupsVM, scState )
         }
         composable( route = "addExpense") {
             AddExpenseView(groupInfo = groupInfo, expenseNavControl = expenseNavControl )
@@ -34,7 +39,7 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
             composable( route = expense.get("name").toString()) {
                 //Here you can pass the expense as an argument to the ExpenseView screen, and you have all the information about it
                 //so no need to fetch it there :D
-                ExpenseView( expense, expenseNavControl )
+                ExpenseView( expense, expenseNavControl, scState )
             }
         }
         composable(route = "addExpense"){

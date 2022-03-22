@@ -13,22 +13,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun GroupView( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController) {
+fun GroupView(
+    groupInfo: DocumentSnapshot,
+    expenses: List<DocumentSnapshot>,
+    expenseNavControl: NavController,
+    navControl: NavController,
+    groupsVM: GroupsViewModel,
+    scState: ScaffoldState
+) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true) },
-        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl) }
+        topBar = { TopBar(showMenu = true, scState) },
+        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl, groupsVM ) }
     )
 
 }
 
 @Composable
-fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController){
+fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController, groupsVM: GroupsViewModel){
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -89,7 +97,7 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapsh
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),
                     contentDescription = "add expense",
-                    modifier = Modifier.clickable {  navControl.navigate("addExpense")  })
+                    modifier = Modifier.clickable {  expenseNavControl.navigate("addExpense")  })
             }
         }
     }

@@ -19,10 +19,10 @@ import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun ExpenseView( expense: DocumentSnapshot, expenseNavControl: NavController) {
+fun ExpenseView( expense: DocumentSnapshot, expenseNavControl: NavController, scState: ScaffoldState) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true) },
+        topBar = { TopBar(showMenu = true, scState) },
         content = { ExpenseViewContent(expense, expenseNavControl) }
     )
 
