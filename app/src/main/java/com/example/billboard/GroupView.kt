@@ -94,15 +94,19 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>,
             .fillMaxWidth()
             .weight(1f, false)
             .padding(5.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.SpaceAround
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ){
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "back icon",
-                modifier = Modifier.clickable {  navControl.navigate("MainScreen")  })
+                modifier = Modifier
+                    .clickable {  navControl.navigate("MainScreen")  }
+                    .padding(60.dp, 30.dp)
+            )
             FloatingActionButton(onClick = { navControl.navigate("createGroup")},
                 backgroundColor = Bilboard_green,
+                modifier = Modifier.padding(50.dp, 30.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),

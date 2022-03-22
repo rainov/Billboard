@@ -75,13 +75,12 @@ fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>
             horizontalArrangement = Arrangement.End
         ){
             FloatingActionButton(onClick = { navControl.navigate("CreateGroup")},
-//            FloatingActionButton(onClick = {  groupsVM.createGroup("TestName") },
                 backgroundColor = Bilboard_green,
+                modifier = Modifier.padding(30.dp, 30.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),
                     contentDescription = "add group",
-                    //modifier = Modifier.clickable {  navControl.navigate("createGroup")  }
                 )
             }
         }

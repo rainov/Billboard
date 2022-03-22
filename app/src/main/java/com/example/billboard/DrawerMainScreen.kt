@@ -57,7 +57,7 @@ fun DrawerContent() {
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
         ) {
-            Text( text = stringResource(R.string.promotions))
+            Text( text = stringResource(R.string.about))
         }
 
         Spacer(modifier = Modifier.height(15.dp))
