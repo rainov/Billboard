@@ -4,25 +4,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
-import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun ExpenseView( expense: ExpenseClass, expenseNavControl: NavController) {
+fun ExpenseView( expense: ExpenseClass, expenseNavControl: NavController, scState: ScaffoldState) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true) },
+        topBar = { TopBar(showMenu = true, scState) },
         content = { ExpenseViewContent(expense, expenseNavControl) }
     )
 
@@ -111,9 +106,7 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
                 }
                 OutlinedButton(
                     onClick = {
-                        expenseNavControl.navigate(
-                            "${expense.expid}_edit"
-                        )
+                       expenseNavControl.navigate("${expense.expid}_edit")
                     },
                     modifier = Modifier
                         .width(100.dp)
@@ -126,62 +119,5 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
             }
 
         }
-    }
-
-
-fun getExpenseLine(expenseName : MutableState<String>,
-                   expenseAmount : MutableState<String>,
-                   expensePayer : MutableState<String>,
-                   expenseRest : MutableState<List<String>>,
-                   id : String){
-
-    Firebase.firestore.collection("expenses")
-        .document(id)
-        .get()
-        .addOnSuccessListener {
-
-            var eName = it.get("name").toString()
-            var eAmount =  it.get("amount").toString()
-            var ePayer = it.get("payer").toString()
-            var eRest = mutableListOf<String>()
-            val list = it.get("rest") as? List<String>
-            list!!.forEach { element ->
-                eRest.add(element)
-            }
-
-            expenseName.value = eName
-            expenseAmount.value = eAmount
-            expensePayer.value = ePayer
-            expenseRest.value = eRest
-
-        }
 }
-
-//fun getExpenseLine(expenseName : MutableState<String>,
-//                   expenseAmount : MutableState<String>,
-//                   expensePayer : MutableState<String>,
-//                   expenseRest : MutableState<List<String>>,
-//                   id : String){
-//
-//    Firebase.firestore.collection("expenses")
-//        .document(id)
-//        .get()
-//        .addOnSuccessListener {
-//
-//            var eName = it.get("name").toString()
-//            var eAmount =  it.get("amount").toString()
-//            var ePayer = it.get("payer").toString()
-//            var eRest = mutableListOf<String>()
-//            val list = it.get("rest") as? List<String>
-//            list!!.forEach { element ->
-//                eRest.add(element)
-//            }
-//
-//            expenseName.value = eName
-//            expenseAmount.value = eAmount
-//            expensePayer.value = ePayer
-//            expenseRest.value = eRest
-//
-//        }
-//}
 

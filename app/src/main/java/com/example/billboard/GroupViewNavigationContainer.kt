@@ -1,19 +1,25 @@
 package com.example.billboard
 
+
+import androidx.compose.material.ScaffoldState
 import AddEditExpenseView
-import android.util.Log
 import androidx.compose.runtime.*
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.google.firebase.firestore.DocumentSnapshot
+import java.util.*
 
 @Composable
-fun GroupViewNavigationContainer( navControl: NavController, groupInfo: DocumentSnapshot) {
+fun GroupViewNavigationContainer(
+    navControl: NavController,
+    groupInfo: DocumentSnapshot,
+    scState: ScaffoldState,
+    groupVM : GroupsViewModel
+) {
 
     val expensesVM: ExpensesViewModel = viewModel()
 
@@ -25,26 +31,30 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
 
     NavHost(navController = expenseNavControl, startDestination = "group" ) {
         composable( route = "group" ) {
-            GroupView( groupInfo, expenses, expenseNavControl, navControl )
+            GroupView( groupInfo, expenses, expenseNavControl, navControl, scState )
         }
         composable( route = "addExpense") {
-            val expense = expensesVM.createExpense(groupid = groupInfo.id)
-            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense)
+            val name = ""
+            val amount = 0.0
+            val payer = ""
+            val expid = ""
+            val date = Calendar.getInstance().time.toString()
+            val rest = mutableListOf<String>()
+            val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid)
+            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM)
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
-                //Here you can pass the expense as an argument to the ExpenseView screen, and you have all the information about it
-                //so no need to fetch it there :D
-                ExpenseView( expense, expenseNavControl )
+                ExpenseView( expense, expenseNavControl, scState )
             }
             composable( route = "${expense.expid}_edit"){
-                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense)
+                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM)
             }
         }
 
-        //TODO Add new group navigation
         composable(route = "createGroup"){
             createGroup()
         }
+
     }
 }

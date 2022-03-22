@@ -34,4 +34,17 @@ class GroupsViewModel: ViewModel() {
                 }
             }
     }
+
+    fun createGroup( name: String) {
+        val adminsList: List<String> = listOf(userEmail.value)
+        val expensesList: List<String> = listOf()
+        val membersList: List<String> = listOf(userEmail.value)
+        val groupName: String = name
+        val newGroup = GroupClass( adminsList, expensesList, membersList, groupName)
+        Log.d("group: ", newGroup.toString())
+        Firebase.firestore
+            .collection("groups")
+            .add(newGroup)
+    }
+
 }

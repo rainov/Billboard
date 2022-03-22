@@ -12,17 +12,7 @@ class ExpensesViewModel: ViewModel() {
 
     var expenses = mutableListOf<ExpenseClass>()
 
-    fun createExpense (name : String = "",
-                       amount : Double = 0.0,
-                       payer : String = "",
-                       groupid : String,
-                       rest : MutableList<String> = mutableListOf(),
-                       expid : String = "") : ExpenseClass {
-        val newExpense = ExpenseClass(name, amount, payer, Calendar.getInstance().time.toString(), groupid, rest, "")
-        return newExpense
-    }
-
-    fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController){
+    fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
 
         val fstore = Firebase.firestore.collection("expenses")
 
@@ -31,12 +21,12 @@ class ExpensesViewModel: ViewModel() {
 
                 Log.d("Add new expense", it.id)
                 fstore.document(it.id).update("expid",it.id)
-
+                        groupsVM.getGroups()
                         expenseNavControl.navigate("group")
                     }
             }
 
-    fun editExpenseLine(expense : ExpenseClass, expenseNavControl: NavController){
+    fun editExpenseLine(expense : ExpenseClass, expenseNavControl: NavController, groupsVM : GroupsViewModel){
 
         val firestore = Firebase.firestore.collection("expenses").document(expense.expid)
 
@@ -46,6 +36,7 @@ class ExpensesViewModel: ViewModel() {
         firestore.update("rest",expense.rest)
             .addOnSuccessListener {
                 Log.d("Edit expense", expense.expid)
+                groupsVM.getGroups()
                 expenseNavControl.navigate("group")
             }
     }

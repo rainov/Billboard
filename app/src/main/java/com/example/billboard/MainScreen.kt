@@ -11,23 +11,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>) {
+fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel, scState: ScaffoldState) {
 
     Scaffold(
-        topBar = { TopBar(true ) },
-        content = { MainScreenContent( navControl, groups) }
+        scaffoldState = scState,
+        topBar = { TopBar(true, scState ) },
+        content = { MainScreenContent( navControl, groups, groupsVM) },
+        drawerContent = { Text( text = " hahaha ")}
     )
 
 }
 
 @Composable
-fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>) {
+fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel) {
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
@@ -69,20 +70,21 @@ fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>
             Modifier
                 .fillMaxWidth()
                 .weight(1f, false)
-                .padding(5.dp),
+                .padding(end = 10.dp),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.End
         ){
-            FloatingActionButton(onClick = { navControl.navigate("createGroup")},
+            FloatingActionButton(onClick = { navControl.navigate("CreateGroup")},
+//            FloatingActionButton(onClick = {  groupsVM.createGroup("TestName") },
                 backgroundColor = Bilboard_green,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),
                     contentDescription = "add group",
-                    modifier = Modifier.clickable {  navControl.navigate("createGroup")  })
+                    //modifier = Modifier.clickable {  navControl.navigate("createGroup")  }
+                )
             }
         }
-
     }
 }
 

@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
-fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel){
+fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: ScaffoldState){
 
     val context = LocalContext.current
 
@@ -88,7 +88,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel){
 
             //Logo start
             Spacer( modifier = Modifier.height(20.dp))
-            TopBar( false )
+            TopBar( false , scState)
             Spacer( modifier = Modifier.height(20.dp))
             //Logo end
 

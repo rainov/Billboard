@@ -1,4 +1,3 @@
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -6,36 +5,54 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.*
 import com.example.billboard.R
+import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.*
-import kotlin.math.exp
-
 
 @Composable
+fun AddEditExpenseView(groupInfo: DocumentSnapshot,
+                       expenseNavControl: NavController,
+                       expensesViewModel: ExpensesViewModel,
+                       expense : ExpenseClass,
+                       scState: ScaffoldState,
+                        groupsVM: GroupsViewModel) {
 
-fun AddEditExpenseView(
+    Scaffold(
+        topBar = { TopBar(showMenu = true, scState) },
+        content = { AddEditExpenseViewContent(
+            groupInfo = groupInfo,
+            expenseNavControl = expenseNavControl,
+            expensesViewModel = expensesViewModel,
+            expense = expense,
+            groupsVM = groupsVM
+        ) }
+    )
+
+}
+
+@Composable
+fun AddEditExpenseViewContent(
                    groupInfo: DocumentSnapshot,
                    expenseNavControl: NavController,
                    expensesViewModel: ExpensesViewModel,
-                   expense : ExpenseClass) {
+                   expense : ExpenseClass,
+                   groupsVM : GroupsViewModel) {
 
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
@@ -47,101 +64,190 @@ fun AddEditExpenseView(
     var errorMessage by remember { mutableStateOf("") }
 
     var expenseName by remember { mutableStateOf(expense.name)}
-    var expenseAmount by remember { mutableStateOf(expense.amount)}
+    var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
+
     var payerMember: String by remember { mutableStateOf(expense.payer) }
     var membersWhoPay by remember {mutableStateOf(expense.rest)}
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "BillBoard")
-        if(expense.expid.isNotEmpty()){
-            Text(text = "Edit an new expense line")
-        } else {
-            Text(text = "Add a new expense line")
-        }
-        OutlinedTextField(value = expenseName, onValueChange = { expenseName = it}, label = { Text(text = "Expense name") })
-        OutlinedTextField(value = expenseAmount.toString(), onValueChange = {expenseAmount = it.toDouble()}, label = { Text(text = "Expense amount") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
-        Column() {
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            if (expense.expid.isNotEmpty()) {
+                Text(
+                    text = "Edit an new expense line",
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp
+                )
+            } else {
+                Text(
+                    text = "Add a new expense line",
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             OutlinedTextField(
-                value = payerMember,
-                onValueChange = { payerMember = it },
+                value = expenseName,
+                onValueChange = { expenseName = it },
+                label = { Text(text = "Expense name") },
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Bilboard_green,
+                    cursorColor = Color.White,
+                    textColor = Color.White,
+                    focusedLabelColor = Color.White
+                ),
                 modifier = Modifier
-                    .onSizeChanged {
-                        dropDownWidth = it.width
-                    },
-                label = { Text("Payer member") },
-                trailingIcon = {
-                    Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu",
-                        Modifier.clickable { menuExpanded = !menuExpanded })
-                }
+                    .height(64.dp)
+                    .padding(0.dp),
+                shape = MaterialTheme.shapes.large
             )
-            DropdownMenu(
-                expanded = menuExpanded,
-                onDismissRequest = { menuExpanded = false },
+            Spacer(modifier = Modifier.height(20.dp))
+            OutlinedTextField(
+                value = expenseAmount,
+                onValueChange = { expenseAmount = it },
+                label = { Text(text = "Expense amount") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Bilboard_green,
+                    cursorColor = Color.White,
+                    textColor = Color.White,
+                    focusedLabelColor = Color.White
+                ),
                 modifier = Modifier
-                    .width(with(LocalDensity.current) { dropDownWidth.toDp() })
-            ) {
-                groupMembers.value.forEach { member ->
-                    DropdownMenuItem(onClick = {
-                        payerMember = member
-                        if(membersWhoPay.contains(payerMember)) membersWhoPay.remove(payerMember)
-                    }) {
-                        Text(text = member)
+                    .height(64.dp)
+                    .padding(0.dp),
+                shape = MaterialTheme.shapes.large
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Column() {
+                OutlinedTextField(
+                    value = payerMember,
+                    onValueChange = { payerMember = it },
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Bilboard_green,
+                        cursorColor = Color.White,
+                        textColor = Color.White,
+                        focusedLabelColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .onSizeChanged {
+                            dropDownWidth = it.width
+                        }
+                        .height(64.dp)
+                        .padding(0.dp),
+                    shape = MaterialTheme.shapes.large,
+                    label = { Text("Payer member") },
+                    trailingIcon = {
+                        Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu",
+                            Modifier.clickable { menuExpanded = !menuExpanded })
+                    }
+                )
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current) { dropDownWidth.toDp() })
+                ) {
+                    groupMembers.value.forEach { member ->
+                        DropdownMenuItem(onClick = {
+                            payerMember = member
+                            if (membersWhoPay.contains(payerMember)) membersWhoPay.remove(
+                                payerMember
+                            )
+                        }) {
+                            Text(text = member)
+                        }
                     }
                 }
             }
-        }
 
-        Text(text = "Members who have to pay")
-        groupMembers.value.forEach { member ->
-            if (member != payerMember) {
-                Row() {
-                    CheckBox(member, membersWhoPay, expense)
-                    Text(member)
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(fraction = 0.75f),
+                horizontalAlignment = Alignment.Start
+            ){
+                Text(text = "Members who have to pay :")
+                Spacer(modifier = Modifier.height(10.dp))
+                groupMembers.value.forEach { member ->
+                    if (member != payerMember) {
+                        Row() {
+                            CheckBox(member, membersWhoPay, expense)
+                            Text(member)
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
+                    }
                 }
             }
-        }
 
-        Button(onClick = {
-            if(expenseName.isNotEmpty() && expenseAmount!=0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()){
-                expense.name = expenseName
-                expense.amount = expenseAmount
-                expense.payer = payerMember
-                expense.rest = membersWhoPay
-                if(expense.expid.isNotEmpty()){
-                    expensesViewModel.addExpenseLine(
-                        expense,
-                        expenseNavControl
-                    )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(modifier = Modifier
+                .width(280.dp)
+                .height(40.dp),
+                shape = MaterialTheme.shapes.large,
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green ),
+                onClick = {
+                if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
+                    expense.name = expenseName
+                    expense.amount = expenseAmount.toDouble()
+                    expense.payer = payerMember
+                    expense.rest = membersWhoPay
+                    if (expense.expid.isEmpty()) {
+                        expensesViewModel.addExpenseLine(
+                            expense,
+                            expenseNavControl,
+                            groupsVM
+                        )
+                    } else {
+                        expensesViewModel.editExpenseLine(
+                            expense,
+                            expenseNavControl,
+                            groupsVM
+                        )
+                    }
                 } else {
-                    expensesViewModel.editExpenseLine(
-                        expense,
-                        expenseNavControl
-                    )
+                    fieldError = true
                 }
+            }) {
+                if (expense.expid.isNotEmpty()) {
+                    Text(text = "Edit")
+                } else {
+                    Text(text = "Add a new expense line")
                 }
-        else {fieldError = true}}){
-            if(expense.expid.isNotEmpty()){
-                Text(text = "Edit")
-            } else {
-                Text(text = "Add a new expense line")
+            }
+            if (fieldError) {
+                Text(
+                    text = errorMessage,
+                    fontSize = 24.sp,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
-        if(fieldError) {
-            Text(text = errorMessage, fontSize = 24.sp, color = Color.Red, fontWeight = FontWeight.Bold)
-        }
 
-        Row(
-            horizontalArrangement = Arrangement.Start
-        ){
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = "back icon",
-                modifier = Modifier.clickable {  expenseNavControl.navigate("group")  })
-        }
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.padding(start = 10.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "back icon",
+                    modifier = Modifier.clickable { expenseNavControl.navigate("group") })
+            }
+
     }
 }
 
@@ -154,7 +260,8 @@ fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : Exp
 
     Checkbox(
         checked = checkState.value,
-        onCheckedChange = { checkState.value = it; if(checkState.value) membersWhoPay.add(member) else membersWhoPay.remove(member)  }
+        onCheckedChange = { checkState.value = it; if(checkState.value) membersWhoPay.add(member) else membersWhoPay.remove(member)  },
+        colors = CheckboxDefaults.colors(Bilboard_green)
     )
 }
 
@@ -168,7 +275,6 @@ fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
             list!!.forEach { element ->
                 members.add(element.substringBefore("@"))
             }
-
             listmembers.value = members
         }
 }

@@ -18,17 +18,23 @@ import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun GroupView( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController) {
+fun GroupView(
+    groupInfo: DocumentSnapshot,
+    expenses: List<ExpenseClass>,
+    expenseNavControl: NavController,
+    navControl: NavController,
+    scState: ScaffoldState
+) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true) },
-        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl) }
+        topBar = { TopBar(showMenu = true, scState) },
+        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) }
     )
 
 }
 
 @Composable
-fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController){
+fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ){
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -87,9 +93,9 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>,
             modifier = Modifier
             .fillMaxWidth()
             .weight(1f, false)
-            .padding(5.dp),
+            .padding(end = 10.dp, start = 10.dp),
             verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceBetween
         ){
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
