@@ -18,7 +18,7 @@ import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun GroupView( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController) {
+fun GroupView( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true) },
@@ -28,7 +28,7 @@ fun GroupView( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, ex
 }
 
 @Composable
-fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapshot>, expenseNavControl: NavController, navControl: NavController){
+fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController){
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -46,8 +46,20 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapsh
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = "Admin(s): ${groupInfo.get("admins").toString().subSequence(1,groupInfo.get("admins").toString().lastIndex)}", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-            Text(text = "Member(s) ${groupInfo.get("members").toString().subSequence(1,groupInfo.get("admins").toString().lastIndex)}", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+            var adminlist : String = ""
+            groupInfo.get("admins").toString().subSequence(1,groupInfo.get("admins").toString().lastIndex).split(",").forEach { admin ->
+                adminlist = if(adminlist.isEmpty()) admin.substringBefore("@")
+                else adminlist + ", " + admin.substringBefore("@")
+            }
+
+            var memberlist : String = ""
+            groupInfo.get("members").toString().subSequence(1,groupInfo.get("members").toString().lastIndex).split(",").forEach { member ->
+                memberlist = if(memberlist.isEmpty()) member.substringBefore("@")
+                else memberlist + ", " + member.substringBefore("@")
+            }
+
+            Text(text = "Admin(s): $adminlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+            Text(text = "Member(s) $memberlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -56,14 +68,14 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapsh
 
                 Card( modifier = Modifier
                     .padding(5.dp)
-                    .clickable { expenseNavControl.navigate(expense.get("name").toString()) }
+                    .clickable { expenseNavControl.navigate(expense.expid) }
                     .fillMaxWidth(fraction = 0.75f),
                     elevation = 10.dp,
                     shape = MaterialTheme.shapes.large,
                     border = BorderStroke(2.dp, Bilboard_green),
                     backgroundColor = Color.Transparent
                 ){
-                    Text( text = expense.get("name").toString(),
+                    Text( text = expense.name,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(15.dp))
@@ -89,7 +101,7 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<DocumentSnapsh
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),
                     contentDescription = "add expense",
-                    modifier = Modifier.clickable {  navControl.navigate("addExpense")  })
+                    modifier = Modifier.clickable {  expenseNavControl.navigate("addExpense")  })
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.example.billboard
 
-import AddExpenseView
+import AddEditExpenseView
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,7 +19,7 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
 
     expensesVM.getExpenses( groupInfo.id )
 
-    val expenses = expensesVM.expenses.value
+    val expenses = expensesVM.expenses
 
     val expenseNavControl = rememberNavController()
 
@@ -28,18 +28,21 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
             GroupView( groupInfo, expenses, expenseNavControl, navControl )
         }
         composable( route = "addExpense") {
-            AddExpenseView(groupInfo = groupInfo, expenseNavControl = expenseNavControl )
+            val expense = expensesVM.createExpense(groupid = groupInfo.id)
+            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense)
         }
         expenses.forEach { expense ->
-            composable( route = expense.get("name").toString()) {
+            composable( route = expense.expid) {
                 //Here you can pass the expense as an argument to the ExpenseView screen, and you have all the information about it
                 //so no need to fetch it there :D
                 ExpenseView( expense, expenseNavControl )
             }
+            composable( route = "${expense.expid}_edit"){
+                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense)
+            }
         }
-        composable(route = "addExpense"){
-            AddExpenseView(groupInfo = groupInfo, expenseNavControl = expenseNavControl)
-        }
+
+        /*
         composable(route = "editExpense/{expenseid}/{expensename}/{expenseamount}/{expensepayer}/{expenserest}",
         arguments = listOf(
             navArgument("expenseid"){
@@ -68,6 +71,7 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
                 groupInfo = groupInfo,
                 expenseNavControl = expenseNavControl)
         }
+        */
 
         //TODO Add new group navigation
         composable(route = "createGroup"){

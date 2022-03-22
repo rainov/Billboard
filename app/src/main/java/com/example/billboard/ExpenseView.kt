@@ -19,7 +19,7 @@ import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Composable
-fun ExpenseView( expense: DocumentSnapshot, expenseNavControl: NavController) {
+fun ExpenseView( expense: ExpenseClass, expenseNavControl: NavController) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true) },
@@ -29,13 +29,13 @@ fun ExpenseView( expense: DocumentSnapshot, expenseNavControl: NavController) {
 }
 
 @Composable
-fun ExpenseViewContent( expense: DocumentSnapshot, expenseNavControl: NavController) {
+fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) {
 
-    val expenseName = expense.get("name").toString()
-    val expenseAmount = expense.get("amount").toString()
-    val expensePayer = expense.get("payer").toString()
+    val expenseName = expense.name
+    val expenseAmount = expense.amount.toString()
+    val expensePayer = expense.payer
 
-    val expenseRest = expense.get("rest") as List<String>
+    val expenseRest = expense.rest
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -99,7 +99,7 @@ fun ExpenseViewContent( expense: DocumentSnapshot, expenseNavControl: NavControl
                     modifier = Modifier.clickable { expenseNavControl.navigate("group") })
                 OutlinedButton(
                     onClick = {
-                        /* TODO Delete function */
+                        /* TODO delete function expenseNavControl.navigate("deleteExpense") */
                     },
                     modifier = Modifier
                         .width(100.dp)
@@ -111,6 +111,7 @@ fun ExpenseViewContent( expense: DocumentSnapshot, expenseNavControl: NavControl
                 }
                 OutlinedButton(
                     onClick = {
+                        /* TODO edit function
                         expenseNavControl.navigate(
                             "editExpense/${expense.id}/${expenseName}/${expenseAmount}/${expensePayer}/${
                                 expenseRest.joinToString(
@@ -118,6 +119,7 @@ fun ExpenseViewContent( expense: DocumentSnapshot, expenseNavControl: NavControl
                                 )
                             }"
                         )
+                         */
                     },
                     modifier = Modifier
                         .width(100.dp)
