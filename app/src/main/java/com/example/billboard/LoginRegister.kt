@@ -1,6 +1,7 @@
 package com.example.billboard
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.auth.FirebaseAuth
@@ -134,6 +136,9 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
             )
             //Email end
 
+            var showPassWd by remember { mutableStateOf(false) }
+            var showPassWd2 by remember { mutableStateOf(false) }
+
             //Password start
             OutlinedTextField(
                 value = password,
@@ -142,7 +147,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                 trailingIcon = { Icon(
                     painter = painterResource(R.drawable.password_eye),
                     contentDescription = "eye password",
-                    Modifier.padding(15.dp)
+                    Modifier.padding(15.dp).clickable { showPassWd = !showPassWd }
                 )},
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -151,7 +156,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     textColor = Color.White,
                     focusedLabelColor = Color.White
                 ),
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (showPassWd) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.height(64.dp),
                 shape = MaterialTheme.shapes.large,
                 keyboardOptions = KeyboardOptions( keyboardType = KeyboardType.Password)
@@ -167,7 +172,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     trailingIcon = { Icon(
                         painter = painterResource(R.drawable.password_eye),
                         contentDescription = "eye password",
-                        Modifier.padding(15.dp)
+                        Modifier.padding(15.dp).clickable { showPassWd2 = !showPassWd2 }
                     )},
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -176,7 +181,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         textColor = Color.White,
                         focusedLabelColor = Color.White
                     ),
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (showPassWd2) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions( keyboardType = KeyboardType.Password),
                     modifier = Modifier.height(64.dp),
                     shape = MaterialTheme.shapes.large,

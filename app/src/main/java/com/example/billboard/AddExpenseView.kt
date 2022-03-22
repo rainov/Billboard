@@ -1,4 +1,4 @@
-import android.util.Log
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -6,7 +6,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,40 +14,40 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.billboard.*
 import com.example.billboard.R
-import com.example.billboard.getExpenseLine
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.*
 
 
 @Composable
 
-fun AddExpenseView(id: String = "", name: String = "", amount: String = "", payer: String = "", rest: String = "", groupInfo: DocumentSnapshot, expenseNavControl: NavController) {
+fun AddEditExpenseView(
+                   groupInfo: DocumentSnapshot,
+                   expenseNavControl: NavController,
+                   expensesViewModel: ExpensesViewModel,
+                   expense : ExpenseClass) {
 
     var menuExpanded by remember { mutableStateOf(false) }
-
-    val groupMembers = remember { mutableStateOf(listOf<String>()) }
-
-    getGroupMembers(groupInfo.id, groupMembers)
-
     var dropDownWidth by remember { mutableStateOf(0) }
 
-    var expenseName by remember { mutableStateOf("")}
-    var expenseAmount by remember { mutableStateOf("")}
-    var payerMember: String by remember { mutableStateOf("") }
-    val membersWhoPay = remember {mutableStateListOf<String>()}
+    val groupMembers = remember { mutableStateOf(listOf<String>()) }
+    getGroupMembers(groupInfo.id, groupMembers)
+
 
     var fieldError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+    var expenseName by remember { mutableStateOf(expense.name)}
+    var expenseAmount by remember { mutableStateOf(expense.amount)}
+    var payerMember by remember { mutableStateOf(expense.payer) }
+    val membersWhoPay by remember { mutableStateOf(expense.rest) }
 
+
+    /* TODO EDIT MODE
     if(id.isNotEmpty()){
         expenseName = name
         expenseAmount = amount
@@ -58,19 +57,21 @@ fun AddExpenseView(id: String = "", name: String = "", amount: String = "", paye
         }
         }
 
+     */
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "BillBoard")
-        if(id.isNotEmpty()){
+        if(expense.expid.isNotEmpty()){
             Text(text = "Edit an new expense line")
         } else {
             Text(text = "Add a new expense line")
         }
-        OutlinedTextField(value = expenseName, onValueChange = {expenseName = it}, label = { Text(text = "Expense name") })
-        OutlinedTextField(value = expenseAmount, onValueChange = {expenseAmount = it}, label = { Text(text = "Expense amount") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
+        OutlinedTextField(value = expenseName, onValueChange = { expenseName = it}, label = { Text(text = "Expense name") })
+        OutlinedTextField(value = expenseAmount.toString(), onValueChange = { expenseAmount = it.toDouble() }, label = { Text(text = "Expense amount") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
         Column() {
             OutlinedTextField(
                 value = payerMember,
@@ -111,28 +112,21 @@ fun AddExpenseView(id: String = "", name: String = "", amount: String = "", paye
                 }
             }
         }
+
         Button(onClick = {
-            if(expenseName.isNotEmpty() && expenseAmount.isNotEmpty() && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()){
-                if(id.isNotEmpty()){
-                    editExpenseLine(
-                        id = id,
-                        name = expenseName,
-                        amount = expenseAmount,
-                        payer = payerMember,
-                        membersWhoPay = membersWhoPay,
-                        expenseNavControl = expenseNavControl)
-                } else {
-                    addExpenseLine(
-                        name = expenseName,
-                        amount = expenseAmount,
-                        payer = payerMember,
-                        membersWhoPay = membersWhoPay,
-                        groupid = groupInfo.id,
-                        expenseNavControl = expenseNavControl
+            if(expenseName.isNotEmpty() && expenseAmount.toString().isNotEmpty() && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()){
+                expense.name = expenseName
+                expense.amount = expenseAmount
+                expense.payer = payerMember
+                expense.rest = membersWhoPay
+
+                expensesViewModel.addExpenseLine(
+                        expense,
+                        expenseNavControl
                     )
-                }}
+                }
         else {fieldError = true}}){
-            if(id.isNotEmpty()){
+            if(expense.expid.isNotEmpty()){
                 Text(text = "Edit")
             } else {
                 Text(text = "Add a new expense line")
@@ -153,65 +147,13 @@ fun AddExpenseView(id: String = "", name: String = "", amount: String = "", paye
     }
 }
 
-
 @Composable
-fun CheckBox(member : String, membersWhoPay : SnapshotStateList<String>){
+fun CheckBox(member : String, membersWhoPay : MutableList<String>){
     val checkState = remember {mutableStateOf(false)}
     Checkbox(
         checked = checkState.value,
         onCheckedChange = { checkState.value = it; if(checkState.value) membersWhoPay.add(member) else membersWhoPay.remove(member)  }
     )
-}
-
-/* CAN BE DELETED
-fun showExpenseData(name : String, amount : String, payer : String, membersWhoPay : SnapshotStateList<String>, expenseInfo : MutableState<String>){
-    expenseInfo.value = "Expense line data : Name -> $name, Amount -> $amount, Payer -> $payer, Members who pay -> "
-    membersWhoPay.forEach { member ->
-        expenseInfo.value = expenseInfo.value + member + " "
-    }
-
-}
-*/
-
-fun addExpenseLine(name : String, amount : String, payer : String, membersWhoPay : SnapshotStateList<String>, groupid: String, expenseNavControl: NavController){
-
-    val newExpense = hashMapOf<String, Any>(
-        "amount" to amount,
-        "name" to name,
-        "payer" to payer,
-        "rest" to membersWhoPay,
-        "date" to Calendar.getInstance().time
-
-    )
-
-    Firebase.firestore.collection("expenses")
-        .add(newExpense)
-        .addOnSuccessListener {
-
-            Log.d("Add new expense", it.id)
-
-            Firebase.firestore.collection("groups")
-                .document(groupid)
-                .update("expenses", FieldValue.arrayUnion(it.id))
-                .addOnSuccessListener {
-                    Log.d("Add expense in group", "Success")
-                    expenseNavControl.navigate("group")
-                }
-        }
-}
-
-fun editExpenseLine(id : String, name : String, amount : String, payer : String, membersWhoPay : SnapshotStateList<String>, expenseNavControl: NavController){
-
-    val firestore = Firebase.firestore.collection("expenses").document(id)
-
-    firestore.update("name",name)
-    firestore.update("amount",amount)
-    firestore.update("payer",payer)
-    firestore.update("rest",membersWhoPay)
-        .addOnSuccessListener {
-            Log.d("Edit expense", id)
-            expenseNavControl.navigate("group")
-        }
 }
 
 fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
@@ -224,7 +166,6 @@ fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
             list!!.forEach { element ->
                 members.add(element.substringBefore("@"))
             }
-
             listmembers.value = members
         }
 }
