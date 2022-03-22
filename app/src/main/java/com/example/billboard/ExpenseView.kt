@@ -111,15 +111,9 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
                 }
                 OutlinedButton(
                     onClick = {
-                        /* TODO edit function
                         expenseNavControl.navigate(
-                            "editExpense/${expense.id}/${expenseName}/${expenseAmount}/${expensePayer}/${
-                                expenseRest.joinToString(
-                                    ","
-                                )
-                            }"
+                            "${expense.expid}_edit"
                         )
-                         */
                     },
                     modifier = Modifier
                         .width(100.dp)

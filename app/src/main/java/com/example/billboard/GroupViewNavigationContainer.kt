@@ -42,37 +42,6 @@ fun GroupViewNavigationContainer( navControl: NavController, groupInfo: Document
             }
         }
 
-        /*
-        composable(route = "editExpense/{expenseid}/{expensename}/{expenseamount}/{expensepayer}/{expenserest}",
-        arguments = listOf(
-            navArgument("expenseid"){
-                type = NavType.StringType
-            },
-            navArgument("expensename"){
-                type = NavType.StringType
-            },
-            navArgument("expenseamount"){
-                type = NavType.StringType
-            },
-            navArgument("expensepayer"){
-                type = NavType.StringType
-            },
-            navArgument("expenserest"){
-                type = NavType.StringType
-            }
-
-        )){
-            AddExpenseView(
-                id = it.arguments?.getString("expenseid")!!,
-                name = it.arguments?.getString("expensename")!!,
-                amount = it.arguments?.getString("expenseamount")!!,
-                payer = it.arguments?.getString("expensepayer")!!,
-                rest = it.arguments?.getString("expenserest")!!,
-                groupInfo = groupInfo,
-                expenseNavControl = expenseNavControl)
-        }
-        */
-
         //TODO Add new group navigation
         composable(route = "createGroup"){
             createGroup()

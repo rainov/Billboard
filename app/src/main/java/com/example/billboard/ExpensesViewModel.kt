@@ -32,13 +32,21 @@ class ExpensesViewModel: ViewModel() {
                 Log.d("Add new expense", it.id)
                 fstore.document(it.id).update("expid",it.id)
 
-                Firebase.firestore.collection("groups")
-                    .document(newExpense.groupid)
-                    .update("expenses", FieldValue.arrayUnion(it.id))
-                    .addOnSuccessListener {
-                        Log.d("Add expense in group", "Success")
                         expenseNavControl.navigate("group")
                     }
+            }
+
+    fun editExpenseLine(expense : ExpenseClass, expenseNavControl: NavController){
+
+        val firestore = Firebase.firestore.collection("expenses").document(expense.expid)
+
+        firestore.update("name",expense.name)
+        firestore.update("amount",expense.amount)
+        firestore.update("payer",expense.payer)
+        firestore.update("rest",expense.rest)
+            .addOnSuccessListener {
+                Log.d("Edit expense", expense.expid)
+                expenseNavControl.navigate("group")
             }
     }
 

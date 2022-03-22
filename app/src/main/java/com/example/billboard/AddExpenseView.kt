@@ -43,28 +43,13 @@ fun AddEditExpenseView(
     val groupMembers = remember { mutableStateOf(listOf<String>()) }
     getGroupMembers(groupInfo.id, groupMembers)
 
-    var newExpense : ExpenseClass = expensesViewModel.createExpense(groupid = groupInfo.id)
-
     var fieldError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    var expenseName by remember { mutableStateOf("")}
-    var expenseAmount by remember { mutableStateOf("")}
-    var payerMember: String by remember { mutableStateOf("") }
-    val membersWhoPay = remember {mutableStateListOf<String>()}
-
-
-    /* TODO EDIT MODE
-    if(id.isNotEmpty()){
-        expenseName = name
-        expenseAmount = amount
-        payerMember = payer
-        rest.split(",").forEach { member ->
-            membersWhoPay.add(member)
-        }
-        }
-
-     */
+    var expenseName by remember { mutableStateOf(expense.name)}
+    var expenseAmount by remember { mutableStateOf(expense.amount)}
+    var payerMember: String by remember { mutableStateOf(expense.payer) }
+    var membersWhoPay by remember {mutableStateOf(expense.rest)}
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -78,7 +63,7 @@ fun AddEditExpenseView(
             Text(text = "Add a new expense line")
         }
         OutlinedTextField(value = expenseName, onValueChange = { expenseName = it}, label = { Text(text = "Expense name") })
-        OutlinedTextField(value = expenseAmount, onValueChange = {expenseAmount = it}, label = { Text(text = "Expense amount") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
+        OutlinedTextField(value = expenseAmount.toString(), onValueChange = {expenseAmount = it.toDouble()}, label = { Text(text = "Expense amount") }, keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number))
         Column() {
             OutlinedTextField(
                 value = payerMember,
@@ -114,23 +99,29 @@ fun AddEditExpenseView(
         groupMembers.value.forEach { member ->
             if (member != payerMember) {
                 Row() {
-                    CheckBox(member, membersWhoPay)
+                    CheckBox(member, membersWhoPay, expense)
                     Text(member)
                 }
             }
         }
 
         Button(onClick = {
-            if(expenseName.isNotEmpty() && expenseAmount.isNotEmpty() && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()){
+            if(expenseName.isNotEmpty() && expenseAmount!=0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()){
                 expense.name = expenseName
-                expense.amount = expenseAmount.toDouble()
+                expense.amount = expenseAmount
                 expense.payer = payerMember
                 expense.rest = membersWhoPay
-
-                expensesViewModel.addExpenseLine(
+                if(expense.expid.isNotEmpty()){
+                    expensesViewModel.addExpenseLine(
                         expense,
                         expenseNavControl
                     )
+                } else {
+                    expensesViewModel.editExpenseLine(
+                        expense,
+                        expenseNavControl
+                    )
+                }
                 }
         else {fieldError = true}}){
             if(expense.expid.isNotEmpty()){
@@ -155,28 +146,16 @@ fun AddEditExpenseView(
 }
 
 @Composable
-fun CheckBox(member : String, membersWhoPay : MutableList<String>){
+fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : ExpenseClass){
     val checkState = remember {mutableStateOf(false)}
+    if(expense.expid.isNotEmpty() && expense.rest.contains(member)){
+        checkState.value = true
+    }
+
     Checkbox(
         checked = checkState.value,
         onCheckedChange = { checkState.value = it; if(checkState.value) membersWhoPay.add(member) else membersWhoPay.remove(member)  }
     )
-}
-
-
-
-fun editExpenseLine(id : String, name : String, amount : String, payer : String, membersWhoPay : SnapshotStateList<String>, expenseNavControl: NavController){
-
-    val firestore = Firebase.firestore.collection("expenses").document(id)
-
-    firestore.update("name",name)
-    firestore.update("amount",amount)
-    firestore.update("payer",payer)
-    firestore.update("rest",membersWhoPay)
-        .addOnSuccessListener {
-            Log.d("Edit expense", id)
-            expenseNavControl.navigate("group")
-        }
 }
 
 fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
