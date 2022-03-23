@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun GroupView(
@@ -23,11 +24,12 @@ fun GroupView(
     expenses: List<ExpenseClass>,
     expenseNavControl: NavController,
     navControl: NavController,
-    scState: ScaffoldState
+    scState: ScaffoldState,
+    scope: CoroutineScope
 ) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState) },
+        topBar = { TopBar(showMenu = true, scState, false, scope) },
         content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) }
     )
 
@@ -93,25 +95,26 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>,
             modifier = Modifier
             .fillMaxWidth()
             .weight(1f, false)
-            .padding(5.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            .padding(end = 10.dp, start = 10.dp),
+            verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "back icon",
+
                 modifier = Modifier
                     .clickable {  navControl.navigate("MainScreen")  }
                     .padding(60.dp, 30.dp)
             )
-            FloatingActionButton(onClick = { navControl.navigate("createGroup")},
+            FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
                 backgroundColor = Bilboard_green,
                 modifier = Modifier.padding(50.dp, 30.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),
                     contentDescription = "add expense",
-                    modifier = Modifier.clickable {  expenseNavControl.navigate("addExpense")  })
+                   )
             }
         }
     }

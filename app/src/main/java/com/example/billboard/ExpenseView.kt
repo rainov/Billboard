@@ -12,12 +12,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun ExpenseView( expense: ExpenseClass, expenseNavControl: NavController, scState: ScaffoldState) {
+fun ExpenseView(
+    expense: ExpenseClass,
+    expenseNavControl: NavController,
+    scState: ScaffoldState,
+    scope: CoroutineScope
+) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState) },
+        topBar = { TopBar(showMenu = true, scState, false, scope ) },
         content = { ExpenseViewContent(expense, expenseNavControl) }
     )
 
@@ -106,9 +112,7 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
                 }
                 OutlinedButton(
                     onClick = {
-                        expenseNavControl.navigate(
-                            "${expense.expid}_edit"
-                        )
+                       expenseNavControl.navigate("${expense.expid}_edit")
                     },
                     modifier = Modifier
                         .width(100.dp)
@@ -119,7 +123,6 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
                     Text( text = "Edit")
                 }
             }
-
         }
 }
 

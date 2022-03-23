@@ -14,12 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-    fun TopBar( showMenu: Boolean, scState: ScaffoldState) {
+    fun TopBar( showMenu: Boolean, scState: ScaffoldState, showCloseArrow: Boolean, scope: CoroutineScope) {
 
-    val scope = rememberCoroutineScope()
+//    val scope = rememberCoroutineScope()
 
     Row(
         modifier = Modifier
@@ -43,6 +44,14 @@ import kotlinx.coroutines.launch
             Text( text = "Bill", color = Color(0xFFadd27d), style = MaterialTheme.typography.h1 )
             Text( text = "Board", style = MaterialTheme.typography.h1 )
         }
-        Spacer(modifier = Modifier.width(45.dp))
+        if ( showCloseArrow ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = "back arrow",
+                modifier = Modifier.clickable { scope.launch { scState.drawerState.close() } }
+            )
+        } else {
+            Spacer( modifier = Modifier.width(45.dp))
+        }
     }
 }

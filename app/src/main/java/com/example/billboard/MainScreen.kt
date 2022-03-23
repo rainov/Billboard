@@ -14,15 +14,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel, scState: ScaffoldState) {
+fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel, scState: ScaffoldState, scope: CoroutineScope) {
 
     Scaffold(
         scaffoldState = scState,
-        topBar = { TopBar(true, scState ) },
+        topBar = { TopBar(true, scState, false, scope) },
         content = { MainScreenContent( navControl, groups, groupsVM) },
-        drawerContent = { DrawerMainScreen( scState ) }
+        drawerContent = { DrawerMainScreen( scState, navControl, scope ) }
     )
 
 }
@@ -70,7 +71,7 @@ fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>
             Modifier
                 .fillMaxWidth()
                 .weight(1f, false)
-                .padding(5.dp),
+                .padding(end = 10.dp),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.End
         ){

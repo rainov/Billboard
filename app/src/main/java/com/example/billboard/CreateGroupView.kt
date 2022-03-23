@@ -13,11 +13,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun CreateGroupView( groupsVM: GroupsViewModel, navControl: NavController, scState: ScaffoldState ) {
+fun CreateGroupView( groupsVM: GroupsViewModel, navControl: NavController, scState: ScaffoldState, scope: CoroutineScope) {
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState) },
+        topBar = { TopBar(showMenu = true, scState, false, scope ) },
         content = { CreateGroupContent( groupsVM, navControl ) }
     )
 

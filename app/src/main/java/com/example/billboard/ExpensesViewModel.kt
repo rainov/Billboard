@@ -3,12 +3,16 @@ package com.example.billboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class ExpensesViewModel: ViewModel() {
 
     var expenses = mutableListOf<ExpenseClass>()
+
+
+    /*
 
     fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
 
@@ -19,13 +23,43 @@ class ExpensesViewModel: ViewModel() {
 
                 Log.d("Add new expense", it.id)
                 fstore.document(it.id).update("expid",it.id)
+
                 groupsVM.getGroups()
                 expenseNavControl.navigate("group")
+
+
+
+                        //groupsVM.getGroups()
+                        getExpenses(newExpense.groupid)
+                        expenseNavControl.navigate("group")
+                    }
 
             }
     }
 
-    fun editExpenseLine( expense : ExpenseClass, expenseNavControl: NavController ){
+     */
+
+    fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
+
+        val fstore = Firebase.firestore.collection("expenses")
+
+        fstore.add(newExpense)
+            .addOnSuccessListener {
+
+                Log.d("Add new expense", it.id)
+                fstore.document(it.id).update("expid",it.id)
+
+                Firebase.firestore.collection("groups")
+                    .document(newExpense.groupid)
+                    .update("expenses", FieldValue.arrayUnion(it.id))
+                    .addOnSuccessListener {
+                        Log.d("Add expense in group", "Success")
+                        expenseNavControl.navigate("group")
+                    }
+            }
+    }
+
+    fun editExpenseLine(expense : ExpenseClass, expenseNavControl: NavController, groupsVM : GroupsViewModel){
 
         val firestore = Firebase.firestore.collection("expenses").document(expense.expid)
 
@@ -35,7 +69,7 @@ class ExpensesViewModel: ViewModel() {
         firestore.update("rest",expense.rest)
             .addOnSuccessListener {
                 Log.d("Edit expense", expense.expid)
-                //groupsVM.getGroups()
+                groupsVM.getGroups()
                 expenseNavControl.navigate("group")
             }
     }
