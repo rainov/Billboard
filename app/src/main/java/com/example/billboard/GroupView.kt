@@ -101,13 +101,13 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>,
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "back icon",
                 modifier = Modifier.clickable {  navControl.navigate("MainScreen")  })
-            FloatingActionButton(onClick = { navControl.navigate("createGroup")},
+            FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
                 backgroundColor = Bilboard_green,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),
                     contentDescription = "add expense",
-                    modifier = Modifier.clickable {  expenseNavControl.navigate("addExpense")  })
+                   )
             }
         }
     }

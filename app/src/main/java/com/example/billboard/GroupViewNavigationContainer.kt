@@ -18,7 +18,7 @@ fun GroupViewNavigationContainer(
     navControl: NavController,
     groupInfo: DocumentSnapshot,
     scState: ScaffoldState,
-    groupVM : GroupsViewModel
+    groupVM: GroupsViewModel
 ) {
 
     val expensesVM: ExpensesViewModel = viewModel()
@@ -42,6 +42,7 @@ fun GroupViewNavigationContainer(
             val rest = mutableListOf<String>()
             val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid)
             AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM)
+
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
@@ -55,6 +56,5 @@ fun GroupViewNavigationContainer(
         composable(route = "createGroup"){
             createGroup()
         }
-
-    }
-}
+            }
+        }

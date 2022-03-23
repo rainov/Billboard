@@ -31,7 +31,7 @@ fun AddEditExpenseView(groupInfo: DocumentSnapshot,
                        expensesViewModel: ExpensesViewModel,
                        expense : ExpenseClass,
                        scState: ScaffoldState,
-                        groupsVM: GroupsViewModel) {
+                       groupsVM: GroupsViewModel) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true, scState) },
@@ -61,9 +61,10 @@ fun AddEditExpenseViewContent(
     getGroupMembers(groupInfo.id, groupMembers)
 
     var fieldError by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    val errorMessage by remember { mutableStateOf("") }
 
     var expenseName by remember { mutableStateOf(expense.name)}
+
     var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
 
     var payerMember: String by remember { mutableStateOf(expense.payer) }
@@ -192,6 +193,7 @@ fun AddEditExpenseViewContent(
                 }
             }
 
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(modifier = Modifier
@@ -220,14 +222,14 @@ fun AddEditExpenseViewContent(
                     }
                 } else {
                     fieldError = true
-                }
-            }) {
+                }}){
                 if (expense.expid.isNotEmpty()) {
                     Text(text = "Edit")
                 } else {
                     Text(text = "Add a new expense line")
                 }
             }
+
             if (fieldError) {
                 Text(
                     text = errorMessage,
@@ -270,7 +272,7 @@ fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
         .document(groupid)
         .get()
         .addOnSuccessListener {
-            var members = mutableListOf<String>()
+            val members = mutableListOf<String>()
             val list = it.get("members") as? List<String>
             list!!.forEach { element ->
                 members.add(element.substringBefore("@"))
