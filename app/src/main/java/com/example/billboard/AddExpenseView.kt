@@ -24,6 +24,7 @@ import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun AddEditExpenseView(groupInfo: DocumentSnapshot,
@@ -31,10 +32,12 @@ fun AddEditExpenseView(groupInfo: DocumentSnapshot,
                        expensesViewModel: ExpensesViewModel,
                        expense : ExpenseClass,
                        scState: ScaffoldState,
-                       groupsVM: GroupsViewModel) {
+                       groupsVM: GroupsViewModel,
+                       scope: CoroutineScope
+) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState) },
+        topBar = { TopBar(showMenu = true, scState, false, scope) },
         content = { AddEditExpenseViewContent(
             groupInfo = groupInfo,
             expenseNavControl = expenseNavControl,
@@ -52,7 +55,8 @@ fun AddEditExpenseViewContent(
                    expenseNavControl: NavController,
                    expensesViewModel: ExpensesViewModel,
                    expense : ExpenseClass,
-                   groupsVM : GroupsViewModel) {
+                   groupsVM: GroupsViewModel
+) {
 
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
@@ -61,9 +65,7 @@ fun AddEditExpenseViewContent(
     getGroupMembers(groupInfo.id, groupMembers)
 
     var expenseName by remember { mutableStateOf(expense.name)}
-
     var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
-
     var payerMember: String by remember { mutableStateOf(expense.payer) }
     var membersWhoPay by remember {mutableStateOf(expense.rest)}
 
@@ -73,7 +75,6 @@ fun AddEditExpenseViewContent(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -191,7 +192,6 @@ fun AddEditExpenseViewContent(
                     }
                 }
             }
-
 
             Spacer(modifier = Modifier.height(20.dp))
 

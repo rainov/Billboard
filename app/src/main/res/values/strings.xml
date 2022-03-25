@@ -33,5 +33,17 @@
     <string name="expense_amount">Expense amount</string>
     <string name="error">Error</string>
     <string name="close">Close</string>
-
+    <string name="reset_password">Reset password</string>
+    <string name="delete_account">Delete account</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="input_error">Input error:</string>
+    <string name="exit_settings">Exit settings</string>
+    <string name ="passwd_reset">Password reset</string>
+    <string name ="send">Send</string>
+    <string name ="forgot_pwd">Forgot password ?</string>
+    <string name ="passwd_reset_mess">A reset link will be send to the following email address</string>
+    <string name ="email_reset">Please enter your email address to receive a reset link</string>
+    <string name="input_err">Input error:</string>
+    <string name="ok">Ok</string>
+    <string name="err_signin">Email and/or password are wrong.</string>
 </resources>

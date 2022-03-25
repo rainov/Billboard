@@ -16,13 +16,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import getGroupAdmins
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun ExpenseView( expense: ExpenseClass, expenseNavControl: NavController, scState: ScaffoldState, expensesViewModel: ExpensesViewModel, groupsViewModel: GroupsViewModel) {
+fun ExpenseView(
+    expense: ExpenseClass,
+    expenseNavControl: NavController,
+    scState: ScaffoldState,
+    scope: CoroutineScope,
+    expensesViewModel: ExpensesViewModel,
+    groupsViewModel: GroupsViewModel
+) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState) },
+        topBar = { TopBar(showMenu = true, scState, false, scope ) },
         content = { ExpenseViewContent(expense, expenseNavControl, expensesViewModel, groupsViewModel) }
     )
 
@@ -42,8 +52,8 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
     val groupAdmins = remember { mutableStateOf(listOf<String>()) }
     getGroupAdmins(expense.groupid, groupAdmins)
 
-    val isUserAdmin = remember { mutableStateOf(false)}
-    getUserStatus(isUserAdmin, groupsViewModel, groupAdmins)
+    val isUserAdmin = remember { mutableStateOf(false) }
+    getUserStatus(isUserAdmin, groupAdmins)
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -61,8 +71,10 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
             Spacer(modifier = Modifier.height(20.dp))
 
             //TODO need to discuss about default currency, can the user choose one or the group
-            Text(text = stringResource(R.string.amount_paid)
-                 + expenseAmount + "€")
+            Text(
+                text = stringResource(R.string.amount_paid)
+                        + expenseAmount + "€"
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -77,121 +89,122 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
             expenseRest.forEach { member ->
                 Row() {
                     Text(text = member, modifier = Modifier.padding(15.dp))
-                    if(isUserAdmin.value){
-                    OutlinedButton(
-                        onClick = {
-                            /*TODO erase user debt */
-                        },
-                        modifier = Modifier
-                            .width(150.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
-                    ) {
-                        Text( text = stringResource(R.string.erase_debt))
-                        Spacer(modifier = Modifier.height(5.dp))
-                    }
+                    if (isUserAdmin.value) {
+                        OutlinedButton(
+                            onClick = {
+                                /*TODO erase user debt */
+                            },
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        ) {
+                            Text(text = stringResource(R.string.erase_debt))
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
                     }
 
                 }
             }
         }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f, false)
-                    .padding(5.dp),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "back icon",
-                    modifier = Modifier.clickable { expenseNavControl.navigate("group") })
-                if(isUserAdmin.value) {
-                    OutlinedButton(
-                        onClick = {
-                            openDialog.value = true
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.delete))
-                    }
-                }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, false)
+                .padding(5.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "back icon",
+                modifier = Modifier.clickable { expenseNavControl.navigate("group") })
 
-                if(isUserAdmin.value) {
-                    OutlinedButton(
-                        onClick = {
-                            expenseNavControl.navigate("${expense.expid}_edit")
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.edit))
-                    }
-                }
-            }
-
-        }
-
-    if (openDialog.value) {
-
-        AlertDialog(
-            onDismissRequest = {
-                openDialog.value = false
-            },
-            title = {
-                Text(text = stringResource(R.string.delete_conf))
-            },
-            text = {
-                Text(text = stringResource(R.string.delete_conf_mess))
-            },
-            confirmButton = {
+            if (isUserAdmin.value) {
                 OutlinedButton(
                     onClick = {
-                        openDialog.value = false
-                        expensesViewModel.deleteExpenseLine(
-                            expense,
-                            expenseNavControl,
-                            groupsViewModel
-                        )
+                        openDialog.value = true
                     },
                     modifier = Modifier
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
                 ) {
-                    Text(stringResource(R.string.delete))
+                    Text(text = stringResource(R.string.delete))
                 }
-            },
-            dismissButton = {
+            }
+
+
+            if (isUserAdmin.value) {
                 OutlinedButton(
                     onClick = {
-                        openDialog.value = false
+                        expenseNavControl.navigate("${expense.expid}_edit")
                     },
                     modifier = Modifier
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
-                ){
-                    Text(text = stringResource(R.string.cancel))
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.edit))
                 }
             }
-        )
+        }
+
+        if (openDialog.value) {
+
+            AlertDialog(
+                onDismissRequest = {
+                    openDialog.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.delete_conf))
+                },
+                text = {
+                    Text(text = stringResource(R.string.delete_conf_mess))
+                },
+                confirmButton = {
+                    OutlinedButton(
+                        onClick = {
+                            openDialog.value = false
+                            expensesViewModel.deleteExpenseLine(
+                                expense,
+                                expenseNavControl,
+                                groupsViewModel
+                            )
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    ) {
+                        Text(stringResource(R.string.delete))
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(
+                        onClick = {
+                            openDialog.value = false
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    ) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     }
 }
 
-fun getUserStatus(userstatus: MutableState<Boolean>, groupsViewModel: GroupsViewModel, adminlist: MutableState<List<String>>){
-    if(adminlist.value.contains(groupsViewModel.userEmail.value))
+fun getUserStatus(userstatus: MutableState<Boolean>, adminlist: MutableState<List<String>>){
+    if(adminlist.value.contains(FirebaseAuth.getInstance().currentUser.toString()))
         userstatus.value = true
 }
 

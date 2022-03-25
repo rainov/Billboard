@@ -8,6 +8,16 @@ import androidx.lifecycle.ViewModel
 class UserViewModel: ViewModel() {
 
     var signedIn = mutableStateOf(false)
+    var userEmail = mutableStateOf("")
+    var userName = mutableStateOf("")
+
+    fun setEmail( email: String ){
+        userEmail.value = email
+    }
+
+    fun setUsername( username: String ){
+        userName.value = username
+    }
 
     fun signIn() {
         signedIn.value = true

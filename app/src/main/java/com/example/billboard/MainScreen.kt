@@ -14,15 +14,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.firestore.DocumentSnapshot
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel, scState: ScaffoldState) {
+fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel, scState: ScaffoldState, scope: CoroutineScope) {
 
     Scaffold(
         scaffoldState = scState,
-        topBar = { TopBar(true, scState ) },
+        topBar = { TopBar(true, scState, false, scope) },
         content = { MainScreenContent( navControl, groups, groupsVM) },
-        drawerContent = { DrawerMainScreen( scState ) }
+        drawerContent = { DrawerMainScreen( scState, navControl, scope ) }
     )
 
 }
@@ -75,13 +76,12 @@ fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>
             horizontalArrangement = Arrangement.End
         ){
             FloatingActionButton(onClick = { navControl.navigate("CreateGroup")},
-//            FloatingActionButton(onClick = {  groupsVM.createGroup("TestName") },
                 backgroundColor = Bilboard_green,
+                modifier = Modifier.padding(30.dp, 30.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_add),
                     contentDescription = "add group",
-                    //modifier = Modifier.clickable {  navControl.navigate("createGroup")  }
                 )
             }
         }

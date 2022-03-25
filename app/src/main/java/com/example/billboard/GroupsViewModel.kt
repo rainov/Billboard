@@ -3,6 +3,7 @@ package com.example.billboard
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -10,24 +11,13 @@ import com.google.firebase.ktx.Firebase
 class GroupsViewModel: ViewModel() {
 
     var groups = mutableStateOf( listOf<DocumentSnapshot>() )
-    //private var userEmail = mutableStateOf("")
-    var userEmail = mutableStateOf("")
-    var userName = mutableStateOf("")
 
-    fun setEmail( email: String ) {
-        userEmail.value = email
-        Log.d("msg", userEmail.value)
-    }
-
-    fun setUsername( username : String){
-        userName.value = username
-        Log.d("Username set ", userName.value)
-    }
+    var userEmail = FirebaseAuth.getInstance().currentUser.toString()
 
     fun getGroups() {
         Firebase.firestore
             .collection("groups")
-            .whereArrayContains("members", userEmail.value)
+            .whereArrayContains("members", userEmail)
             .addSnapshotListener { value, error ->
                 if ( error != null ) {
                     error.message?.let { Log.d("err message: ", it) }
@@ -43,9 +33,9 @@ class GroupsViewModel: ViewModel() {
     }
 
     fun createGroup( name: String) {
-        val adminsList: List<String> = listOf(userEmail.value)
+        val adminsList: List<String> = listOf(userEmail)
         val expensesList: List<String> = listOf()
-        val membersList: List<String> = listOf(userEmail.value)
+        val membersList: List<String> = listOf(userEmail)
         val groupName: String = name
         val newGroup = GroupClass( adminsList, expensesList, membersList, groupName)
         Log.d("group: ", newGroup.toString())

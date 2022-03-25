@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.firestore.DocumentSnapshot
+import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
 @Composable
@@ -18,7 +19,8 @@ fun GroupViewNavigationContainer(
     navControl: NavController,
     groupInfo: DocumentSnapshot,
     scState: ScaffoldState,
-    groupVM: GroupsViewModel
+    groupVM: GroupsViewModel,
+    scope: CoroutineScope
 ) {
 
     val expensesVM: ExpensesViewModel = viewModel()
@@ -31,7 +33,7 @@ fun GroupViewNavigationContainer(
 
     NavHost(navController = expenseNavControl, startDestination = "group" ) {
         composable( route = "group" ) {
-            GroupView( groupInfo, expenses, expenseNavControl, navControl, scState )
+            GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope )
         }
         composable( route = "addExpense") {
             val name = ""
@@ -41,16 +43,17 @@ fun GroupViewNavigationContainer(
             val date = Calendar.getInstance().time.toString()
             val rest = mutableListOf<String>()
             val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid)
-            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM)
+            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM, scope)
 
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
-                ExpenseView( expense, expenseNavControl, scState, expensesVM, groupVM)
+                ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupVM)
             }
             composable( route = "${expense.expid}_edit"){
-                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM)
+                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM, scope )
             }
         }
             }
         }
+
