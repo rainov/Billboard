@@ -27,13 +27,14 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun AddEditExpenseView(groupInfo: DocumentSnapshot,
-                       expenseNavControl: NavController,
-                       expensesViewModel: ExpensesViewModel,
-                       expense : ExpenseClass,
-                       scState: ScaffoldState,
-                       groupsVM: GroupsViewModel,
-                       scope: CoroutineScope
+fun AddEditExpenseView(
+    groupInfo: GroupClass,
+    expenseNavControl: NavController,
+    expensesViewModel: ExpensesViewModel,
+    expense : ExpenseClass,
+    scState: ScaffoldState,
+    groupsVM: GroupsViewModel,
+    scope: CoroutineScope
 ) {
 
     Scaffold(
@@ -51,7 +52,8 @@ fun AddEditExpenseView(groupInfo: DocumentSnapshot,
 
 @Composable
 fun AddEditExpenseViewContent(
-                   groupInfo: DocumentSnapshot,
+                   groupInfo: GroupClass,
+//                   groupInfo: DocumentSnapshot,
                    expenseNavControl: NavController,
                    expensesViewModel: ExpensesViewModel,
                    expense : ExpenseClass,

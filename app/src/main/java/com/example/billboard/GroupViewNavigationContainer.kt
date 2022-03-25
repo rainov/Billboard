@@ -17,7 +17,7 @@ import java.util.*
 @Composable
 fun GroupViewNavigationContainer(
     navControl: NavController,
-    groupInfo: DocumentSnapshot,
+    groupInfo: GroupClass,
     scState: ScaffoldState,
     groupVM: GroupsViewModel,
     scope: CoroutineScope

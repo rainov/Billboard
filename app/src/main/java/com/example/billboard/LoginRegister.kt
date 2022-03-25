@@ -90,7 +90,6 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         fun register(email: String, password: String, repeatPass: String) {
             if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && repeatPass.isNotEmpty()) {
                 if (password == repeatPass) {
-                    fieldError = false
                     auth.createUserWithEmailAndPassword(email, password)
                         .addOnSuccessListener {
                             userVM.setEmail(email)

@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun GroupView(
-    groupInfo: DocumentSnapshot,
+    groupInfo: GroupClass,
     expenses: List<ExpenseClass>,
     expenseNavControl: NavController,
     navControl: NavController,
@@ -36,85 +38,146 @@ fun GroupView(
 }
 
 @Composable
-fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ){
+fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ){
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ){
 
+    if (groupInfo.members.size == 1) {
 
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(text = groupInfo.get("name").toString(), modifier = Modifier.clickable { navControl.navigate("MainScreen") }, textAlign = TextAlign.Center, fontSize = 30.sp)
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            var adminlist : String = ""
-            groupInfo.get("admins").toString().subSequence(1,groupInfo.get("admins").toString().lastIndex).split(",").forEach { admin ->
-                adminlist = if(adminlist.isEmpty()) admin.substringBefore("@")
-                else adminlist + ", " + admin.substringBefore("@")
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
+            Row (
+                modifier = Modifier.weight((1f))
+            ){
+                
+                Text(text = groupInfo.name, modifier = Modifier.clickable { navControl.navigate("MainScreen") }, textAlign = TextAlign.Center, fontSize = 30.sp)
+                
             }
+            Column(
+                modifier = Modifier.weight(2f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ){
+                Text(text = stringResource(R.string.lonely_message), textAlign = TextAlign.Center, fontSize =28.sp)
 
-            var memberlist : String = ""
-            groupInfo.get("members").toString().subSequence(1,groupInfo.get("members").toString().lastIndex).split(",").forEach { member ->
-                memberlist = if(memberlist.isEmpty()) member.substringBefore("@")
-                else memberlist + ", " + member.substringBefore("@")
-            }
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = "Admin(s): $adminlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-            Text(text = "Member(s) $memberlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+                OutlinedButton(
+                    onClick = {
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            expenses.forEach{ expense ->
-                Spacer(modifier = Modifier.height(5.dp))
-
-                Card( modifier = Modifier
-                    .padding(5.dp)
-                    .clickable { expenseNavControl.navigate(expense.expid) }
-                    .fillMaxWidth(fraction = 0.75f),
-                    elevation = 10.dp,
+                    },
+                    modifier = Modifier
+                        .width(280.dp)
+                        .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    border = BorderStroke(2.dp, Bilboard_green),
-                    backgroundColor = Color.Transparent
-                ){
-                    Text( text = expense.name,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(15.dp))
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.add_members))
                 }
-
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ){
+                Spacer(modifier = Modifier.height(40.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp, start = 10.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back),
+                        contentDescription = "back icon",
+                        modifier = Modifier
+                            .clickable { navControl.navigate("MainScreen") }
+                            .padding(60.dp, 30.dp)
+                    )
+                }
             }
         }
-        Row(
-            modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f, false)
-            .padding(end = 10.dp, start = 10.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.SpaceBetween
+    } else {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
         ){
-            Icon(
-                painter = painterResource(id = R.drawable.ic_back),
-                contentDescription = "back icon",
 
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(text = groupInfo.name, modifier = Modifier.clickable { navControl.navigate("MainScreen") }, textAlign = TextAlign.Center, fontSize = 30.sp)
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                var adminlist : String = ""
+                groupInfo.admins.forEach { admin ->
+                    adminlist = if(adminlist.isEmpty()) admin.substringBefore("@")
+                    else adminlist + ", " + admin.substringBefore("@")
+                }
+
+                var memberlist : String = ""
+                groupInfo.members.forEach { member ->
+                    memberlist = if(memberlist.isEmpty()) member.substringBefore("@")
+                    else memberlist + ", " + member.substringBefore("@")
+                }
+
+                Text(text = "Admin(s): $adminlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+                Text(text = "Member(s) $memberlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                expenses.forEach{ expense ->
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Card( modifier = Modifier
+                        .padding(5.dp)
+                        .clickable { expenseNavControl.navigate(expense.expid) }
+                        .fillMaxWidth(fraction = 0.75f),
+                        elevation = 10.dp,
+                        shape = MaterialTheme.shapes.large,
+                        border = BorderStroke(2.dp, Bilboard_green),
+                        backgroundColor = Color.Transparent
+                    ){
+                        Text( text = expense.name,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(15.dp))
+                    }
+
+                }
+            }
+            Row(
                 modifier = Modifier
-                    .clickable {  navControl.navigate("MainScreen")  }
-                    .padding(60.dp, 30.dp)
-            )
-            FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
-                backgroundColor = Bilboard_green,
-                modifier = Modifier.padding(50.dp, 30.dp)
-            ) {
+                    .fillMaxWidth()
+                    .weight(1f, false)
+                    .padding(end = 10.dp, start = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_add),
-                    contentDescription = "add expense",
-                   )
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "back icon",
+
+                    modifier = Modifier
+                        .clickable { navControl.navigate("MainScreen") }
+                        .padding(60.dp, 30.dp)
+                )
+                FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
+                    backgroundColor = Bilboard_green,
+                    modifier = Modifier.padding(50.dp, 30.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_add),
+                        contentDescription = "add expense",
+                    )
+                }
             }
         }
     }

@@ -17,6 +17,8 @@ class GroupsViewModel: ViewModel() {
         Log.d("msg", userEmail.value)
     }
 
+    var groupClasses = mutableStateOf( listOf<GroupClass>())
+
     fun getGroups() {
         Firebase.firestore
             .collection("groups")
@@ -26,11 +28,24 @@ class GroupsViewModel: ViewModel() {
                     error.message?.let { Log.d("err message: ", it) }
                 } else if ( value != null && !value.isEmpty ) {
                     val tempGroups = mutableListOf<DocumentSnapshot>()
+                    val tempGroupClasses = mutableListOf<GroupClass>()
                     value.documents.forEach { group ->
-                        tempGroups.add( group )
-                        Log.d("groups log:" , "not good!")
+                        val tempSingleGroup = GroupClass(
+                            group.get("admins") as List<String> ,
+                            group.get("expenses") as List<String> ,
+                            group.get("members") as List<String> ,
+                            group.get("name").toString(),
+                            group.get("balance") as Map<String, Map<String, Map<String, Double>>>,
+                            group.id
+                        )
+                        tempGroups.add(group)
+                        tempGroupClasses.add(tempSingleGroup)
+                        Log.d("groupClass: ", tempSingleGroup.toString())
+                        Log.d("Group balance: " , tempSingleGroup.balance.toString())
+                        Log.d("User1 collect balance", tempSingleGroup.balance["collectingmoney"]?.get("user1").toString())
                     }
                     groups.value = tempGroups
+                    groupClasses.value = tempGroupClasses
                 }
             }
     }
@@ -40,11 +55,17 @@ class GroupsViewModel: ViewModel() {
         val expensesList: List<String> = listOf()
         val membersList: List<String> = listOf(userEmail.value)
         val groupName: String = name
-        val newGroup = GroupClass( adminsList, expensesList, membersList, groupName)
+        val newGroup = GroupClass( adminsList, expensesList, membersList, groupName, id = "" )
         Log.d("group: ", newGroup.toString())
         Firebase.firestore
             .collection("groups")
             .add(newGroup)
+            .addOnSuccessListener { group ->
+                Firebase.firestore
+                    .collection("groups")
+                    .document(group.id)
+                    .update("id", group.id)
+            }
     }
 
 }

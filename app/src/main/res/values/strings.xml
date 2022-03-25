@@ -22,4 +22,6 @@
     <string name="dark_mode">Dark mode</string>
     <string name="input_error">Input error:</string>
     <string name="exit_settings">Exit settings</string>
+    <string name="lonely_message">It\'s a bit lonely here</string>
+    <string name="add_members">Add members</string>
 </resources>
