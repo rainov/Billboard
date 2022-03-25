@@ -11,28 +11,6 @@ class ExpensesViewModel: ViewModel() {
 
     var expenses = mutableListOf<ExpenseClass>()
 
-    /*
-    fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
-
-        val fstore = Firebase.firestore.collection("expenses")
-
-            fstore.add(newExpense)
-            .addOnSuccessListener {
-
-                Log.d("Add new expense", it.id)
-                fstore.document(it.id).update("expid",it.id)
-
-                        //groupsVM.getGroups()
-                        getExpenses(newExpense.groupid)
-                        expenseNavControl.navigate("group")
-                    }
-
-
-            }
-
-
-     */
-
     fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
 
         val fstore = Firebase.firestore.collection("expenses")
@@ -65,6 +43,23 @@ class ExpensesViewModel: ViewModel() {
                 Log.d("Edit expense", expense.expid)
                 groupsVM.getGroups()
                 expenseNavControl.navigate("group")
+            }
+    }
+
+    fun deleteExpenseLine(expense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
+
+        val fsexp = Firebase.firestore.collection("expenses").document(expense.expid)
+        val fsgrp = Firebase.firestore.collection("groups").document(expense.groupid)
+
+        fsexp.delete()
+            .addOnSuccessListener {
+                Log.d("Delete expense", expense.expid)
+                fsgrp.update("expenses", FieldValue.arrayRemove(expense.expid))
+                    .addOnSuccessListener {
+                        Log.d("Delete group expense", expense.expid)
+                        groupsVM.getGroups()
+                        expenseNavControl.navigate("group")
+                    }
             }
     }
 

@@ -46,15 +46,11 @@ fun GroupViewNavigationContainer(
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
-                ExpenseView( expense, expenseNavControl, scState )
+                ExpenseView( expense, expenseNavControl, scState, expensesVM, groupVM)
             }
             composable( route = "${expense.expid}_edit"){
                 AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM)
             }
-        }
-
-        composable(route = "createGroup"){
-            createGroup()
         }
             }
         }

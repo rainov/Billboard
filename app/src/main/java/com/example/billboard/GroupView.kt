@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,8 +65,8 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>,
                 else memberlist + ", " + member.substringBefore("@")
             }
 
-            Text(text = "Admin(s): $adminlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-            Text(text = "Member(s) $memberlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+            Text(text = stringResource(R.string.admins) + adminlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+            Text(text = stringResource(R.string.members) + memberlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -111,9 +112,4 @@ fun GroupViewContent( groupInfo: DocumentSnapshot, expenses: List<ExpenseClass>,
             }
         }
     }
-}
-
-//TODO createGroup function and view
-fun createGroup(){
-
 }

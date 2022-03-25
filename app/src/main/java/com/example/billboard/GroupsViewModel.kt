@@ -10,11 +10,18 @@ import com.google.firebase.ktx.Firebase
 class GroupsViewModel: ViewModel() {
 
     var groups = mutableStateOf( listOf<DocumentSnapshot>() )
-    private var userEmail = mutableStateOf("")
+    //private var userEmail = mutableStateOf("")
+    var userEmail = mutableStateOf("")
+    var userName = mutableStateOf("")
 
     fun setEmail( email: String ) {
         userEmail.value = email
         Log.d("msg", userEmail.value)
+    }
+
+    fun setUsername( username : String){
+        userName.value = username
+        Log.d("Username set ", userName.value)
     }
 
     fun getGroups() {

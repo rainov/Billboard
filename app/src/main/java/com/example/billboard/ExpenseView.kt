@@ -1,36 +1,49 @@
 package com.example.billboard
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
+import getGroupAdmins
 
 @Composable
-fun ExpenseView( expense: ExpenseClass, expenseNavControl: NavController, scState: ScaffoldState) {
+fun ExpenseView( expense: ExpenseClass, expenseNavControl: NavController, scState: ScaffoldState, expensesViewModel: ExpensesViewModel, groupsViewModel: GroupsViewModel) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true, scState) },
-        content = { ExpenseViewContent(expense, expenseNavControl) }
+        content = { ExpenseViewContent(expense, expenseNavControl, expensesViewModel, groupsViewModel) }
     )
 
 }
 
 @Composable
-fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) {
+fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, expensesViewModel: ExpensesViewModel, groupsViewModel: GroupsViewModel) {
 
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
     val expensePayer = expense.payer
 
     val expenseRest = expense.rest
+
+    val openDialog = remember { mutableStateOf(false) }
+
+    val groupAdmins = remember { mutableStateOf(listOf<String>()) }
+    getGroupAdmins(expense.groupid, groupAdmins)
+
+    val isUserAdmin = remember { mutableStateOf(false)}
+    getUserStatus(isUserAdmin, groupsViewModel, groupAdmins)
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -48,24 +61,26 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
             Spacer(modifier = Modifier.height(20.dp))
 
             //TODO need to discuss about default currency, can the user choose one or the group
-            Text(text = "Amount paid $expenseAmount €")
+            Text(text = stringResource(R.string.amount_paid)
+                 + expenseAmount + "€")
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = "Payer member : $expensePayer")
+            Text(text = stringResource(R.string.payer_member) + ": " + expensePayer)
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = "Members who have to pay :")
+            Text(text = stringResource(R.string.rest))
 
             Spacer(modifier = Modifier.height(20.dp))
 
             expenseRest.forEach { member ->
                 Row() {
                     Text(text = member, modifier = Modifier.padding(15.dp))
+                    if(isUserAdmin.value){
                     OutlinedButton(
                         onClick = {
-                            /*TODO if the user is an admin he can erase the member debt*/
+                            /*TODO erase user debt */
                         },
                         modifier = Modifier
                             .width(150.dp)
@@ -73,8 +88,9 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
                         shape = MaterialTheme.shapes.large,
                         colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
                     ) {
-                        Text( text = "Erase debt")
+                        Text( text = stringResource(R.string.erase_debt))
                         Spacer(modifier = Modifier.height(5.dp))
+                    }
                     }
 
                 }
@@ -92,33 +108,90 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController) 
                     painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "back icon",
                     modifier = Modifier.clickable { expenseNavControl.navigate("group") })
-                OutlinedButton(
-                    onClick = {
-                        /* TODO delete function expenseNavControl.navigate("deleteExpense") */
-                    },
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(40.dp),
-                    shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
-                ) {
-                    Text( text = "Delete")
+                if(isUserAdmin.value) {
+                    OutlinedButton(
+                        onClick = {
+                            openDialog.value = true
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    ) {
+                        Text(text = stringResource(R.string.delete))
+                    }
                 }
-                OutlinedButton(
-                    onClick = {
-                       expenseNavControl.navigate("${expense.expid}_edit")
 
-                    },
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(40.dp),
-                    shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
-                ) {
-                    Text( text = "Edit")
+                if(isUserAdmin.value) {
+                    OutlinedButton(
+                        onClick = {
+                            expenseNavControl.navigate("${expense.expid}_edit")
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    ) {
+                        Text(text = stringResource(R.string.edit))
+                    }
                 }
             }
 
         }
+
+    if (openDialog.value) {
+
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.delete_conf))
+            },
+            text = {
+                Text(text = stringResource(R.string.delete_conf_mess))
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        openDialog.value = false
+                        expensesViewModel.deleteExpenseLine(
+                            expense,
+                            expenseNavControl,
+                            groupsViewModel
+                        )
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                ) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        openDialog.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                ){
+                    Text(text = stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+}
+
+fun getUserStatus(userstatus: MutableState<Boolean>, groupsViewModel: GroupsViewModel, adminlist: MutableState<List<String>>){
+    if(adminlist.value.contains(groupsViewModel.userEmail.value))
+        userstatus.value = true
 }
 

@@ -1,6 +1,7 @@
 package com.example.billboard
 
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,13 +13,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 
 @Composable
@@ -53,15 +55,26 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         }
     }
 
-    fun register( email: String, password: String, repeatPass: String) {
+    fun register(email: String, password: String, repeatPass: String, username: String) {
         if( username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && repeatPass.isNotEmpty() ) {
             if ( password == repeatPass ) {
                 fieldError = false
                 auth.createUserWithEmailAndPassword( email, password)
                     .addOnSuccessListener {
-                        groupsVM.setEmail(email)
-                        groupsVM.getGroups()
-                        userVM.signIn()
+                        Log.d("Email ", email)
+                        val User = hashMapOf<String, Any>(
+                            "username" to username
+                        )
+                        Firebase.firestore.collection("users")
+                            .document(email)
+                            .set(User)
+                            .addOnSuccessListener {
+                                Log.d("Username stored ", username)
+                                groupsVM.setEmail(email)
+                                groupsVM.setUsername(username)
+                                groupsVM.getGroups()
+                                userVM.signIn()
+                        }
                     }
             } else {
                 errorMessage = context.getString(R.string.passwords_not_match)
@@ -185,7 +198,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     keyboardOptions = KeyboardOptions( keyboardType = KeyboardType.Password),
                     modifier = Modifier.height(64.dp),
                     shape = MaterialTheme.shapes.large,
-                    textStyle = TextStyle( color = Bilboard_green )
+                    //textStyle = TextStyle( color = Bilboard_green )
                 )
             }
             //Repeat password end
@@ -240,7 +253,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
             if ( registerSwitch ) {
                 OutlinedButton(
                     onClick = {
-                        register( email, password, repeatPassword)
+                        register( email, password, repeatPassword, username)
                     },
                     modifier = Modifier
                         .width(280.dp)

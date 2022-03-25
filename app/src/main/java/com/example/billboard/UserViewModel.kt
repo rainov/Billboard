@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 
 
 class UserViewModel: ViewModel() {
+
     var signedIn = mutableStateOf(false)
 
     fun signIn() {
