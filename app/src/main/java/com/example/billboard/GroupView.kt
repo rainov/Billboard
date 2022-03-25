@@ -1,12 +1,11 @@
 package com.example.billboard
 
-import android.util.Log
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.res.painterResource
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
-import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -116,17 +114,20 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                var adminlist : String = ""
+                var adminlist = ""
                 groupInfo.admins.forEach { admin ->
                     adminlist = if(adminlist.isEmpty()) admin.substringBefore("@")
                     else adminlist + ", " + admin.substringBefore("@")
                 }
 
-                var memberlist : String = ""
+                var memberlist = ""
                 groupInfo.members.forEach { member ->
                     memberlist = if(memberlist.isEmpty()) member.substringBefore("@")
                     else memberlist + ", " + member.substringBefore("@")
                 }
+
+            Text(text = stringResource(R.string.admins) + adminlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+            Text(text = stringResource(R.string.members) + memberlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
                 Text(text = "Admin(s): $adminlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
                 Text(text = "Member(s) $memberlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
@@ -161,6 +162,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
+
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "back icon",
@@ -181,9 +183,4 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
             }
         }
     }
-}
-
-//TODO createGroup function and view
-fun createGroup(){
-
 }

@@ -7,5 +7,4 @@ data class GroupClass(
     val name: String,
     val balance: Map<String, Map<String, Map<String, Double>>> = emptyMap(),
     val id: String
-//    val balance: Map<String, Map<String, List<Map<String, Double>>>> = emptyMap()
 )

@@ -17,6 +17,22 @@
     <string name="about">About us</string>
     <string name="settings">Settings</string>
     <string name="sign_out">Sign out</string>
+    <string name="admins">Admin(s): </string>
+    <string name="members">Member(s): </string>
+    <string name="amount_paid">Amount paid: </string>
+    <string name="payer_member">Payer member</string>
+    <string name="rest">Member(s) who have to pay: </string>
+    <string name="erase_debt">Erase debt</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="delete_conf">Delete confirmation</string>
+    <string name="delete_conf_mess">Are you sure you want to delete this expense ?</string>
+    <string name="edit_expense">Edit an expense line</string>
+    <string name="add_expense">Add a new expense line</string>
+    <string name="expense_name">Expense name</string>
+    <string name="expense_amount">Expense amount</string>
+    <string name="error">Error</string>
+    <string name="close">Close</string>
     <string name="reset_password">Reset password</string>
     <string name="delete_account">Delete account</string>
     <string name="dark_mode">Dark mode</string>
@@ -24,4 +40,12 @@
     <string name="exit_settings">Exit settings</string>
     <string name="lonely_message">It\'s a bit lonely here</string>
     <string name="add_members">Add members</string>
+    <string name ="passwd_reset">Password reset</string>
+    <string name ="send">Send</string>
+    <string name ="forgot_pwd">Forgot password ?</string>
+    <string name ="passwd_reset_mess">A reset link will be send to the following email address</string>
+    <string name ="email_reset">Please enter your email address to receive a reset link</string>
+    <string name="input_err">Input error:</string>
+    <string name="ok">Ok</string>
+    <string name="err_signin">Email and/or password are wrong.</string>
 </resources>

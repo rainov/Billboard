@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.example.billboard.ui.theme.Billboard_lightGreen
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -37,6 +39,51 @@ fun SettingsView (
 fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope) {
 
     val checkedState = remember { mutableStateOf(true) }
+    val openDialog = remember { mutableStateOf(false) }
+
+    if (openDialog.value) {
+
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.passwd_reset))
+            },
+            text = {
+                Text(text = stringResource(R.string.passwd_reset_mess) + " -> " + userVM.userEmail.value)
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        resetPassword(userVM)
+                        openDialog.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(stringResource(R.string.send))
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        openDialog.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -54,10 +101,14 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
             Text( text = userVM.userEmail.value, fontSize = 25.sp )
 
+            Text( text = userVM.userName.value, fontSize = 20.sp )
+
             Spacer(modifier = Modifier.height(60.dp))
 
             OutlinedButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                            openDialog.value = true
+                          },
                 modifier = Modifier
                     .width(280.dp)
                     .height(40.dp),
@@ -119,7 +170,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             modifier = Modifier.weight(1f)
         ) {
             OutlinedButton(
-                onClick = { /*TODO*/ },
+                onClick = { },
                 modifier = Modifier
                     .width(280.dp)
                     .height(40.dp),
@@ -129,6 +180,17 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                 Text( text = stringResource( R.string.delete_account ))
             }
             Spacer(modifier = Modifier.height(10.dp))
+        }
+    }
+}
+
+fun resetPassword(userVM: UserViewModel, email : String = ""){
+    var useremail : String
+    if(email.isEmpty()) useremail = userVM.userEmail.value
+    else useremail = email
+    FirebaseAuth.getInstance().sendPasswordResetEmail(useremail).addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            Log.d("Email sent to ", useremail)
         }
     }
 }

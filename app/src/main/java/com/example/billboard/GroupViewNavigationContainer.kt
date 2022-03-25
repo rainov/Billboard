@@ -4,13 +4,11 @@ package com.example.billboard
 import androidx.compose.material.ScaffoldState
 import AddEditExpenseView
 import androidx.compose.runtime.*
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
@@ -48,7 +46,7 @@ fun GroupViewNavigationContainer(
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
-                ExpenseView( expense, expenseNavControl, scState, scope )
+                ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupVM)
             }
             composable( route = "${expense.expid}_edit"){
                 AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM, scope )

@@ -12,7 +12,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,7 +20,6 @@ import androidx.navigation.NavController
 import com.example.billboard.*
 import com.example.billboard.R
 import com.example.billboard.ui.theme.Bilboard_green
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -53,7 +51,6 @@ fun AddEditExpenseView(
 @Composable
 fun AddEditExpenseViewContent(
                    groupInfo: GroupClass,
-//                   groupInfo: DocumentSnapshot,
                    expenseNavControl: NavController,
                    expensesViewModel: ExpensesViewModel,
                    expense : ExpenseClass,
@@ -66,12 +63,12 @@ fun AddEditExpenseViewContent(
     val groupMembers = remember { mutableStateOf(listOf<String>()) }
     getGroupMembers(groupInfo.id, groupMembers)
 
-    var fieldError by remember { mutableStateOf(false) }
-    val errorMessage by remember { mutableStateOf("") }
     var expenseName by remember { mutableStateOf(expense.name)}
     var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
     var payerMember: String by remember { mutableStateOf(expense.payer) }
-    var membersWhoPay by remember {mutableStateOf(expense.rest)}
+    val membersWhoPay by remember {mutableStateOf(expense.rest)}
+
+    val openDialog = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -84,13 +81,13 @@ fun AddEditExpenseViewContent(
         ) {
             if (expense.expid.isNotEmpty()) {
                 Text(
-                    text = "Edit an new expense line",
+                    text = stringResource(R.string.edit_expense),
                     textAlign = TextAlign.Center,
                     fontSize = 30.sp
                 )
             } else {
                 Text(
-                    text = "Add a new expense line",
+                    text = stringResource(R.string.add_expense),
                     textAlign = TextAlign.Center,
                     fontSize = 30.sp
                 )
@@ -101,7 +98,7 @@ fun AddEditExpenseViewContent(
             OutlinedTextField(
                 value = expenseName,
                 onValueChange = { expenseName = it },
-                label = { Text(text = "Expense name") },
+                label = { Text(text = stringResource(R.string.expense_name)) },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Bilboard_green,
@@ -118,7 +115,7 @@ fun AddEditExpenseViewContent(
             OutlinedTextField(
                 value = expenseAmount,
                 onValueChange = { expenseAmount = it },
-                label = { Text(text = "Expense amount") },
+                label = { Text(text = stringResource(R.string.expense_amount)) },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -151,7 +148,7 @@ fun AddEditExpenseViewContent(
                         .height(64.dp)
                         .padding(0.dp),
                     shape = MaterialTheme.shapes.large,
-                    label = { Text("Payer member") },
+                    label = { Text(text = stringResource(R.string.payer_member)) },
                     trailingIcon = {
                         Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu",
                             Modifier.clickable { menuExpanded = !menuExpanded })
@@ -182,7 +179,7 @@ fun AddEditExpenseViewContent(
                 modifier = Modifier.fillMaxWidth(fraction = 0.75f),
                 horizontalAlignment = Alignment.Start
             ){
-                Text(text = "Members who have to pay :")
+                Text(text = stringResource(R.string.rest))
                 Spacer(modifier = Modifier.height(10.dp))
                 groupMembers.value.forEach { member ->
                     if (member != payerMember) {
@@ -222,21 +219,41 @@ fun AddEditExpenseViewContent(
                         )
                     }
                 } else {
-                    fieldError = true
+                    openDialog.value = true
                 }}){
                 if (expense.expid.isNotEmpty()) {
-                    Text(text = "Edit")
+                    Text(text = stringResource(R.string.edit))
                 } else {
-                    Text(text = "Add a new expense line")
+                    Text(text = stringResource(R.string.add_expense))
                 }
             }
 
-            if (fieldError) {
-                Text(
-                    text = errorMessage,
-                    fontSize = 24.sp,
-                    color = Color.Red,
-                    fontWeight = FontWeight.Bold
+            if (openDialog.value) {
+
+                AlertDialog(
+                    onDismissRequest = {
+                        openDialog.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.error))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.all_inputs_required))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialog.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                        ) {
+                            Text(stringResource(R.string.close))
+                        }
+                    }
                 )
             }
         }
@@ -279,5 +296,19 @@ fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
                 members.add(element.substringBefore("@"))
             }
             listmembers.value = members
+        }
+}
+
+fun getGroupAdmins(groupid : String, listadmins : MutableState<List<String>>){
+    Firebase.firestore.collection("groups")
+        .document(groupid)
+        .get()
+        .addOnSuccessListener {
+            val admins = mutableListOf<String>()
+            val list = it.get("admins") as? List<String>
+            list!!.forEach { element ->
+                admins.add(element)
+            }
+            listadmins.value = admins
         }
 }
