@@ -40,6 +40,7 @@
     <string name="exit_settings">Exit settings</string>
     <string name="lonely_message">It\'s a bit lonely here</string>
     <string name="add_members">Add members</string>
+    <string name="add_member">Add member</string>
     <string name ="passwd_reset">Password reset</string>
     <string name ="send">Send</string>
     <string name ="forgot_pwd">Forgot password ?</string>
@@ -48,4 +49,6 @@
     <string name="input_err">Input error:</string>
     <string name="ok">Ok</string>
     <string name="err_signin">Email and/or password are wrong.</string>
+    <string name="add_as_admin">Add as group admin</string>
+    <string name="member_email">Member\'s email</string>
 </resources>

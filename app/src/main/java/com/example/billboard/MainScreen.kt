@@ -17,7 +17,12 @@ import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel, scState: ScaffoldState, scope: CoroutineScope) {
+fun MainScreen(
+    navControl: NavController,
+    groups: List<GroupClass>,
+    groupsVM: GroupsViewModel,
+    scState: ScaffoldState,
+    scope: CoroutineScope) {
 
     Scaffold(
         scaffoldState = scState,
@@ -29,7 +34,7 @@ fun MainScreen( navControl: NavController, groups: List<DocumentSnapshot>, group
 }
 
 @Composable
-fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>, groupsVM: GroupsViewModel) {
+fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, groupsVM: GroupsViewModel) {
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
@@ -57,7 +62,8 @@ fun MainScreenContent( navControl: NavController, groups: List<DocumentSnapshot>
                     Column(
                     ) {
                         Text(
-                            text = group.get("name").toString(),
+                            text = group.name,
+//                            text = group.get("name").toString(),
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .padding(15.dp)

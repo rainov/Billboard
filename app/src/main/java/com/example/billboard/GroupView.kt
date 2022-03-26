@@ -64,7 +64,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 OutlinedButton(
                     onClick = {
-
+                        expenseNavControl.navigate("addMembers")
                     },
                     modifier = Modifier
                         .width(280.dp)

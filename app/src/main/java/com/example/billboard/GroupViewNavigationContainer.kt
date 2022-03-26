@@ -17,7 +17,7 @@ fun GroupViewNavigationContainer(
     navControl: NavController,
     groupInfo: GroupClass,
     scState: ScaffoldState,
-    groupVM: GroupsViewModel,
+    groupsVM: GroupsViewModel,
     scope: CoroutineScope
 ) {
 
@@ -33,6 +33,9 @@ fun GroupViewNavigationContainer(
         composable( route = "group" ) {
             GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope )
         }
+        composable( route = "addMembers") {
+            AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo )
+        }
         composable( route = "addExpense") {
             val name = ""
             val amount = 0.0
@@ -41,15 +44,15 @@ fun GroupViewNavigationContainer(
             val date = Calendar.getInstance().time.toString()
             val rest = mutableListOf<String>()
             val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid)
-            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM, scope)
+            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope)
 
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
-                ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupVM)
+                ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupsVM)
             }
             composable( route = "${expense.expid}_edit"){
-                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupVM, scope )
+                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope )
             }
         }
     }

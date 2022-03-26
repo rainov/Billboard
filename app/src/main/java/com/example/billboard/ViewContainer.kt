@@ -20,8 +20,8 @@ fun ViewContainer(){
     val groupsVM: GroupsViewModel = viewModel()
     //groupsVM.getGroups()
 
+    //val groups = groupsVM.groups.value
     val groups = groupsVM.groups.value
-    val groupsTemp = groupsVM.groupClasses.value
 
     val scState = rememberScaffoldState(
         rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -38,7 +38,7 @@ fun ViewContainer(){
             composable( route = "CreateGroup") {
                 CreateGroupView( groupsVM, navControl, scState, scope )
             }
-            groupsTemp.forEach { groupInfo ->
+            groups.forEach { groupInfo ->
                 composable(route = groupInfo.id) {
 
                     GroupViewNavigationContainer( navControl, groupInfo, scState, groupsVM, scope )

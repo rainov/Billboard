@@ -55,8 +55,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
 
         OutlinedButton(
             onClick = {
-                groupsVM.createGroup( groupName )
-                navControl.navigate("MainScreen")
+                groupsVM.createGroup( groupName, navControl )
             },
             modifier = Modifier
                 .width(280.dp)

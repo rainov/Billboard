@@ -99,8 +99,6 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Text( text = userVM.userEmail.value, fontSize = 25.sp )
-
             Text( text = userVM.userName.value, fontSize = 20.sp )
 
             Spacer(modifier = Modifier.height(60.dp))
