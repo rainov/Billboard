@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import android.util.Log
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
@@ -17,6 +18,7 @@ fun ViewContainer(){
     val userVM: UserViewModel = viewModel()
 
     val groupsVM: GroupsViewModel = viewModel()
+    //groupsVM.getGroups()
 
     val groups = groupsVM.groups.value
     val groupsTemp = groupsVM.groupClasses.value

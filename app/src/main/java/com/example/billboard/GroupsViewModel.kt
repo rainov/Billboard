@@ -3,7 +3,6 @@ package com.example.billboard
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -13,14 +12,15 @@ class GroupsViewModel: ViewModel() {
 
     var groups = mutableStateOf( listOf<DocumentSnapshot>() )
 
-    var userEmail = FirebaseAuth.getInstance().currentUser.toString()
+    //var userEmail = FirebaseAuth.getInstance().currentUser.toString()
+    //The above function makes a new instance of FirebaseAuth and so it doesn't have the value of the current user.
+
+    var userEmail = Firebase.auth.currentUser?.email.toString()
 
     var groupClasses = mutableStateOf( listOf<GroupClass>())
 
-
-
     fun getGroups() {
-        Log.d("user0email:", userEmail)
+        Log.d("getGroups called ", "TRUE")
         Firebase.firestore
             .collection("groups")
             .whereArrayContains("members", userEmail)
@@ -41,8 +41,6 @@ class GroupsViewModel: ViewModel() {
                         )
                         tempGroups.add(group)
                         tempGroupClasses.add(tempSingleGroup)
-                        Log.d("groupClass: ", tempSingleGroup.toString())
-                        Log.d("Group balance: " , tempSingleGroup.balance.toString())
                         Log.d("User1 collect balance", tempSingleGroup.balance["collectingmoney"]?.get("user1").toString())
                     }
                     groups.value = tempGroups
@@ -57,7 +55,6 @@ class GroupsViewModel: ViewModel() {
         val membersList: List<String> = listOf(userEmail)
         val groupName: String = name
         val newGroup = GroupClass( adminsList, expensesList, membersList, groupName, id = "" )
-        Log.d("group: ", newGroup.toString())
         Firebase.firestore
             .collection("groups")
             .add(newGroup)

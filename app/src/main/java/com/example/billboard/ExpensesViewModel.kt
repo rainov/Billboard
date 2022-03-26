@@ -83,7 +83,6 @@ class ExpensesViewModel: ViewModel() {
                             expense.id
                         )
                         tempExpenses.add(newExpense)
-                        Log.d("expense log:", "not good!")
                     }
                     expenses = tempExpenses
                 }

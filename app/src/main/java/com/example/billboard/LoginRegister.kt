@@ -151,7 +151,6 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
 
     fun login(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
-            fieldError = false
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener() { task ->
                     if(task.isSuccessful){
@@ -161,8 +160,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                             .get()
                             .addOnSuccessListener {
                                 userVM.setUsername(it.get("username").toString())
-                                groupsVM.getGroups()
                                 userVM.signIn()
+                                groupsVM.getGroups()
                             }
                     } else {
                         errorMessage = context.getString(R.string.err_signin)
@@ -178,7 +177,6 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
     fun register(email: String, password: String, repeatPass: String, username: String) {
         if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && repeatPass.isNotEmpty()) {
             if (password == repeatPass) {
-                fieldError = false
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
                         val user = hashMapOf<String, Any>(
@@ -191,8 +189,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                                 Log.d("Username stored ", username)
                                 userVM.setEmail(email)
                                 userVM.setUsername(username)
-                                groupsVM.getGroups()
                                 userVM.signIn()
+                                groupsVM.getGroups()
                             }
                     }
             } else {
