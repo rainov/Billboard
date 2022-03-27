@@ -18,8 +18,6 @@ import kotlinx.coroutines.launch
 @Composable
     fun TopBar( showMenu: Boolean, scState: ScaffoldState, showCloseArrow: Boolean, scope: CoroutineScope) {
 
-//    val scope = rememberCoroutineScope()
-
     Row(
         modifier = Modifier
             .padding(0.dp, 10.dp)

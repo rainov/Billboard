@@ -31,38 +31,37 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
     var membersList by remember { mutableStateOf(group.members) }
     var adminsList by remember { mutableStateOf(group.admins) }
     var adminCheck by remember { mutableStateOf(false) }
-    var balanceEdited by remember { mutableStateOf(group.balance) }
-    var debtEdited by remember { mutableStateOf(group.balance["debt"]) }
-    var collectingEdited by remember { mutableStateOf(group.balance["collectingmoney"]) }
-    var editedGroup by remember { mutableStateOf( group ) }
+    val newBalance = mutableMapOf<String, MutableList<MutableMap<String, Double>>>()
+    val newMemberBalanceList = mutableListOf<MutableMap<String, Double>>()
 
     fun addMember() {
-        val newMemberDebtTemp = mutableMapOf<String, Double>()
-        var oldMember = mutableMapOf<String, Double>()
-        var debtTemp = mutableStateOf(debtEdited)
-        var balance = mutableStateOf(BalanceClass(debt = debtEdited, collectingMoney = collectingEdited))
-        membersList.forEach { member ->
-            newMemberDebtTemp[member] = 0.0
-            //oldMember = debtEdited?.get(member)?.plus(mapOf( memberEmail to 0.0 )) as MutableMap<String, Double>
-            balance.value.addMember(mapOf(member to newMemberDebtTemp))
+        val members = membersList
+        members.forEach { member ->
+            val oldMemberBalance = group.balance[member]!!.toMutableList()
+            val newMemberBalance = mutableMapOf( memberEmail to 0.0)
+            newMemberBalanceList.add(mutableMapOf(member to 0.0))
+            oldMemberBalance.add(newMemberBalance)
+            newBalance[member] = oldMemberBalance
+            Log.d("oldMemberBalance", oldMemberBalance.toString())
+            Log.d("newMemberBalance", newMemberBalance.toString())
         }
-//        debtEdited?.forEach { member -> member.value + mapOf(memberEmail to 0.0)}
-        //debtEdited = balance
+        newBalance[memberEmail] = newMemberBalanceList
         val tempMembers = mutableListOf<String>()
         membersList.forEach { member -> tempMembers.add(member) }
         tempMembers.add(memberEmail)
         membersList = tempMembers
         Log.d("Members ====> ", membersList.toString())
-        if ( adminCheck ) {
+        if (adminCheck) {
             val tempAdmins = mutableListOf<String>()
             adminsList.forEach { admin -> tempAdmins.add(admin) }
-            tempAdmins.add( memberEmail )
+            tempAdmins.add(memberEmail)
             adminsList = tempAdmins
             Log.d("Admins ====> ", adminsList.toString())
         }
-        Log.d("Debt is: ", debtEdited.toString())
-        Log.d("newDebt is ", newMemberDebtTemp.toString())
-        Log.d("balance class ", balance.toString())
+        Log.d("TESTTTTT:", newBalance.toString())
+        val newGroup = GroupClass(adminsList, group.expenses, membersList, group.name, newBalance, group.id)
+        Log.d("NewGroup: ", newGroup.toString())
+        groupsVM.editGroup(newGroup)
     }
 
     Column(
@@ -139,6 +138,13 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
             ) {
                 Text(text = stringResource(R.string.cancel))
+            }
+        }
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            membersList.forEach { member ->
+                Text(text = member.toString())
             }
         }
     }

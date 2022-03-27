@@ -30,7 +30,8 @@ fun GroupView(
 
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) }
+        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
+        drawerContent = { DrawerGroupView( scState, navControl, scope, groupInfo, expenseNavControl ) }
     )
 
 }
@@ -129,8 +130,6 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
             Text(text = stringResource(R.string.admins) + adminlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
             Text(text = stringResource(R.string.members) + memberlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
-                Text(text = "Admin(s): $adminlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-                Text(text = "Member(s) $memberlist", modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
                 Spacer(modifier = Modifier.height(20.dp))
 
