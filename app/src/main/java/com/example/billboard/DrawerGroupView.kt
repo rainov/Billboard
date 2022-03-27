@@ -1,6 +1,5 @@
 package com.example.billboard
 
-import android.telephony.ClosedSubscriberGroupInfo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -58,8 +57,10 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
         ) {
             Column() {
                 groupInfo.members.forEach { member ->
-                    Text( text = member )
+                    Text( text = member, fontSize = 20.sp )
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
+
             }
             Column(
                 modifier = Modifier
@@ -74,7 +75,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
                 ) {
-                    Text(text = stringResource(R.string.add_member))
+                    Text(text = stringResource(R.string.edit_members))
                 }
                 Spacer(modifier = Modifier.height(10.dp))
             }

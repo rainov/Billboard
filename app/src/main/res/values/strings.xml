@@ -51,4 +51,6 @@
     <string name="err_signin">Email and/or password are wrong.</string>
     <string name="add_as_admin">Add as group admin</string>
     <string name="member_email">Member\'s email</string>
+    <string name="edit_members">Edit members</string>
+    <string name="make_admin">Make admin</string>
 </resources>

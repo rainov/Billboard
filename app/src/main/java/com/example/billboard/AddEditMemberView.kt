@@ -31,13 +31,13 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
     var membersList by remember { mutableStateOf(group.members) }
     var adminsList by remember { mutableStateOf(group.admins) }
     var adminCheck by remember { mutableStateOf(false) }
-    val newBalance = mutableMapOf<String, MutableList<MutableMap<String, Double>>>()
-    val newMemberBalanceList = mutableListOf<MutableMap<String, Double>>()
+    var editGroup by remember { mutableStateOf(group) }
+    var newBalance by remember { mutableStateOf( group.balance ) }
 
     fun addMember() {
-        val members = membersList
-        members.forEach { member ->
-            val oldMemberBalance = group.balance[member]!!.toMutableList()
+        val newMemberBalanceList = mutableListOf<MutableMap<String, Double>>()
+        membersList.forEach { member ->
+            val oldMemberBalance = editGroup.balance[member]!!.toMutableList()
             val newMemberBalance = mutableMapOf( memberEmail to 0.0)
             newMemberBalanceList.add(mutableMapOf(member to 0.0))
             oldMemberBalance.add(newMemberBalance)
@@ -58,9 +58,10 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             adminsList = tempAdmins
             Log.d("Admins ====> ", adminsList.toString())
         }
-        Log.d("TESTTTTT:", newBalance.toString())
         val newGroup = GroupClass(adminsList, group.expenses, membersList, group.name, newBalance, group.id)
         Log.d("NewGroup: ", newGroup.toString())
+        editGroup = newGroup
+        newBalance = newGroup.balance
         groupsVM.editGroup(newGroup)
     }
 
@@ -80,6 +81,15 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             Text( text = group.name, fontSize = 30.sp )
 
             Spacer(modifier = Modifier.height(20.dp))
+
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .width(280.dp),
+                color = Bilboard_green
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
 
             OutlinedTextField(
                 value = memberEmail,
@@ -127,6 +137,74 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
             Spacer(modifier = Modifier.height(15.dp))
 
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .width(280.dp),
+                color = Bilboard_green
+            )
+
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            membersList.forEach { member ->
+                Text( text = member, fontSize = 20.sp )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(35.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green)
+                    ) {
+                        Text( text = stringResource(R.string.edit))
+                    }
+                    OutlinedButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .width(150.dp)
+                            .height(35.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green)
+                    ) {
+                        Text( text = stringResource(R.string.make_admin))
+                    }
+                    OutlinedButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(35.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green)
+                    ){
+                        Text( text = stringResource(R.string.delete))
+                    }
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+        }
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .width(280.dp),
+                color = Bilboard_green
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
             OutlinedButton(
                 onClick = {
                     expenseNavControl.navigate("group")
@@ -139,13 +217,9 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             ) {
                 Text(text = stringResource(R.string.cancel))
             }
+
+            Spacer(modifier = Modifier.height(15.dp))
         }
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            membersList.forEach { member ->
-                Text(text = member.toString())
-            }
-        }
+
     }
 }

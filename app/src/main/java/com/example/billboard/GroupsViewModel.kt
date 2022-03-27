@@ -36,8 +36,6 @@ class GroupsViewModel: ViewModel() {
                             group.get("members") as List<String> ,
                             group.get("name").toString(),
                             group.get("balance") as MutableMap<String, MutableList<MutableMap<String, Double>>>,
-//                            group.get("balance") as BalanceClass,
-//                            group.get("balance") as Map<String, Map<String, Map<String, Double>>>,
                             group.id
                         )
                         tempGroupClasses.add(tempSingleGroup)
