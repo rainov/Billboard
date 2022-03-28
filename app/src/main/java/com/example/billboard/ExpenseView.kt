@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import getGroupAdmins
 import kotlinx.coroutines.CoroutineScope
 
@@ -203,7 +205,7 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
 }
 
 fun getUserStatus(userstatus: MutableState<Boolean>, adminlist: MutableState<List<String>>){
-    if(adminlist.value.contains(FirebaseAuth.getInstance().currentUser.toString()))
+    if(adminlist.value.contains(Firebase.auth.currentUser?.email.toString()))
         userstatus.value = true
 }
 

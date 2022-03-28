@@ -57,6 +57,9 @@ fun AddEditExpenseViewContent(
                    groupsVM: GroupsViewModel
 ) {
 
+
+    val formeramount : Double = expense.amount
+
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
 
@@ -209,13 +212,16 @@ fun AddEditExpenseViewContent(
                         expensesViewModel.addExpenseLine(
                             expense,
                             expenseNavControl,
+                            groupInfo,
                             groupsVM
                         )
                     } else {
                         expensesViewModel.editExpenseLine(
                             expense,
                             expenseNavControl,
-                            groupsVM
+                            groupInfo,
+                            groupsVM,
+                            formeramount
                         )
                     }
                 } else {
@@ -293,7 +299,7 @@ fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
             val members = mutableListOf<String>()
             val list = it.get("members") as? List<String>
             list!!.forEach { element ->
-                members.add(element.substringBefore("@"))
+                members.add(element)
             }
             listmembers.value = members
         }

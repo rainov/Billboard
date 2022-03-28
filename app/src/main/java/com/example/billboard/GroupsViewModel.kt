@@ -35,7 +35,7 @@ class GroupsViewModel: ViewModel() {
                             group.get("expenses") as List<String> ,
                             group.get("members") as List<String> ,
                             group.get("name").toString(),
-                            group.get("balance") as MutableMap<String, MutableList<MutableMap<String, Double>>>,
+                            group.get("balance") as MutableMap<String, MutableMap<String, Double>>,
                             group.id
                         )
                         tempGroupClasses.add(tempSingleGroup)
@@ -51,8 +51,9 @@ class GroupsViewModel: ViewModel() {
         val expensesList: List<String> = listOf()
         val membersList: List<String> = listOf(userEmail)
         val groupName: String = name
-        val balance = mutableMapOf(membersList[0] to mutableListOf<MutableMap<String, Double>>())
+        val balance = mutableMapOf(membersList[0] to mutableMapOf<String, Double>())
         val newGroup = GroupClass( adminsList, expensesList, membersList, groupName, balance, "" )
+        Log.d("Current user", userEmail)
         Firebase.firestore
             .collection("groups")
             .add(newGroup)

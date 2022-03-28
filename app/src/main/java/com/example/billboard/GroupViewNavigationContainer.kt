@@ -52,7 +52,7 @@ fun GroupViewNavigationContainer(
                 ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupsVM)
             }
             composable( route = "${expense.expid}_edit"){
-                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope )
+                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope)
             }
         }
     }

@@ -6,47 +6,75 @@ import androidx.navigation.NavController
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlin.math.roundToInt
 
 class ExpensesViewModel: ViewModel() {
 
     var expenses = mutableListOf<ExpenseClass>()
 
-    fun addExpenseLine(newExpense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
+    fun addExpenseLine(
+        newExpense: ExpenseClass,
+        expenseNavControl: NavController,
+        group: GroupClass,
+        groupsVM: GroupsViewModel
+    ) {
 
-        val fstore = Firebase.firestore.collection("expenses")
+        val fexp = Firebase.firestore.collection("expenses")
+        val fgrp = Firebase.firestore.collection("groups")
+        var amountforeach: Double = newExpense.amount / (newExpense.rest.size + 1)
+        amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
 
-        fstore.add(newExpense)
+        fexp.add(newExpense)
             .addOnSuccessListener {
-
                 Log.d("Add new expense", it.id)
-                fstore.document(it.id).update("expid",it.id)
+                fexp.document(it.id).update("expid", it.id)
 
-                Firebase.firestore.collection("groups")
-                    .document(newExpense.groupid)
+                fgrp.document(newExpense.groupid)
                     .update("expenses", FieldValue.arrayUnion(it.id))
-                    .addOnSuccessListener {
-                        Log.d("Add expense in group", "Success")
-                        expenseNavControl.navigate("group")
-                    }
+
+                newExpense.rest.forEach { member ->
+                    var previousamt = group.balance[member]?.getValue(newExpense.payer) as Double
+                    group.balance[member]?.set(newExpense.payer, amountforeach + previousamt!!)
+                }
+
+                groupsVM.editGroup(group)
+                expenseNavControl.navigate("group")
             }
     }
 
-    fun editExpenseLine(expense : ExpenseClass, expenseNavControl: NavController, groupsVM : GroupsViewModel){
+    fun editExpenseLine(
+        expense: ExpenseClass,
+        expenseNavControl: NavController,
+        group: GroupClass,
+        groupsVM: GroupsViewModel,
+        formeramount : Double
+    ) {
+
+        var amountforeach: Double = expense.amount / (expense.rest.size + 1)
+        amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
 
         val firestore = Firebase.firestore.collection("expenses").document(expense.expid)
 
-        firestore.update("name",expense.name)
-        firestore.update("amount",expense.amount)
-        firestore.update("payer",expense.payer)
-        firestore.update("rest",expense.rest)
+        firestore.update("name", expense.name)
+        firestore.update("amount", expense.amount)
+        firestore.update("payer", expense.payer)
+        firestore.update("rest", expense.rest)
             .addOnSuccessListener {
                 Log.d("Edit expense", expense.expid)
+                //TODO
+                //Update balance row if amount change
+                //Update balance row if payer changed
+                //Update balance row if rest changed
                 groupsVM.getGroups()
                 expenseNavControl.navigate("group")
             }
     }
 
-    fun deleteExpenseLine(expense : ExpenseClass, expenseNavControl: NavController, groupsVM: GroupsViewModel){
+    fun deleteExpenseLine(
+        expense: ExpenseClass,
+        expenseNavControl: NavController,
+        groupsVM: GroupsViewModel
+    ) {
 
         val fsexp = Firebase.firestore.collection("expenses").document(expense.expid)
         val fsgrp = Firebase.firestore.collection("groups").document(expense.groupid)
@@ -74,7 +102,8 @@ class ExpensesViewModel: ViewModel() {
                 } else if (expensesList != null && !expensesList.isEmpty) {
                     val tempExpenses = mutableListOf<ExpenseClass>()
                     expensesList.documents.forEach { expense ->
-                        val newExpense = ExpenseClass(expense.get("name").toString(),
+                        val newExpense = ExpenseClass(
+                            expense.get("name").toString(),
                             expense.get("amount").toString().toDouble(),
                             expense.get("payer").toString(),
                             expense.get("date").toString(),

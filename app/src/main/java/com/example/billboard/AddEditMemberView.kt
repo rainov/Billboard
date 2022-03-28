@@ -35,17 +35,17 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
     var newBalance by remember { mutableStateOf( group.balance ) }
 
     fun addMember() {
-        val newMemberBalanceList = mutableListOf<MutableMap<String, Double>>()
+        val newMemberBalanceMap = mutableMapOf<String, Double>()
         membersList.forEach { member ->
-            val oldMemberBalance = editGroup.balance[member]!!.toMutableList()
-            val newMemberBalance = mutableMapOf( memberEmail to 0.0)
-            newMemberBalanceList.add(mutableMapOf(member to 0.0))
-            oldMemberBalance.add(newMemberBalance)
+            val oldMemberBalance = editGroup.balance[member]!!
+            val newMemberBalance = mutableMapOf(memberEmail to 0.0)
+            newMemberBalanceMap[member] = 0.0
+            oldMemberBalance[memberEmail] = 0.0
             newBalance[member] = oldMemberBalance
             Log.d("oldMemberBalance", oldMemberBalance.toString())
             Log.d("newMemberBalance", newMemberBalance.toString())
         }
-        newBalance[memberEmail] = newMemberBalanceList
+        newBalance[memberEmail] = newMemberBalanceMap
         val tempMembers = mutableListOf<String>()
         membersList.forEach { member -> tempMembers.add(member) }
         tempMembers.add(memberEmail)
