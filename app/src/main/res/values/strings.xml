@@ -53,4 +53,5 @@
     <string name="member_email">Member\'s email</string>
     <string name="edit_members">Edit members</string>
     <string name="make_admin">Make admin</string>
+    <string name="total_spent">Total spent:</string>
 </resources>

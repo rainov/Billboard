@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_Red
 import com.example.billboard.ui.theme.Billboard_lightGreen
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
@@ -173,7 +174,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                     .width(280.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = Color.Red )
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_Red )
             ) {
                 Text( text = stringResource( R.string.delete_account ))
             }

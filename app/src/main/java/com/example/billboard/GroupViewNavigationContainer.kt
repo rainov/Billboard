@@ -36,6 +36,9 @@ fun GroupViewNavigationContainer(
         composable( route = "addMembers") {
             AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo )
         }
+        composable( route = "groupBalance" ) {
+            GroupBalanceView(scState, expenseNavControl, groupInfo, expenses , scope )
+        }
         composable( route = "addExpense") {
             val name = ""
             val amount = 0.0

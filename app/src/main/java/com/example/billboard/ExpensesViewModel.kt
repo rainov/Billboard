@@ -25,22 +25,24 @@ class ExpensesViewModel: ViewModel() {
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
 
         fexp.add(newExpense)
-            .addOnSuccessListener {
-                Log.d("Add new expense", it.id)
-                fexp.document(it.id).update("expid", it.id)
+            .addOnSuccessListener { expense ->
+                Log.d("Add new expense", expense.id)
+                fexp.document(expense.id).update("expid", expense.id)
 
                 fgrp.document(newExpense.groupid)
-                    .update("expenses", FieldValue.arrayUnion(it.id))
+                    .update("expenses", FieldValue.arrayUnion(expense.id))
 
                 newExpense.rest.forEach { member ->
                     var previousamt = group.balance[member]?.getValue(newExpense.payer) as Double
                     var prevAmountPayer = group.balance[newExpense.payer]?.getValue(member) as Double
-                    group.balance[member]?.set(newExpense.payer, amountforeach + previousamt!!)
-                    group.balance[newExpense.payer]?.set(member, ( -1 * amountforeach ) + prevAmountPayer)
+                    group.balance[member]?.set(newExpense.payer,  ( -1 * amountforeach ) + previousamt!!)
+                    group.balance[newExpense.payer]?.set(member, amountforeach + prevAmountPayer)
                 }
 
+                fgrp.document(newExpense.groupid)
+                    .update("balance", group.balance)
 
-                groupsVM.editGroup(group)
+                groupsVM.getGroups()
                 expenseNavControl.navigate("group")
             }
     }

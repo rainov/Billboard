@@ -39,6 +39,10 @@ fun GroupView(
 @Composable
 fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ){
 
+    var totalSpent = 0.0
+    expenses.forEach { expense ->
+        totalSpent += expense.amount
+    }
 
     if (groupInfo.members.size == 1) {
 
@@ -126,6 +130,28 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                     memberlist = if(memberlist.isEmpty()) member.substringBefore("@")
                     else memberlist + ", " + member.substringBefore("@")
                 }
+
+                OutlinedButton(
+                    onClick = { expenseNavControl.navigate("groupBalance") },
+                    modifier = Modifier
+                        .width(280.dp)
+                        .height(50.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Row( modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text( text = "Group balance details")
+                        Icon(
+                            painter = painterResource(R.drawable.forward),
+                            contentDescription = "forward arrow",
+                            tint = Bilboard_green
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
 
             Text(text = stringResource(R.string.admins) + " " + adminlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
             Text(text = stringResource(R.string.members) + " " + memberlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
