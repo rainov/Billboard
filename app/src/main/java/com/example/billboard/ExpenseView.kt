@@ -29,18 +29,20 @@ fun ExpenseView(
     scState: ScaffoldState,
     scope: CoroutineScope,
     expensesViewModel: ExpensesViewModel,
-    groupsViewModel: GroupsViewModel
+    groupsViewModel: GroupsViewModel,
+    groupInfo : GroupClass,
+    navControl : NavController
 ) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
-        content = { ExpenseViewContent(expense, expenseNavControl, expensesViewModel, groupsViewModel) }
+        content = { ExpenseViewContent(expense, expenseNavControl, expensesViewModel, groupsViewModel, groupInfo, navControl) }
     )
 
 }
 
 @Composable
-fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, expensesViewModel: ExpensesViewModel, groupsViewModel: GroupsViewModel) {
+fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, expensesViewModel: ExpensesViewModel, groupsViewModel: GroupsViewModel, groupInfo: GroupClass, navControl : NavController) {
 
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
@@ -90,10 +92,18 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
             expenseRest.forEach { member ->
                 Row() {
                     Text(text = member, modifier = Modifier.padding(15.dp))
+
                     if (isUserAdmin.value) {
                         OutlinedButton(
                             onClick = {
-                                /*TODO erase user debt */
+                                expensesViewModel.eraseDebt(
+                                    groupInfo,
+                                    member,
+                                    expense,
+                                    expenseNavControl,
+                                    groupsViewModel,
+                                    navControl
+                                )
                             },
                             modifier = Modifier
                                 .width(150.dp)
@@ -173,7 +183,9 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
                             expensesViewModel.deleteExpenseLine(
                                 expense,
                                 expenseNavControl,
-                                groupsViewModel
+                                groupsViewModel,
+                                groupInfo,
+                                navControl
                             )
                         },
                         modifier = Modifier

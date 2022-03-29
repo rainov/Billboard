@@ -58,7 +58,7 @@ fun AddEditExpenseViewContent(
 ) {
 
 
-    val formeramount : Double = expense.amount
+    val formerexpense : ExpenseClass = expense.copy()
 
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
@@ -221,7 +221,7 @@ fun AddEditExpenseViewContent(
                             expenseNavControl,
                             groupInfo,
                             groupsVM,
-                            formeramount
+                            formerexpense
                         )
                     }
                 } else {
