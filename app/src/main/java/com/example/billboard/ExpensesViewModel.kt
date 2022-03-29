@@ -34,8 +34,11 @@ class ExpensesViewModel: ViewModel() {
 
                 newExpense.rest.forEach { member ->
                     var previousamt = group.balance[member]?.getValue(newExpense.payer) as Double
+                    var prevAmountPayer = group.balance[newExpense.payer]?.getValue(member) as Double
                     group.balance[member]?.set(newExpense.payer, amountforeach + previousamt!!)
+                    group.balance[newExpense.payer]?.set(member, ( -1 * amountforeach ) + prevAmountPayer)
                 }
+
 
                 groupsVM.editGroup(group)
                 expenseNavControl.navigate("group")
