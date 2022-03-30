@@ -1,4 +1,4 @@
-import android.util.Log
+package com.example.billboard
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,8 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.*
-import com.example.billboard.R
 import com.example.billboard.ui.theme.Bilboard_green
 import kotlinx.coroutines.CoroutineScope
 
@@ -56,39 +54,14 @@ fun AddEditExpenseViewContent(
                    groupsVM: GroupsViewModel
 ) {
 
-
-
-    val oldMembers: MutableList<String> = mutableListOf()
-    val oldExpense : ExpenseClass = expense.copy()
-    expense.rest.forEach { member ->
-        oldMembers.add(member)
-    }
-    oldExpense.rest = oldMembers
-
-    Log.d("SASSSSSSS", oldMembers.toString())
-
     val newExpense by remember { mutableStateOf( expense ) }
-//=======
-//    val prevpayer = expense.payer
-//    val prevamount = expense.amount
-//    val prevrest = mutableListOf<String>()
-//    expense.rest.forEach { member ->
-//        prevrest.add(member)
-//    }
-//>>>>>>> 096a2c9c654c50dc5cf6966b1041faa47a3189af
-
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
-
     val groupMembers by remember { mutableStateOf(groupInfo.members) }
-//    val groupMembers = remember { mutableStateOf(listOf<String>()) }
-//    getGroupMembers(groupInfo.id, groupMembers)
-
     var expenseName by remember { mutableStateOf(expense.name)}
     var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
     var payerMember: String by remember { mutableStateOf(expense.payer) }
     val membersWhoPay by remember {mutableStateOf(expense.rest)}
-
     val openDialog = remember { mutableStateOf(false) }
 
     Column(
@@ -184,15 +157,10 @@ fun AddEditExpenseViewContent(
                     groupMembers.forEach { member ->
                         DropdownMenuItem(onClick = {
                             payerMember = member
-                            Log.d("mmmmmembers", oldMembers.toString())
                             if (membersWhoPay.contains(payerMember)) {
                                 membersWhoPay.remove(
                                     payerMember
                                 )
-                                if ( !expense.expid.isEmpty() ) {
-                                    Log.d("aaaddd old member", oldMembers.toString())
-                                    oldMembers.add(payerMember)
-                                }
                             }
                         }) {
                             Text(text = member)
@@ -229,10 +197,6 @@ fun AddEditExpenseViewContent(
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green ),
                 onClick = {
                 if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
-//                    expense.name = expenseName
-//                    expense.amount = expenseAmount.toDouble()
-//                    expense.payer = payerMember
-//                    expense.rest = membersWhoPay
                     newExpense.name = expenseName
                     newExpense.amount = expenseAmount.toDouble()
                     newExpense.payer = payerMember
@@ -245,12 +209,7 @@ fun AddEditExpenseViewContent(
                             groupsVM
                         )
                     } else {
-//                        Log.d("EXPENSE", expense.toString())
-//                        Log.d("NEW EXPENSE", newExpense.toString())
-//                        Log.d("FORMER EXPENSE", oldExpense.toString())
-//                        Log.d("OLD MEMBERS", oldMembers.toString())
                         expensesViewModel.editExpenseLine(
-                            oldExpense,
                             expenseNavControl,
                             groupInfo,
                             groupsVM,
@@ -268,7 +227,6 @@ fun AddEditExpenseViewContent(
             }
 
             if (openDialog.value) {
-
                 AlertDialog(
                     onDismissRequest = {
                         openDialog.value = false
@@ -306,7 +264,6 @@ fun AddEditExpenseViewContent(
                     contentDescription = "back icon",
                     modifier = Modifier.clickable { expenseNavControl.navigate("group") })
             }
-
     }
 }
 
@@ -329,31 +286,3 @@ fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : Exp
         colors = CheckboxDefaults.colors(Bilboard_green)
     )
 }
-
-//fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
-//    Firebase.firestore.collection("groups")
-//        .document(groupid)
-//        .get()
-//        .addOnSuccessListener {
-//            val members = mutableListOf<String>()
-//            val list = it.get("members") as? List<String>
-//            list!!.forEach { element ->
-//                members.add(element)
-//            }
-//            listmembers.value = members
-//        }
-//}
-
-//fun getGroupAdmins(groupid : String, listadmins : MutableState<List<String>>){
-//    Firebase.firestore.collection("groups")
-//        .document(groupid)
-//        .get()
-//        .addOnSuccessListener {
-//            val admins = mutableListOf<String>()
-//            val list = it.get("admins") as? List<String>
-//            list!!.forEach { element ->
-//                admins.add(element)
-//            }
-//            listadmins.value = admins
-//        }
-//}
