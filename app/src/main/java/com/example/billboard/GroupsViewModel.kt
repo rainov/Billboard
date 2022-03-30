@@ -39,7 +39,7 @@ class GroupsViewModel: ViewModel() {
                             group.id
                         )
                         tempGroupClasses.add(tempSingleGroup)
-                        Log.d("BALANCE", tempSingleGroup.balance.toString())
+                        //Log.d("BALANCE", tempSingleGroup.balance.toString())
                     }
                     groups.value = tempGroupClasses
                 }
@@ -74,5 +74,20 @@ class GroupsViewModel: ViewModel() {
             .addOnSuccessListener {
                 getGroups()
             }
+    }
+
+    fun deleteGroup(group : GroupClass) {
+        //First delete all expenses related to the group
+        val fexp = Firebase.firestore.collection("expenses")
+        val fgrp = Firebase.firestore.collection("groups")
+
+        group.expenses.forEach { exp ->
+            fexp.document(exp).delete()
+        }
+
+        //Then delete the group
+        fgrp.document(group.id).delete()
+
+        getGroups()
     }
 }

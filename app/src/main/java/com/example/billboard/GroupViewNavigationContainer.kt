@@ -3,6 +3,9 @@ package com.example.billboard
 
 import androidx.compose.material.ScaffoldState
 import AddEditExpenseView
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -46,7 +49,8 @@ fun GroupViewNavigationContainer(
             val expid = ""
             val date = Calendar.getInstance().time.toString()
             val rest = mutableListOf<String>()
-            val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid)
+            val paidvalues = mutableMapOf<String,Boolean>()
+            val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid, paidvalues)
             AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope)
 
         }

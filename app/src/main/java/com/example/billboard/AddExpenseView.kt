@@ -21,8 +21,6 @@ import androidx.navigation.NavController
 import com.example.billboard.*
 import com.example.billboard.R
 import com.example.billboard.ui.theme.Bilboard_green
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -59,7 +57,8 @@ fun AddEditExpenseViewContent(
 ) {
 
 
-    var oldMembers: MutableList<String> = mutableListOf()
+
+    val oldMembers: MutableList<String> = mutableListOf()
     val oldExpense : ExpenseClass = expense.copy()
     expense.rest.forEach { member ->
         oldMembers.add(member)
@@ -69,6 +68,14 @@ fun AddEditExpenseViewContent(
     Log.d("SASSSSSSS", oldMembers.toString())
 
     val newExpense by remember { mutableStateOf( expense ) }
+//=======
+//    val prevpayer = expense.payer
+//    val prevamount = expense.amount
+//    val prevrest = mutableListOf<String>()
+//    expense.rest.forEach { member ->
+//        prevrest.add(member)
+//    }
+//>>>>>>> 096a2c9c654c50dc5cf6966b1041faa47a3189af
 
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
@@ -312,7 +319,7 @@ fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : Exp
 
     Checkbox(
         checked = checkState.value,
-        onCheckedChange = { checkState.value = it;
+        onCheckedChange = { checkState.value = it
             if(checkState.value) {
                 membersWhoPay.add(member)
             } else {

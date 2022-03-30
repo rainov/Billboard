@@ -22,15 +22,20 @@ fun MainScreen(
     groups: List<GroupClass>,
     groupsVM: GroupsViewModel,
     scState: ScaffoldState,
-    scope: CoroutineScope) {
+    scope: CoroutineScope
+) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope) },
         content = { MainScreenContent( navControl, groups, groupsVM) },
-        drawerContent = { DrawerMainScreen( scState, navControl, scope ) }
+        drawerContent = { DrawerMainScreen (
+                scState,
+                scope,
+                DrawerContent( navControl, scState, scope )
+            )
+        }
     )
-
 }
 
 @Composable

@@ -13,6 +13,9 @@ class ExpensesViewModel: ViewModel() {
 
     var expenses = mutableListOf<ExpenseClass>()
 
+    val fexp = Firebase.firestore.collection("expenses")
+    val fgrp = Firebase.firestore.collection("groups")
+
     fun addExpenseLine(
         newExpense: ExpenseClass,
         expenseNavControl: NavController,
@@ -20,8 +23,6 @@ class ExpensesViewModel: ViewModel() {
         groupsVM: GroupsViewModel
     ) {
 
-        val fexp = Firebase.firestore.collection("expenses")
-        val fgrp = Firebase.firestore.collection("groups")
         var amountforeach: Double = newExpense.amount / (newExpense.rest.size + 1)
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
 
@@ -40,6 +41,12 @@ class ExpensesViewModel: ViewModel() {
 //                    group.balance[member]?.set(newExpense.payer, - 1 * amountforeach + previousamt!!)
 //                    group.balance[newExpense.payer]?.set(member, amountforeach + prevAmountPayer)
 //                }
+
+
+        newExpense.rest.forEach { member ->
+            newExpense.paidvalues[member] = false
+        }
+
 
 
         fexp.add(newExpense)
@@ -70,22 +77,6 @@ class ExpensesViewModel: ViewModel() {
                             expenseNavControl.navigate("group")
                         }
                 }
-
-
-
-//                newExpense.rest.forEach { member ->
-//                    var previousamt = group.balance[member]?.getValue(newExpense.payer) as Double
-//                    var prevAmountPayer = group.balance[newExpense.payer]?.getValue(member) as Double
-//                    group.balance[member]?.set(newExpense.payer, - 1 * amountforeach + previousamt!!)
-//                    group.balance[newExpense.payer]?.set(member, amountforeach + prevAmountPayer)
-//                }
-
-
-//        fgrp.document(newExpense.groupid)
-//            .update("balance", group.balance)
-//
-//                groupsVM.getGroups()
-//                expenseNavControl.navigate("group")
             }
     }
 
@@ -94,7 +85,6 @@ class ExpensesViewModel: ViewModel() {
         expenseNavControl: NavController,
         group: GroupClass,
         groupsVM: GroupsViewModel,
-//        formerexpense : ExpenseClass
         newExpense : ExpenseClass
     ) {
 
@@ -102,46 +92,44 @@ class ExpensesViewModel: ViewModel() {
         Log.d("NEWexpense.rest", newExpense.toString())
 
 
-        var newGroup = group
 
-        var oldSingleShare: Double = expense.amount / (expense.rest.size + 1)
 
-        oldSingleShare = ( oldSingleShare * 100.0).roundToInt() / 100.0
+            var newGroup = group
 
-        var newSingleShare: Double = newExpense.amount / ( newExpense.rest.size + 1 )
-        newSingleShare = ( newSingleShare * 100.0 ).roundToInt() / 100.0
+            var oldSingleShare: Double = expense.amount / (expense.rest.size + 1)
 
-        expense.rest.forEach { member ->
-           val oldPayer =  group.balance[member]?.getValue(expense.payer) as Double
-           val oldMember = group.balance[expense.payer]?.getValue(member) as Double
-           group.balance[member]?.set(expense.payer, oldPayer + oldSingleShare )
-           group.balance[expense.payer]?.set(member, oldMember - oldSingleShare )
-        }
+            oldSingleShare = (oldSingleShare * 100.0).roundToInt() / 100.0
 
-        Firebase.firestore
-            .collection("groups")
-            .document(expense.groupid)
-            .update("balance", group.balance)
-            .addOnSuccessListener {
 
-                newExpense.rest.forEach { member ->
-                    val newPayer = group.balance[member]?.getValue(newExpense.payer) as Double
-                    val newMember = group.balance[newExpense.payer]?.getValue(member) as Double
-                    group.balance[member]?.set(newExpense.payer, newPayer - newSingleShare )
-                    group.balance[newExpense.payer]?.set( member, newMember + newSingleShare)
-                }
+            var newSingleShare: Double = newExpense.amount / (newExpense.rest.size + 1)
+            newSingleShare = (newSingleShare * 100.0).roundToInt() / 100.0
 
-                addExpenseLine( newExpense, expenseNavControl, group, groupsVM )
+
+            expense.rest.forEach { member ->
+                val oldPayer = group.balance[member]?.getValue(expense.payer) as Double
+                val oldMember = group.balance[expense.payer]?.getValue(member) as Double
+                group.balance[member]?.set(expense.payer, oldPayer + oldSingleShare)
+                group.balance[expense.payer]?.set(member, oldMember - oldSingleShare)
             }
+
+            Firebase.firestore
+                .collection("groups")
+                .document(expense.groupid)
+                .update("balance", group.balance)
+                .addOnSuccessListener {
+
+                    newExpense.rest.forEach { member ->
+                        val newPayer = group.balance[member]?.getValue(newExpense.payer) as Double
+                        val newMember = group.balance[newExpense.payer]?.getValue(member) as Double
+                        group.balance[member]?.set(newExpense.payer, newPayer - newSingleShare)
+                        group.balance[newExpense.payer]?.set(member, newMember + newSingleShare)
+                    }
+
+                    addExpenseLine(newExpense, expenseNavControl, group, groupsVM)
+                }
 
 
 //        addExpenseLine( newExpense, expenseNavControl, newGroup, groupsVM )
-
-
-
-
-
-
 
 
 //        var prevamountforeach: Double = formerexpense.amount / (formerexpense.rest.size + 1)
@@ -188,11 +176,13 @@ class ExpensesViewModel: ViewModel() {
 
     fun deleteExpenseLine(
         expense: ExpenseClass,
-        expenseNavControl: NavController,
+        expenseNavControl : NavController,
         groupsVM: GroupsViewModel,
         group: GroupClass,
         navControl : NavController
     ) {
+
+        //If a user has erased a debt before deleting the expense, it will refund him, and the payer member will have to pay him back
 
         val fsexp = Firebase.firestore.collection("expenses").document(expense.expid)
         val fsgrp = Firebase.firestore.collection("groups").document(expense.groupid)
@@ -215,8 +205,55 @@ class ExpensesViewModel: ViewModel() {
                         }
 
                         fsgrp.update("balance", group.balance, "expenses", FieldValue.arrayRemove(expense.expid))
+
                         groupsVM.getGroups()
                         navControl.navigate(group.id)
+                        //TODO previous line must be changed to lead on expense view
+                    }
+            }
+    }
+
+    fun deleteExpenseLineCancelEraseDebts(
+        expense: ExpenseClass,
+        groupsVM: GroupsViewModel,
+        group: GroupClass,
+        navControl : NavController
+    ){
+        val fsexp = Firebase.firestore.collection("expenses").document(expense.expid)
+        val fsgrp = Firebase.firestore.collection("groups").document(expense.groupid)
+
+        var amountforeach: Double = expense.amount / (expense.rest.size + 1)
+        amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
+
+        fsexp.delete()
+            .addOnSuccessListener {
+                Log.d("Delete expense", expense.expid)
+                fsgrp.update("expenses", FieldValue.arrayRemove(expense.expid))
+                    .addOnSuccessListener {
+                        Log.d("Delete group expense", expense.expid)
+
+                        expense.rest.forEach { member ->
+                            if(expense.paidvalues[member] == false) {
+                                //User balance needs to be increased and payer decreased
+                                var previousamt =
+                                    group.balance[member]?.getValue(expense.payer) as Double
+                                var prevAmountPayer =
+                                    group.balance[expense.payer]?.getValue(member) as Double
+                                group.balance[member]?.set(
+                                    expense.payer,
+                                    amountforeach + previousamt!!
+                                )
+                                group.balance[expense.payer]?.set(
+                                    member,
+                                    -1 * amountforeach + prevAmountPayer
+                                )
+                            }
+                        }
+                        fsgrp.update("balance", group.balance, "expenses", FieldValue.arrayRemove(expense.expid))
+
+                        groupsVM.getGroups()
+                        navControl.navigate(group.id)
+                        //TODO previous line must be changed to lead on expense view
                     }
             }
     }
@@ -232,9 +269,57 @@ class ExpensesViewModel: ViewModel() {
         group.balance[member]?.set(expense.payer, amountforeach + previousamt!!)
         group.balance[expense.payer]?.set(member, - 1 * amountforeach + prevAmountPayer)
 
-        val firestore = Firebase.firestore.collection("expenses").document(expense.expid)
-        firestore.update("amount", expense.amount - amountforeach)
-        firestore.update("rest", FieldValue.arrayRemove(member))
+        expense.paidvalues[member] = true
+
+        fexp.document(expense.expid).update("paidvalues",expense.paidvalues)
+        fgrp.document(group.id).update("balance", group.balance)
+
+        groupsVM.getGroups()
+        //navControl.navigate(group.id)
+        expenseNavControl.navigate(expense.expid)
+        //TODO previous line must be changed to lead on expense view
+    }
+
+    fun cancelEraseDebt(group: GroupClass, member : String, expense: ExpenseClass, expenseNavControl: NavController,
+                  groupsVM: GroupsViewModel, navControl: NavController ){
+
+        var amountforeach: Double = expense.amount / (expense.rest.size + 1)
+        amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
+
+        var previousamt = group.balance[member]?.getValue(expense.payer) as Double
+        var prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
+        group.balance[member]?.set(expense.payer, - 1 * amountforeach + previousamt!!)
+        group.balance[expense.payer]?.set(member, amountforeach + prevAmountPayer)
+
+        expense.paidvalues[member] = false
+
+        fexp.document(expense.expid).update("paidvalues",expense.paidvalues)
+        fgrp.document(group.id).update("balance", group.balance)
+
+        groupsVM.getGroups()
+//        navControl.navigate(group.id)
+        expenseNavControl.navigate(expense.expid)
+        //TODO previous line must be changed to lead on expense view
+    }
+
+    fun eraseAllDebts(group: GroupClass, expense: ExpenseClass, expenseNavControl: NavController,
+                      groupsVM: GroupsViewModel, navControl: NavController){
+
+        var amountforeach: Double = expense.amount / (expense.rest.size + 1)
+        amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
+
+        expense.rest.forEach { member ->
+            if(expense.paidvalues[member] == false){
+                var previousamt = group.balance[member]?.getValue(expense.payer) as Double
+                var prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
+                group.balance[member]?.set(expense.payer, amountforeach + previousamt!!)
+                group.balance[expense.payer]?.set(member, - 1 * amountforeach + prevAmountPayer)
+                expense.paidvalues[member] = true
+            }
+        }
+
+        fexp.document(expense.expid).update("paidvalues",expense.paidvalues)
+        fgrp.document(group.id).update("balance", group.balance)
 
         val fsgrp = Firebase.firestore.collection("groups").document(expense.groupid)
         fsgrp.update("balance", group.balance )
@@ -245,7 +330,7 @@ class ExpensesViewModel: ViewModel() {
 
         groupsVM.getGroups()
         navControl.navigate(group.id)
-        expenseNavControl.navigate(expense.expid)
+        //TODO previous line must be changed to lead on expense view
     }
 
     fun getExpenses(groupId: String) {
@@ -266,7 +351,8 @@ class ExpensesViewModel: ViewModel() {
                             expense.get("date").toString(),
                             expense.get("groupid").toString(),
                             expense.get("rest") as MutableList<String>,
-                            expense.id
+                            expense.id,
+                            expense.get("paidvalues") as MutableMap<String,Boolean>
                         )
                         tempExpenses.add(newExpense)
                     }

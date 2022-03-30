@@ -31,9 +31,20 @@ fun GroupBalanceView (
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope ) },
         content = { GroupBalanceContent( expenseNavControl, groupInfo, expenses ) },
-        drawerContent = { DrawerMainScreen( scState, expenseNavControl, scope ) }
+        drawerContent = {
+            DrawerMainScreen (
+                scState,
+                scope,
+                DrawerGroupContent(
+                    navControl = expenseNavControl,
+                    scState,
+                    scope,
+                    groupInfo,
+                    expenseNavControl
+                )
+            )
+        }
     )
-
 }
 
 @Composable
@@ -99,12 +110,14 @@ fun GroupBalanceContent(
                         Spacer(modifier = Modifier.height(10.dp))
 
                         groupInfo.balance[member]?.forEach { other ->
-                            var color: Color
-                            var amount: Double
+                            var color: Color = Color.White
+                            var amount: Double = 0.0
+
+
                             if ( other.value < 0 ) {
                                 color = Billboard_Red
                                 amount = other.value * -1
-                            } else {
+                            } else if (other.value > 0){
                                 color = Bilboard_green
                                 amount = other.value
                             }

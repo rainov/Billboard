@@ -31,7 +31,12 @@ fun SettingsView (
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope ) },
         content = { SettingsContent( navControl, userVM, scState, scope ) },
-        drawerContent = { DrawerMainScreen( scState, navControl, scope ) }
+        drawerContent = { DrawerMainScreen (
+                scState,
+                scope,
+                DrawerContent(navControl , scState, scope )
+            )
+        }
     )
 
 }

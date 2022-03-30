@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.BillBoard_Grey
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -29,11 +30,17 @@ fun GroupView(
 ) {
 
     Scaffold(
+        scaffoldState = scState,
         topBar = { TopBar(showMenu = true, scState, false, scope) },
         content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
-        drawerContent = { DrawerGroupView( scState, navControl, scope, groupInfo, expenseNavControl ) }
+        drawerContent = {
+            DrawerMainScreen (
+                scState,
+                scope,
+                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl )
+            )
+        }
     )
-
 }
 
 @Composable
@@ -160,8 +167,10 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                 Spacer(modifier = Modifier.height(20.dp))
 
                 expenses.forEach{ expense ->
-                    var color = Color.Transparent
-                    if(expense.rest.size == 0) color = Color.DarkGray
+                    var color = BillBoard_Grey
+                    expense.paidvalues.forEach { key ->
+                        if(!key.value) color = Color.Transparent
+                    }
 
                     Spacer(modifier = Modifier.height(5.dp))
 
@@ -199,6 +208,18 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         .clickable { navControl.navigate("MainScreen") }
                         .padding(60.dp, 30.dp)
                 )
+                OutlinedButton(
+                    onClick = {
+                        /* TODO */
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.delete))
+                }
                 FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
                     backgroundColor = Bilboard_green,
                     modifier = Modifier.padding(50.dp, 30.dp)

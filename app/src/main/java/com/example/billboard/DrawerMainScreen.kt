@@ -13,12 +13,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun DrawerMainScreen( scState: ScaffoldState, navControl: NavController, scope: CoroutineScope) {
-
+fun DrawerMainScreen(
+    scState: ScaffoldState,
+    scope: CoroutineScope,
+    contentComp: Unit
+) {
     Scaffold(
         scaffoldState = scState,
-        topBar = { TopBar(false, scState, true, scope ) },
-        content = { DrawerContent( navControl, scState, scope ) },
+        topBar = { TopBar(false, scState, true, scope) },
+        content = { contentComp }
     )
 }
 

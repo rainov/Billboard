@@ -14,16 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun DrawerGroupView(scState: ScaffoldState, navControl: NavController, scope: CoroutineScope, groupInfo: GroupClass, expenseNavControl: NavController) {
-
-    Scaffold(
-        scaffoldState = scState,
-        topBar = { TopBar(false, scState, true, scope ) },
-        content = { DrawerGroupContent( navControl, scState, scope, groupInfo, expenseNavControl ) },
-    )
-}
-
-@Composable
 fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope: CoroutineScope, groupInfo: GroupClass, expenseNavControl: NavController) {
 
     Column (
