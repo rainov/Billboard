@@ -31,7 +31,7 @@ fun GroupViewNavigationContainer(
 
     NavHost(navController = expenseNavControl, startDestination = "group" ) {
         composable( route = "group" ) {
-            GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope )
+            GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope, groupsVM )
         }
         composable( route = "addMembers") {
             AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo )

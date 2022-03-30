@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,24 +28,28 @@ fun GroupView(
     expenseNavControl: NavController,
     navControl: NavController,
     scState: ScaffoldState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    groupsViewModel: GroupsViewModel
 ) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
+        content = { GroupViewContent( groupsViewModel, groupInfo, expenses, expenseNavControl, navControl ) },
         drawerContent = { DrawerGroupView( scState, navControl, scope, groupInfo, expenseNavControl ) }
     )
 
 }
 
 @Composable
-fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ){
+fun GroupViewContent( groupsVM: GroupsViewModel, groupInfo: GroupClass, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ){
 
     var totalSpent = 0.0
     expenses.forEach { expense ->
         totalSpent += expense.amount
     }
+
+    var openDialog = remember{ mutableStateOf(false)}
+    var openErrors = remember{ mutableStateOf(false)}
 
     if (groupInfo.members.size == 1) {
 
@@ -204,7 +210,11 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                 )
                 OutlinedButton(
                     onClick = {
-                        /* TODO */
+                        if(groupBalanceClear(groupInfo)){
+                            openDialog.value = true
+                        } else {
+                            openErrors.value = true
+                        }
                     },
                     modifier = Modifier
                         .width(100.dp)
@@ -224,6 +234,92 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                     )
                 }
             }
+
+            if (openDialog.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        openDialog.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.delete_conf))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.delete_grp))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialog.value = false
+                                groupsVM.deleteGroup(
+                                    groupInfo
+                                )
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        ) {
+                            Text(stringResource(R.string.delete))
+                        }
+                    },
+                    dismissButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialog.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        ) {
+                            Text(text = stringResource(R.string.cancel))
+                        }
+                    }
+                )
+            }
+
+            if (openErrors.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        openErrors.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.delete_conf))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.delete_grp_err))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openErrors.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        ) {
+                            Text(stringResource(R.string.ok))
+                        }
+                    }
+                )
+            }
+
+
         }
     }
+}
+
+fun groupBalanceClear(group : GroupClass) : Boolean{
+    group.balance.forEach { key ->
+        key.value.forEach { member ->
+            if(member.value != 0.0){
+                return false
+            }
+        }
+    }
+    return true
 }
