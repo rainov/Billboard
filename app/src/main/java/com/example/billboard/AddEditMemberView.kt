@@ -125,7 +125,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             Spacer(modifier = Modifier.height(15.dp))
 
             OutlinedButton(
-                onClick = ::addMember,
+                onClick = {addMember()},
                 modifier = Modifier
                     .width(280.dp)
                     .height(40.dp),

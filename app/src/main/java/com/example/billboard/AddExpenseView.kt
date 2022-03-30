@@ -58,7 +58,12 @@ fun AddEditExpenseViewContent(
 ) {
 
 
-    val formerexpense : ExpenseClass = expense.copy()
+    val prevpayer = expense.payer
+    val prevamount = expense.amount
+    val prevrest = mutableListOf<String>()
+    expense.rest.forEach { member ->
+        prevrest.add(member)
+    }
 
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
@@ -221,7 +226,9 @@ fun AddEditExpenseViewContent(
                             expenseNavControl,
                             groupInfo,
                             groupsVM,
-                            formerexpense
+                            prevamount,
+                            prevpayer,
+                            prevrest
                         )
                     }
                 } else {
