@@ -40,9 +40,9 @@ fun ViewContainer(){
             }
             groups.forEach { groupInfo ->
                 composable(route = groupInfo.id) {
-
                     GroupViewNavigationContainer( navControl, groupInfo, scState, groupsVM, scope )
                 }
+
             }
             composable( route = "Settings") {
                 SettingsView( scState, navControl, userVM, scope )

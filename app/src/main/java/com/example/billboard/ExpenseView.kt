@@ -19,7 +19,7 @@ import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import getGroupAdmins
+//import getGroupAdmins
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -29,18 +29,20 @@ fun ExpenseView(
     scState: ScaffoldState,
     scope: CoroutineScope,
     expensesViewModel: ExpensesViewModel,
-    groupsViewModel: GroupsViewModel
+    groupsViewModel: GroupsViewModel,
+    groupInfo : GroupClass,
+    navControl : NavController
 ) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
-        content = { ExpenseViewContent(expense, expenseNavControl, expensesViewModel, groupsViewModel) }
+        content = { ExpenseViewContent(expense, expenseNavControl, expensesViewModel, groupsViewModel, groupInfo, navControl) }
     )
 
 }
 
 @Composable
-fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, expensesViewModel: ExpensesViewModel, groupsViewModel: GroupsViewModel) {
+fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, expensesViewModel: ExpensesViewModel, groupsViewModel: GroupsViewModel, groupInfo: GroupClass, navControl : NavController) {
 
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
@@ -50,8 +52,9 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
 
     val openDialog = remember { mutableStateOf(false) }
 
-    val groupAdmins = remember { mutableStateOf(listOf<String>()) }
-    getGroupAdmins(expense.groupid, groupAdmins)
+    val groupAdmins = remember { mutableStateOf(groupInfo.admins) }
+//    val groupAdmins = remember { mutableStateOf(listOf<String>()) }
+//    getGroupAdmins(expense.groupid, groupAdmins)
 
     val isUserAdmin = remember { mutableStateOf(false) }
     getUserStatus(isUserAdmin, groupAdmins)
@@ -90,10 +93,18 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
             expenseRest.forEach { member ->
                 Row() {
                     Text(text = member, modifier = Modifier.padding(15.dp))
+
                     if (isUserAdmin.value) {
                         OutlinedButton(
                             onClick = {
-                                /*TODO erase user debt */
+                                expensesViewModel.eraseDebt(
+                                    groupInfo,
+                                    member,
+                                    expense,
+                                    expenseNavControl,
+                                    groupsViewModel,
+                                    navControl
+                                )
                             },
                             modifier = Modifier
                                 .width(150.dp)
@@ -173,7 +184,9 @@ fun ExpenseViewContent(expense: ExpenseClass, expenseNavControl: NavController, 
                             expensesViewModel.deleteExpenseLine(
                                 expense,
                                 expenseNavControl,
-                                groupsViewModel
+                                groupsViewModel,
+                                groupInfo,
+                                navControl
                             )
                         },
                         modifier = Modifier

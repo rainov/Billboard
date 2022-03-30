@@ -160,6 +160,9 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                 Spacer(modifier = Modifier.height(20.dp))
 
                 expenses.forEach{ expense ->
+                    var color = Color.Transparent
+                    if(expense.rest.size == 0) color = Color.DarkGray
+
                     Spacer(modifier = Modifier.height(5.dp))
 
                     Card( modifier = Modifier
@@ -169,7 +172,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         elevation = 10.dp,
                         shape = MaterialTheme.shapes.large,
                         border = BorderStroke(2.dp, Bilboard_green),
-                        backgroundColor = Color.Transparent
+                        backgroundColor = color
                     ){
                         Text( text = expense.name,
                             textAlign = TextAlign.Center,

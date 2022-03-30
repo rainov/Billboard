@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -58,13 +59,23 @@ fun AddEditExpenseViewContent(
 ) {
 
 
-    val formeramount : Double = expense.amount
+    var oldMembers: MutableList<String> = mutableListOf()
+    val oldExpense : ExpenseClass = expense.copy()
+    expense.rest.forEach { member ->
+        oldMembers.add(member)
+    }
+    oldExpense.rest = oldMembers
+
+    Log.d("SASSSSSSS", oldMembers.toString())
+
+    val newExpense by remember { mutableStateOf( expense ) }
 
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownWidth by remember { mutableStateOf(0) }
 
-    val groupMembers = remember { mutableStateOf(listOf<String>()) }
-    getGroupMembers(groupInfo.id, groupMembers)
+    val groupMembers by remember { mutableStateOf(groupInfo.members) }
+//    val groupMembers = remember { mutableStateOf(listOf<String>()) }
+//    getGroupMembers(groupInfo.id, groupMembers)
 
     var expenseName by remember { mutableStateOf(expense.name)}
     var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
@@ -163,12 +174,19 @@ fun AddEditExpenseViewContent(
                     modifier = Modifier
                         .width(with(LocalDensity.current) { dropDownWidth.toDp() })
                 ) {
-                    groupMembers.value.forEach { member ->
+                    groupMembers.forEach { member ->
                         DropdownMenuItem(onClick = {
                             payerMember = member
-                            if (membersWhoPay.contains(payerMember)) membersWhoPay.remove(
-                                payerMember
-                            )
+                            Log.d("mmmmmembers", oldMembers.toString())
+                            if (membersWhoPay.contains(payerMember)) {
+                                membersWhoPay.remove(
+                                    payerMember
+                                )
+                                if ( !expense.expid.isEmpty() ) {
+                                    Log.d("aaaddd old member", oldMembers.toString())
+                                    oldMembers.add(payerMember)
+                                }
+                            }
                         }) {
                             Text(text = member)
                         }
@@ -184,7 +202,7 @@ fun AddEditExpenseViewContent(
             ){
                 Text(text = stringResource(R.string.rest))
                 Spacer(modifier = Modifier.height(10.dp))
-                groupMembers.value.forEach { member ->
+                groupMembers.forEach { member ->
                     if (member != payerMember) {
                         Row() {
                             CheckBox(member, membersWhoPay, expense)
@@ -204,24 +222,32 @@ fun AddEditExpenseViewContent(
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green ),
                 onClick = {
                 if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
-                    expense.name = expenseName
-                    expense.amount = expenseAmount.toDouble()
-                    expense.payer = payerMember
-                    expense.rest = membersWhoPay
+//                    expense.name = expenseName
+//                    expense.amount = expenseAmount.toDouble()
+//                    expense.payer = payerMember
+//                    expense.rest = membersWhoPay
+                    newExpense.name = expenseName
+                    newExpense.amount = expenseAmount.toDouble()
+                    newExpense.payer = payerMember
+                    newExpense.rest = membersWhoPay
                     if (expense.expid.isEmpty()) {
                         expensesViewModel.addExpenseLine(
-                            expense,
+                            newExpense,
                             expenseNavControl,
                             groupInfo,
                             groupsVM
                         )
                     } else {
+//                        Log.d("EXPENSE", expense.toString())
+//                        Log.d("NEW EXPENSE", newExpense.toString())
+//                        Log.d("FORMER EXPENSE", oldExpense.toString())
+//                        Log.d("OLD MEMBERS", oldMembers.toString())
                         expensesViewModel.editExpenseLine(
-                            expense,
+                            oldExpense,
                             expenseNavControl,
                             groupInfo,
                             groupsVM,
-                            formeramount
+                            newExpense
                         )
                     }
                 } else {
@@ -280,41 +306,47 @@ fun AddEditExpenseViewContent(
 @Composable
 fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : ExpenseClass){
     val checkState = remember {mutableStateOf(false)}
-    if(expense.expid.isNotEmpty() && expense.rest.contains(member)){
+    if( expense.expid.isNotEmpty() && expense.rest.contains(member)){
         checkState.value = true
     }
 
     Checkbox(
         checked = checkState.value,
-        onCheckedChange = { checkState.value = it; if(checkState.value) membersWhoPay.add(member) else membersWhoPay.remove(member)  },
+        onCheckedChange = { checkState.value = it;
+            if(checkState.value) {
+                membersWhoPay.add(member)
+            } else {
+                membersWhoPay.remove(member)
+            }
+        },
         colors = CheckboxDefaults.colors(Bilboard_green)
     )
 }
 
-fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
-    Firebase.firestore.collection("groups")
-        .document(groupid)
-        .get()
-        .addOnSuccessListener {
-            val members = mutableListOf<String>()
-            val list = it.get("members") as? List<String>
-            list!!.forEach { element ->
-                members.add(element)
-            }
-            listmembers.value = members
-        }
-}
+//fun getGroupMembers(groupid : String, listmembers : MutableState<List<String>>){
+//    Firebase.firestore.collection("groups")
+//        .document(groupid)
+//        .get()
+//        .addOnSuccessListener {
+//            val members = mutableListOf<String>()
+//            val list = it.get("members") as? List<String>
+//            list!!.forEach { element ->
+//                members.add(element)
+//            }
+//            listmembers.value = members
+//        }
+//}
 
-fun getGroupAdmins(groupid : String, listadmins : MutableState<List<String>>){
-    Firebase.firestore.collection("groups")
-        .document(groupid)
-        .get()
-        .addOnSuccessListener {
-            val admins = mutableListOf<String>()
-            val list = it.get("admins") as? List<String>
-            list!!.forEach { element ->
-                admins.add(element)
-            }
-            listadmins.value = admins
-        }
-}
+//fun getGroupAdmins(groupid : String, listadmins : MutableState<List<String>>){
+//    Firebase.firestore.collection("groups")
+//        .document(groupid)
+//        .get()
+//        .addOnSuccessListener {
+//            val admins = mutableListOf<String>()
+//            val list = it.get("admins") as? List<String>
+//            list!!.forEach { element ->
+//                admins.add(element)
+//            }
+//            listadmins.value = admins
+//        }
+//}

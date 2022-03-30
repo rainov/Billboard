@@ -63,7 +63,6 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
                     ) {
                         Text(
                             text = group.name,
-//                            text = group.get("name").toString(),
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .padding(15.dp)

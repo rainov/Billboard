@@ -71,14 +71,14 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Column (
+        Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text( text = group.name, fontSize = 30.sp )
+            Text(text = group.name, fontSize = 30.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -113,7 +113,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Text( text = stringResource(R.string.add_as_admin))
+                Text(text = stringResource(R.string.add_as_admin))
 
                 Checkbox(
                     checked = adminCheck,
@@ -125,7 +125,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             Spacer(modifier = Modifier.height(15.dp))
 
             OutlinedButton(
-                onClick = ::addMember,
+                onClick = { addMember() },
                 modifier = Modifier
                     .width(280.dp)
                     .height(40.dp),
@@ -150,7 +150,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             membersList.forEach { member ->
-                Text( text = member, fontSize = 20.sp )
+                Text(text = member, fontSize = 20.sp)
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -162,9 +162,9 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                             .width(80.dp)
                             .height(35.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
                     ) {
-                        Text( text = stringResource(R.string.edit))
+                        Text(text = stringResource(R.string.edit))
                     }
                     OutlinedButton(
                         onClick = { /*TODO*/ },
@@ -172,9 +172,9 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                             .width(150.dp)
                             .height(35.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
                     ) {
-                        Text( text = stringResource(R.string.make_admin))
+                        Text(text = stringResource(R.string.make_admin))
                     }
                     OutlinedButton(
                         onClick = { /*TODO*/ },
@@ -182,15 +182,15 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                             .width(80.dp)
                             .height(35.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green)
-                    ){
-                        Text( text = stringResource(R.string.delete))
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    ) {
+                        Text(text = stringResource(R.string.delete))
                     }
                 }
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }
-        Column (
+        Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -220,6 +220,5 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
             Spacer(modifier = Modifier.height(15.dp))
         }
-
     }
 }
