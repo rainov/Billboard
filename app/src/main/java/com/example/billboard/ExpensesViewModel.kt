@@ -112,6 +112,9 @@ class ExpensesViewModel: ViewModel() {
                             group.balance[member]?.set(newExpense.payer, newPayer - newSingleShare)
                             group.balance[newExpense.payer]?.set(member, newMember + newSingleShare)
                             newExpense.paidvalues[member] = false
+                            if(newExpense.paidvalues.containsKey(newExpense.payer)) {
+                                newExpense.paidvalues.remove(newExpense.payer)
+                            }
                         }
                         addExpenseLine(newExpense, expenseNavControl, group, groupsVM)
                     }

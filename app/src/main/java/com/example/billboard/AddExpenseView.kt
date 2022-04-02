@@ -1,4 +1,5 @@
 package com.example.billboard
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -56,13 +57,14 @@ fun AddEditExpenseViewContent(
 
     val newExpense by remember { mutableStateOf( expense ) }
     var menuExpanded by remember { mutableStateOf(false) }
-    var dropDownWidth by remember { mutableStateOf(0) }
+//    var dropDownWidth by remember { mutableStateOf(280) }
     val groupMembers by remember { mutableStateOf(groupInfo.members) }
     var expenseName by remember { mutableStateOf(expense.name)}
     var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
     var payerMember: String by remember { mutableStateOf(expense.payer) }
     val membersWhoPay by remember {mutableStateOf(expense.rest)}
     val openDialog = remember { mutableStateOf(false) }
+    var payerButtonText by remember { mutableStateOf("")}
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -125,43 +127,67 @@ fun AddEditExpenseViewContent(
             )
             Spacer(modifier = Modifier.height(20.dp))
             Column() {
-                OutlinedTextField(
-                    value = payerMember,
-                    onValueChange = { payerMember = it },
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Bilboard_green,
-                        cursorColor = Color.White,
-                        textColor = Color.White,
-                        focusedLabelColor = Color.White
-                    ),
+                Text( text = stringResource(R.string.payer_member))
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = { menuExpanded = !menuExpanded },
                     modifier = Modifier
-                        .onSizeChanged {
-                            dropDownWidth = it.width
-                        }
-                        .height(64.dp)
-                        .padding(0.dp),
+                        .width(280.dp)
+                        .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    label = { Text(text = stringResource(R.string.payer_member)) },
-                    trailingIcon = {
-                        Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu",
-                            Modifier.clickable { menuExpanded = !menuExpanded })
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    payerButtonText = if ( payerMember.isEmpty() ) {
+                        stringResource(R.string.select)
+                    } else {
+                        payerMember
                     }
-                )
+                    Text(text = payerButtonText )
+                    Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu" )
+                }
+//                OutlinedTextField(
+//                    value = payerMember,
+//                    onValueChange = { payerMember = it },
+//                    singleLine = true,
+//                    readOnly = true,
+//                    colors = TextFieldDefaults.outlinedTextFieldColors(
+//                        focusedBorderColor = Bilboard_green,
+//                        cursorColor = Color.White,
+//                        textColor = Color.White,
+//                        focusedLabelColor = Color.White
+//                    ),
+//                    modifier = Modifier
+//                        .onSizeChanged {
+//                            dropDownWidth = it.width
+//                        }
+//                        .height(64.dp)
+//                        .padding(0.dp),
+//                    shape = MaterialTheme.shapes.large,
+//                    label = { Text(text = stringResource(R.string.payer_member)) },
+//                    trailingIcon = {
+//                        Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu",
+//                            Modifier.clickable { menuExpanded = !menuExpanded })
+//                    }
+//                )
                 DropdownMenu(
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false },
                     modifier = Modifier
-                        .width(with(LocalDensity.current) { dropDownWidth.toDp() })
+                        .width(280.dp)
+//                        .width(with(LocalDensity.current) { dropDownWidth.toDp() })
                 ) {
                     groupMembers.forEach { member ->
                         DropdownMenuItem(onClick = {
+                            if(payerMember.isNotEmpty()) {
+                                membersWhoPay.add(payerMember)
+                            }
                             payerMember = member
                             if (membersWhoPay.contains(payerMember)) {
                                 membersWhoPay.remove(
                                     payerMember
                                 )
                             }
+                            menuExpanded = !menuExpanded
                         }) {
                             Text(text = member)
                         }

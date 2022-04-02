@@ -1,7 +1,6 @@
 package com.example.billboard
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -28,6 +27,7 @@ fun MainScreen(
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope) },
+        bottomBar = { BottomBarMainScreen( navControl ) },
         content = { MainScreenContent( navControl, groups, groupsVM) },
         drawerContent = { DrawerMainScreen (
                 scState,
@@ -46,7 +46,9 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
     ){
         //Group cards
         Column(
-            Modifier.fillMaxWidth(),
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(enabled = true, state = ScrollState(1)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
@@ -59,9 +61,9 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
                         .clickable {
                             navControl.navigate(group.id)
                         },
-                    elevation = 10.dp,
+                    elevation = 2.dp,
                     shape = MaterialTheme.shapes.large,
-                    border = BorderStroke(2.dp, Bilboard_green),
+                    border = BorderStroke(1.dp, Bilboard_green),
                     backgroundColor = Color.Transparent
                 ) {
                     Column(
@@ -74,25 +76,6 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
                         )
                     }
                 }
-            }
-        }
-
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .weight(1f, false)
-                .padding(end = 10.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.End
-        ){
-            FloatingActionButton(onClick = { navControl.navigate("CreateGroup")},
-                backgroundColor = Bilboard_green,
-                modifier = Modifier.padding(30.dp, 30.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_add),
-                    contentDescription = "add group",
-                )
             }
         }
     }

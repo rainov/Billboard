@@ -56,6 +56,7 @@
     <string name="make_admin">Make admin</string>
     <string name="total_spent">Total spent:</string>
     <string name="clear_exp">Clear</string>
+    <string name="select">Select</string>
     <string name="confirm">Confirm</string>
     <string name="clear_conf">Are you sure to erase debts for all members who didn\'t pay yet ?</string>
     <string name="delete_conf_mess_debts">Warning, some members have refund this expense. By deleting it, they will be refund.</string>

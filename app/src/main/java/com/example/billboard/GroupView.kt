@@ -2,8 +2,10 @@ package com.example.billboard
 
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ fun GroupView(
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(showMenu = true, scState, false, scope) },
+        bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl )},
         content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
         drawerContent = {
             DrawerMainScreen (
@@ -160,74 +163,42 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = stringResource(R.string.admins) + " " + adminlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-            Text(text = stringResource(R.string.members) + " " + memberlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+                Text(text = stringResource(R.string.admins) + " " + adminlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+                Text(text = stringResource(R.string.members) + " " + memberlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                expenses.forEach{ expense ->
-                    var color = BillBoard_Grey
-                    expense.paidvalues.forEach { key ->
-                        if(!key.value) color = Color.Transparent
-                    }
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Card( modifier = Modifier
-                        .padding(5.dp)
-                        .clickable { expenseNavControl.navigate(expense.expid) }
-                        .fillMaxWidth(fraction = 0.75f),
-                        elevation = 10.dp,
-                        shape = MaterialTheme.shapes.large,
-                        border = BorderStroke(2.dp, Bilboard_green),
-                        backgroundColor = color
-                    ){
-                        Text( text = expense.name,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .padding(15.dp))
-                    }
-
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f, false)
-                    .padding(end = 10.dp, start = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "back icon",
-
-                    modifier = Modifier
-                        .clickable { navControl.navigate("MainScreen") }
-                        .padding(60.dp, 30.dp)
-                )
-                OutlinedButton(
-                    onClick = {
-                        /* TODO */
-                    },
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(40.dp),
-                    shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                        .verticalScroll(enabled = true, state = ScrollState(1)),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(R.string.delete))
-                }
-                FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
-                    backgroundColor = Bilboard_green,
-                    modifier = Modifier.padding(50.dp, 30.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_add),
-                        contentDescription = "add expense",
-                    )
+                    expenses.forEach{ expense ->
+                        var color = BillBoard_Grey
+                        expense.paidvalues.forEach { key ->
+                            if(!key.value) color = Color.Transparent
+                        }
+
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        Card( modifier = Modifier
+                            .padding(5.dp)
+                            .clickable { expenseNavControl.navigate(expense.expid) }
+                            .fillMaxWidth(fraction = 0.75f),
+                            elevation = 10.dp,
+                            shape = MaterialTheme.shapes.large,
+                            border = BorderStroke(1.dp, Bilboard_green),
+                            backgroundColor = color
+                        ){
+                            Text( text = expense.name,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .padding(15.dp))
+                        }
+                    }
                 }
             }
         }
