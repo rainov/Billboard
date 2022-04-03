@@ -43,7 +43,7 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
 
             },
             modifier = Modifier
-                .width(280.dp)
+                .fillMaxWidth(.85f)
                 .height(60.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
@@ -58,7 +58,7 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
 
             },
             modifier = Modifier
-                .width(280.dp)
+                .fillMaxWidth(.85f)
                 .height(60.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
@@ -74,7 +74,7 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
                 scope.launch { scState.drawerState.close() }
             },
             modifier = Modifier
-                .width(280.dp)
+                .fillMaxWidth(.85f)
                 .height(60.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )

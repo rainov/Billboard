@@ -1,6 +1,4 @@
 package com.example.billboard
-import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -10,9 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -32,18 +27,19 @@ fun AddEditExpenseView(
     groupsVM: GroupsViewModel,
     scope: CoroutineScope
 ) {
-
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-        content = { AddEditExpenseViewContent(
-            groupInfo = groupInfo,
-            expenseNavControl = expenseNavControl,
-            expensesViewModel = expensesViewModel,
-            expense = expense,
-            groupsVM = groupsVM
-        ) }
+        bottomBar = { BottomBarBack(expenseNavControl) },
+        content = {
+            AddEditExpenseViewContent(
+                groupInfo = groupInfo,
+                expenseNavControl = expenseNavControl,
+                expensesViewModel = expensesViewModel,
+                expense = expense,
+                groupsVM = groupsVM
+            )
+        }
     )
-
 }
 
 @Composable
@@ -57,7 +53,6 @@ fun AddEditExpenseViewContent(
 
     val newExpense by remember { mutableStateOf( expense ) }
     var menuExpanded by remember { mutableStateOf(false) }
-//    var dropDownWidth by remember { mutableStateOf(280) }
     val groupMembers by remember { mutableStateOf(groupInfo.members) }
     var expenseName by remember { mutableStateOf(expense.name)}
     var expenseAmount by remember { mutableStateOf(expense.amount.toString())}
@@ -132,7 +127,7 @@ fun AddEditExpenseViewContent(
                 OutlinedButton(
                     onClick = { menuExpanded = !menuExpanded },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
@@ -145,36 +140,11 @@ fun AddEditExpenseViewContent(
                     Text(text = payerButtonText )
                     Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu" )
                 }
-//                OutlinedTextField(
-//                    value = payerMember,
-//                    onValueChange = { payerMember = it },
-//                    singleLine = true,
-//                    readOnly = true,
-//                    colors = TextFieldDefaults.outlinedTextFieldColors(
-//                        focusedBorderColor = Bilboard_green,
-//                        cursorColor = Color.White,
-//                        textColor = Color.White,
-//                        focusedLabelColor = Color.White
-//                    ),
-//                    modifier = Modifier
-//                        .onSizeChanged {
-//                            dropDownWidth = it.width
-//                        }
-//                        .height(64.dp)
-//                        .padding(0.dp),
-//                    shape = MaterialTheme.shapes.large,
-//                    label = { Text(text = stringResource(R.string.payer_member)) },
-//                    trailingIcon = {
-//                        Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu",
-//                            Modifier.clickable { menuExpanded = !menuExpanded })
-//                    }
-//                )
                 DropdownMenu(
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false },
                     modifier = Modifier
-                        .width(280.dp)
-//                        .width(with(LocalDensity.current) { dropDownWidth.toDp() })
+                        .fillMaxWidth(.75f)
                 ) {
                     groupMembers.forEach { member ->
                         DropdownMenuItem(onClick = {
@@ -217,7 +187,7 @@ fun AddEditExpenseViewContent(
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(modifier = Modifier
-                .width(280.dp)
+                .fillMaxWidth(.75f)
                 .height(40.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green ),
@@ -281,15 +251,15 @@ fun AddEditExpenseViewContent(
             }
         }
 
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.padding(start = 10.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "back icon",
-                    modifier = Modifier.clickable { expenseNavControl.navigate("group") })
-            }
+//            Row(
+//                horizontalArrangement = Arrangement.Start,
+//                modifier = Modifier.padding(start = 10.dp)
+//            ) {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_back),
+//                    contentDescription = "back icon",
+//                    modifier = Modifier.clickable { expenseNavControl.navigate("group") })
+//            }
     }
 }
 

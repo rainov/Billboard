@@ -114,7 +114,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                             openDialog.value = true
                           },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
@@ -127,7 +127,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             OutlinedButton(
                 onClick = { userVM.signOut() },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
@@ -161,7 +161,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                     navControl.navigate("MainScreen")
                           },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
@@ -176,7 +176,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             OutlinedButton(
                 onClick = { },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_Red )

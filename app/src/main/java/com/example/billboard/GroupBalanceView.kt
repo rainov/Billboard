@@ -16,7 +16,6 @@ import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
 import com.example.billboard.ui.theme.Billboard_Red
 import kotlinx.coroutines.CoroutineScope
-import kotlin.math.*
 
 @Composable
 fun GroupBalanceView (
@@ -24,19 +23,21 @@ fun GroupBalanceView (
     expenseNavControl: NavController,
     groupInfo: GroupClass,
     expenses: List<ExpenseClass>,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    navControl: NavController
 ) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope ) },
-        content = { GroupBalanceContent( expenseNavControl, groupInfo, expenses ) },
+        bottomBar = { BottomBarBack(expenseNavControl) },
+        content = { GroupBalanceContent( groupInfo, expenses ) },
         drawerContent = {
             DrawerMainScreen (
                 scState,
                 scope,
                 DrawerGroupContent(
-                    navControl = expenseNavControl,
+                    navControl,
                     scState,
                     scope,
                     groupInfo,
@@ -49,7 +50,6 @@ fun GroupBalanceView (
 
 @Composable
 fun GroupBalanceContent(
-    expenseNavControl: NavController,
     groupInfo: GroupClass,
     expenses: List<ExpenseClass>
 ) {

@@ -28,26 +28,27 @@ fun GroupView(
     expenseNavControl: NavController,
     navControl: NavController,
     scState: ScaffoldState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    groupsViewModel: GroupsViewModel
 ) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-        bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl )},
-        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
+        bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl, groupInfo, groupsViewModel )},
         drawerContent = {
             DrawerMainScreen (
                 scState,
                 scope,
                 DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl )
             )
-        }
+        },
+        content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
     )
 }
 
 @Composable
-fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ){
+fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ) {
 
     var totalSpent = 0.0
     expenses.forEach { expense ->
@@ -61,19 +62,28 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(50.dp))
-            Row (
+            Row(
                 modifier = Modifier.weight((1f))
-            ){
-                
-                Text(text = groupInfo.name, modifier = Modifier.clickable { navControl.navigate("MainScreen") }, textAlign = TextAlign.Center, fontSize = 30.sp)
-                
+            ) {
+
+                Text(
+                    text = groupInfo.name,
+                    modifier = Modifier.clickable { navControl.navigate("MainScreen") },
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp
+                )
+
             }
             Column(
                 modifier = Modifier.weight(2f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
-            ){
-                Text(text = stringResource(R.string.lonely_message), textAlign = TextAlign.Center, fontSize =28.sp)
+            ) {
+                Text(
+                    text = stringResource(R.string.lonely_message),
+                    textAlign = TextAlign.Center,
+                    fontSize = 28.sp
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -82,7 +92,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         expenseNavControl.navigate("addMembers")
                     },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
@@ -90,69 +100,54 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                     Text(text = stringResource(R.string.add_members))
                 }
             }
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
-            ){
-                Spacer(modifier = Modifier.height(40.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 10.dp, start = 10.dp),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_back),
-                        contentDescription = "back icon",
-                        modifier = Modifier
-                            .clickable { navControl.navigate("MainScreen") }
-                            .padding(60.dp, 30.dp)
-                    )
-                }
-            }
         }
     } else {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
-        ){
+        ) {
 
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = groupInfo.name, modifier = Modifier.clickable { navControl.navigate("MainScreen") }, textAlign = TextAlign.Center, fontSize = 30.sp)
+                Text(
+                    text = groupInfo.name,
+                    modifier = Modifier.clickable { navControl.navigate("MainScreen") },
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 var adminlist = ""
                 groupInfo.admins.forEach { admin ->
-                    adminlist = if(adminlist.isEmpty()) admin.substringBefore("@")
+                    adminlist = if (adminlist.isEmpty()) admin.substringBefore("@")
                     else adminlist + ", " + admin.substringBefore("@")
                 }
 
                 var memberlist = ""
                 groupInfo.members.forEach { member ->
-                    memberlist = if(memberlist.isEmpty()) member.substringBefore("@")
+                    memberlist = if (memberlist.isEmpty()) member.substringBefore("@")
                     else memberlist + ", " + member.substringBefore("@")
                 }
 
                 OutlinedButton(
                     onClick = { expenseNavControl.navigate("groupBalance") },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(50.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
                 ) {
-                    Row( modifier = Modifier.fillMaxWidth(),
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text( text = "Group balance details")
+                        Text(text = stringResource(R.string.balance_details))
                         Icon(
                             painter = painterResource(R.drawable.forward),
                             contentDescription = "forward arrow",
@@ -163,8 +158,12 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = stringResource(R.string.admins) + " " + adminlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-                Text(text = stringResource(R.string.members) + " " + memberlist, modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+                Text(
+                    text = stringResource(R.string.admins) + " " + adminlist,
+                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+                Text(
+                    text = stringResource(R.string.members) + " " + memberlist,
+                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -172,19 +171,19 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .height(400.dp)
+                        .fillMaxSize(.8f)
                         .verticalScroll(enabled = true, state = ScrollState(1)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    expenses.forEach{ expense ->
+                    expenses.forEach { expense ->
                         var color = BillBoard_Grey
                         expense.paidvalues.forEach { key ->
-                            if(!key.value) color = Color.Transparent
+                            if (!key.value) color = Color.Transparent
                         }
 
                         Spacer(modifier = Modifier.height(5.dp))
 
-                        Card( modifier = Modifier
+                        Card(modifier = Modifier
                             .padding(5.dp)
                             .clickable { expenseNavControl.navigate(expense.expid) }
                             .fillMaxWidth(fraction = 0.75f),
@@ -192,15 +191,28 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                             shape = MaterialTheme.shapes.large,
                             border = BorderStroke(1.dp, Bilboard_green),
                             backgroundColor = color
-                        ){
-                            Text( text = expense.name,
+                        ) {
+                            Text(
+                                text = expense.name,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
-                                    .padding(15.dp))
+                                    .padding(15.dp)
+                            )
                         }
                     }
                 }
             }
         }
     }
+}
+
+fun groupBalanceClear(group: GroupClass): Boolean {
+    group.balance.forEach { key ->
+        key.value.forEach { member ->
+            if (member.value != 0.0) {
+                return false
+            }
+        }
+    }
+    return true
 }

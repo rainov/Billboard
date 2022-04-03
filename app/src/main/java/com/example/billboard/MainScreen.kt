@@ -48,6 +48,7 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
         Column(
             Modifier
                 .fillMaxWidth()
+                .fillMaxSize(.88f)
                 .verticalScroll(enabled = true, state = ScrollState(1)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

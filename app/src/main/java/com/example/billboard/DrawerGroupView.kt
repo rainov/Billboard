@@ -33,7 +33,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             Divider(
                 modifier = Modifier
                     .height(1.dp)
-                    .width(280.dp),
+                    .fillMaxWidth(.85f),
                 color = Bilboard_green
             )
         }
@@ -60,7 +60,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                 OutlinedButton(
                     onClick = { expenseNavControl.navigate("addMembers")},
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.85f)
                         .height(60.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
@@ -79,8 +79,8 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
             Divider(
                 modifier = Modifier
-                    .height(1.dp)
-                    .width(280.dp),
+                    .fillMaxWidth(.85f)
+                    .height(1.dp),
                 color = Bilboard_green
             )
 
@@ -92,7 +92,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     scope.launch { scState.drawerState.close() }
                 },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
@@ -107,7 +107,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
                 },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
@@ -119,8 +119,8 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
             Divider(
                 modifier = Modifier
-                    .height(1.dp)
-                    .width(280.dp),
+                    .fillMaxWidth(.85f)
+                    .height(1.dp),
                 color = Bilboard_green
             )
 

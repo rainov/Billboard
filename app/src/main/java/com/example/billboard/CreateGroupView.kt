@@ -59,7 +59,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
                 groupsVM.createGroup( groupName, navControl )
             },
             modifier = Modifier
-                .width(280.dp)
+                .fillMaxWidth(.75f)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
@@ -74,7 +74,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
                 navControl.navigate("MainScreen")
             },
             modifier = Modifier
-                .width(280.dp)
+                .fillMaxWidth(.75f)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)

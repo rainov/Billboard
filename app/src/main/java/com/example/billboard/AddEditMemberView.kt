@@ -84,8 +84,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
             Divider(
                 modifier = Modifier
-                    .height(1.dp)
-                    .width(280.dp),
+                    .fillMaxWidth(.75f)
+                    .height(1.dp),
                 color = Bilboard_green
             )
 
@@ -127,7 +127,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             OutlinedButton(
                 onClick = { addMember() },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
@@ -139,8 +139,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
             Divider(
                 modifier = Modifier
-                    .height(1.dp)
-                    .width(280.dp),
+                    .fillMaxWidth(.75f)
+                    .height(1.dp),
                 color = Bilboard_green
             )
 
@@ -198,8 +198,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
             Divider(
                 modifier = Modifier
-                    .height(1.dp)
-                    .width(280.dp),
+                    .fillMaxWidth(.75f)
+                    .height(1.dp),
                 color = Bilboard_green
             )
 
@@ -210,7 +210,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     expenseNavControl.navigate("group")
                 },
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)

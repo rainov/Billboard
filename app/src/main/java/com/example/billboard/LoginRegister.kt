@@ -344,7 +344,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         login(email, password)
                     },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
@@ -366,7 +366,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         fieldError = false
                     },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
@@ -375,13 +375,15 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                 }
                 //Change to register view end
 
+                Spacer(modifier = Modifier.height(5.dp))
+
                 //Reset password start
                 OutlinedButton(
                     onClick = {
                         dialogForgotPw.value = true
                     },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
@@ -399,7 +401,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         register(email, password, repeatPassword, username)
                     },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
@@ -420,7 +422,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         fieldError = false
                     },
                     modifier = Modifier
-                        .width(280.dp)
+                        .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
