@@ -250,16 +250,6 @@ fun AddEditExpenseViewContent(
                 )
             }
         }
-
-//            Row(
-//                horizontalArrangement = Arrangement.Start,
-//                modifier = Modifier.padding(start = 10.dp)
-//            ) {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.ic_back),
-//                    contentDescription = "back icon",
-//                    modifier = Modifier.clickable { expenseNavControl.navigate("group") })
-//            }
     }
 }
 
