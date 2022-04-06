@@ -16,7 +16,7 @@ import com.example.billboard.ui.theme.Bilboard_green
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass) {
+fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass ) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
         content = { AddEditMemberContent( groupsVM, expenseNavControl, group ) }
@@ -25,7 +25,7 @@ fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavControlle
 }
 
 @Composable
-fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavController, group: GroupClass) {
+fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavController, group: GroupClass ) {
 
     var memberEmail by remember { mutableStateOf("") }
     var membersList by remember { mutableStateOf(group.members) }
@@ -63,6 +63,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         editGroup = newGroup
         newBalance = newGroup.balance
         groupsVM.editGroup(newGroup)
+//        groupsVM.editGroup(newGroup)
     }
 
     Column(

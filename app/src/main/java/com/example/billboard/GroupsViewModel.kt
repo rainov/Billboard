@@ -4,26 +4,25 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class GroupsViewModel: ViewModel() {
 
-    //var groups = mutableStateOf( listOf<DocumentSnapshot>() )
-
-    //var userEmail = FirebaseAuth.getInstance().currentUser.toString()
-    //The above function makes a new instance of FirebaseAuth and so it doesn't have the value of the current user.
-
-    var userEmail = Firebase.auth.currentUser?.email.toString()
+//    var userEmail = Firebase.auth.currentUser?.email.toString()
+    var userEmail = mutableStateOf("")
+    fun setEmail( email: String ) {
+        userEmail.value = email
+    }
 
     var groups = mutableStateOf( listOf<GroupClass>())
 
     fun getGroups() {
+        Log.d("EMAIL", userEmail.value)
         Log.d("getGroups called ", "TRUE")
         Firebase.firestore
             .collection("groups")
-            .whereArrayContains("members", userEmail)
+            .whereArrayContains("members", userEmail.value )
             .addSnapshotListener { value, error ->
                 if ( error != null ) {
                     error.message?.let { Log.d("err message: ", it) }
@@ -39,21 +38,22 @@ class GroupsViewModel: ViewModel() {
                             group.id
                         )
                         tempGroupClasses.add(tempSingleGroup)
-                        //Log.d("BALANCE", tempSingleGroup.balance.toString())
                     }
                     groups.value = tempGroupClasses
+                } else if ( value != null && value.isEmpty  ){
+                    groups.value = emptyList()
                 }
             }
     }
 
     fun createGroup( name: String, navControl: NavController) {
-        val adminsList: List<String> = listOf(userEmail)
+        val adminsList: List<String> = listOf(userEmail.value)
         val expensesList: List<String> = listOf()
-        val membersList: List<String> = listOf(userEmail)
+        val membersList: List<String> = listOf(userEmail.value)
         val groupName: String = name
         val balance = mutableMapOf(membersList[0] to mutableMapOf<String, Double>())
         val newGroup = GroupClass( adminsList, expensesList, membersList, groupName, balance, "" )
-        Log.d("Current user", userEmail)
+        Log.d("Current user", userEmail.value)
         Firebase.firestore
             .collection("groups")
             .add(newGroup)

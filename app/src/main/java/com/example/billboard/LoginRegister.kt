@@ -19,6 +19,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.billboard.ui.theme.Bilboard_green
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 
 
 @Composable
-fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: ScaffoldState, scope: CoroutineScope) {
+fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: ScaffoldState, scope: CoroutineScope, auth: FirebaseAuth) {
 
     val context = LocalContext.current
 
@@ -37,13 +39,13 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
 
-    var fieldError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-
-    val auth = FirebaseAuth.getInstance()
 
     val openDialog = remember { mutableStateOf(false) }
     val dialogForgotPw = remember { mutableStateOf(false) }
+    var notVerified by remember { mutableStateOf(false) }
+    var emailInUse by remember { mutableStateOf(false) }
+    var registerSuccess by remember { mutableStateOf( false ) }
 
     var emailinput by remember { mutableStateOf("")}
 
@@ -149,20 +151,118 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         )
     }
 
+    if (notVerified) {
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.not_verifdied))
+            },
+            text = {
+                Text(text = errorMessage)
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        notVerified = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.ok))
+                }
+            }
+        )
+    }
+
+    if (emailInUse) {
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.register_fail))
+            },
+            text = {
+                Text(text = errorMessage)
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        emailInUse = false
+                        registerSwitch = !registerSwitch
+                        email = ""
+                        password = ""
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.ok))
+                }
+            }
+        )
+    }
+
+    if (registerSuccess) {
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.register_success))
+            },
+            text = {
+                Text(text = errorMessage)
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        registerSuccess = false
+                        registerSwitch = !registerSwitch
+                        email = ""
+                        password = ""
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.ok))
+                }
+            }
+        )
+    }
+
     fun login(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener() { task ->
                     if(task.isSuccessful){
-                        userVM.setEmail(email)
-                        Firebase.firestore.collection("users")
-                            .document(email)
-                            .get()
-                            .addOnSuccessListener {
-                                userVM.setUsername(it.get("username").toString())
-                                userVM.signIn()
-                                groupsVM.getGroups()
-                            }
+                        if (auth.currentUser?.isEmailVerified == true) {
+                            userVM.setEmail(email)
+                            auth.currentUser?.let { user -> userVM.signIn( user )}
+                            groupsVM.setEmail( email )
+                            Firebase.firestore.collection("users")
+                                .document(email)
+                                .get()
+                                .addOnSuccessListener {
+                                    userVM.setUsername(it.get("username").toString())
+                                    groupsVM.getGroups()
+                                }
+                        } else {
+                            errorMessage = context.getString(R.string.verify_email)
+                            notVerified = true
+                            auth.signOut()
+                        }
+
                     } else {
                         errorMessage = context.getString(R.string.err_signin)
                         openDialog.value = true
@@ -186,12 +286,19 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                             .document(email)
                             .set(user)
                             .addOnSuccessListener {
-                                Log.d("Username stored ", username)
-                                userVM.setEmail(email)
-                                userVM.setUsername(username)
-                                userVM.signIn()
-                                groupsVM.getGroups()
+                                auth.fetchSignInMethodsForEmail(email).addOnCompleteListener {
+                                    if ( it.isSuccessful ) {
+                                        auth.currentUser?.sendEmailVerification()
+                                        errorMessage = context.getString(R.string.verification_email)
+                                        registerSuccess = true
+                                        auth.signOut()
+                                    }
+                                }
                             }
+                    }
+                    .addOnFailureListener {
+                        errorMessage = it.message.toString()
+                        emailInUse = true
                     }
             } else {
                 errorMessage = context.getString(R.string.passwords_not_match)
@@ -330,12 +437,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
             }
             //Repeat password end
 
-            //Error messages star
             Spacer(modifier = Modifier.height(5.dp))
-            if (fieldError) {
-                Text(text = errorMessage)
-            }
-            //Error messages end
 
             //SignIn button start
             if (!registerSwitch) {
@@ -363,7 +465,6 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         password = ""
                         repeatPassword = ""
                         username = ""
-                        fieldError = false
                     },
                     modifier = Modifier
                         .fillMaxWidth(.75f)
@@ -419,7 +520,6 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         registerSwitch = !registerSwitch
                         email = ""
                         password = ""
-                        fieldError = false
                     },
                     modifier = Modifier
                         .fillMaxWidth(.75f)

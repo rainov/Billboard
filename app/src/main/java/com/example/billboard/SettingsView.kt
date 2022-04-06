@@ -24,13 +24,14 @@ fun SettingsView (
     scState: ScaffoldState,
     navControl: NavController,
     userVM: UserViewModel,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    auth: FirebaseAuth
 ) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope ) },
-        content = { SettingsContent( navControl, userVM, scState, scope ) },
+        content = { SettingsContent( navControl, userVM, scState, scope, auth ) },
         drawerContent = { DrawerMainScreen (
                 scState,
                 scope,
@@ -42,7 +43,7 @@ fun SettingsView (
 }
 
 @Composable
-fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope) {
+fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope, auth: FirebaseAuth) {
 
     val checkedState = remember { mutableStateOf(true) }
     val openDialog = remember { mutableStateOf(false) }
@@ -125,7 +126,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             Spacer(modifier = Modifier.height(40.dp))
 
             OutlinedButton(
-                onClick = { userVM.signOut() },
+                onClick = { userVM.signOut(auth) },
                 modifier = Modifier
                     .fillMaxWidth(.75f)
                     .height(40.dp),
