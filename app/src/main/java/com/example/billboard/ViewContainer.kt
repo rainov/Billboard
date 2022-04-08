@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
@@ -30,6 +31,13 @@ fun ViewContainer(){
         userVM.setUser( user )
         groupsVM.setEmail(user.email.toString())
         groupsVM.getGroups()
+        Firebase.firestore
+            .collection("users")
+            .document(user.email.toString())
+            .get()
+            .addOnSuccessListener { userName ->
+                userVM.setUsername( userName.get("username").toString())
+            }
     }
 
     val scState = rememberScaffoldState(

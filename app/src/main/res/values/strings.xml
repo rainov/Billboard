@@ -68,4 +68,6 @@
     <string name="register_fail">Registration failed!</string>
     <string name="register_success">Registration successful!</string>
     <string name="verification_email">Verification link was sent to your email address. Verify your account before signing in!</string>
+    <string name="edit_username">Edit username</string>
+    <string name="save">Save</string>
 </resources>
