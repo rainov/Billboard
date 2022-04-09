@@ -17,10 +17,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -75,7 +73,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         },
                         singleLine = true,
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Bilboard_green,
+                            focusedBorderColor = Billboard_green,
                             cursorColor = Color.White,
                             textColor = Color.White,
                             focusedLabelColor = Color.White
@@ -100,7 +98,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.send))
                 }
@@ -114,7 +112,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.cancel))
                 }
@@ -143,7 +141,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.ok))
                 }
@@ -171,7 +169,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.ok))
                 }
@@ -202,7 +200,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.ok))
                 }
@@ -233,7 +231,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.ok))
                 }
@@ -337,7 +335,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         label = { Text(text = stringResource(R.string.username)) },
                         singleLine = true,
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Bilboard_green,
+                            focusedBorderColor = Billboard_green,
                             cursorColor = Color.White,
                             textColor = Color.White,
                             focusedLabelColor = Color.White
@@ -364,7 +362,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Bilboard_green,
+                        focusedBorderColor = Billboard_green,
                         cursorColor = Color.White,
                         textColor = Color.White,
                         focusedLabelColor = Color.White
@@ -394,7 +392,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                 },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Bilboard_green,
+                    focusedBorderColor = Billboard_green,
                     cursorColor = Color.White,
                     textColor = Color.White,
                     focusedLabelColor = Color.White
@@ -423,7 +421,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Bilboard_green,
+                        focusedBorderColor = Billboard_green,
                         cursorColor = Color.White,
                         textColor = Color.White,
                         focusedLabelColor = Color.White
@@ -449,7 +447,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.sign_in_text))
                 }
@@ -505,7 +503,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.register_text))
                 }

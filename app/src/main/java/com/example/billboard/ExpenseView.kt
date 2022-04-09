@@ -13,7 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
@@ -127,7 +127,7 @@ fun ExpenseViewContent(
                                     .width(150.dp)
                                     .height(40.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                             ) {
                                 Text(text = stringResource(R.string.erase_debt))
                             }
@@ -147,7 +147,7 @@ fun ExpenseViewContent(
                                     .width(150.dp)
                                     .height(40.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                             ) {
                                 Text(text = stringResource(R.string.cancel_erase_debt))
                             }

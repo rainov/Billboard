@@ -9,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -34,7 +34,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                 modifier = Modifier
                     .height(1.dp)
                     .fillMaxWidth(.85f),
-                color = Bilboard_green
+                color = Billboard_green
             )
         }
 
@@ -58,12 +58,15 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedButton(
-                    onClick = { expenseNavControl.navigate("addMembers")},
+                    onClick = {
+                        expenseNavControl.navigate("addMembers")
+                        scope.launch { scState.drawerState.close() }
+                    },
                     modifier = Modifier
                         .fillMaxWidth(.85f)
                         .height(60.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.edit_members))
                 }
@@ -81,7 +84,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                 modifier = Modifier
                     .fillMaxWidth(.85f)
                     .height(1.dp),
-                color = Bilboard_green
+                color = Billboard_green
             )
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -95,7 +98,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
             ) {
                 Text( text = stringResource(R.string.settings))
             }
@@ -104,13 +107,14 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
             OutlinedButton(
                 onClick = {
-
+                    navControl.navigate("About")
+                    scope.launch { scState.drawerState.close() }
                 },
                 modifier = Modifier
                     .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
             ) {
                 Text( text = stringResource(R.string.about))
             }
@@ -121,7 +125,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                 modifier = Modifier
                     .fillMaxWidth(.85f)
                     .height(1.dp),
-                color = Bilboard_green
+                color = Billboard_green
             )
 
             Spacer(modifier = Modifier.height(10.dp))

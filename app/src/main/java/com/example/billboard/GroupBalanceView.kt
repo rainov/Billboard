@@ -1,8 +1,10 @@
 package com.example.billboard
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import com.example.billboard.ui.theme.Billboard_Red
 import kotlinx.coroutines.CoroutineScope
 
@@ -65,7 +67,7 @@ fun GroupBalanceContent(
         //.weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Text(text = groupInfo.name, textAlign = TextAlign.Center, fontSize = 30.sp)
 
@@ -79,59 +81,67 @@ fun GroupBalanceContent(
             Row( ) {
                 Text( text = stringResource( R.string.total_spent ), fontSize = 20.sp)
                 Spacer(modifier = Modifier.width( 15.dp))
-                Text( text = totalSpent.toString(), fontSize = 20.sp, color = Bilboard_green )
+                Text( text = totalSpent.toString(), fontSize = 20.sp, color = Billboard_green )
             }
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(25.dp))
 
-            groupInfo.members.forEach { member ->
-                Box(
-                    modifier = Modifier
-                        .width(300.dp)
-                        .border(
-                            BorderStroke(1.dp, Bilboard_green),
-                            shape = MaterialTheme.shapes.large,
-                        )
-                        .padding(15.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize(.88f)
+                    .verticalScroll(enabled = true, state = ScrollState(1))
+            ) {
+                groupInfo.members.forEach { member ->
+                    Box(
+                        modifier = Modifier
+                            .width(300.dp)
+                            .border(
+                                BorderStroke(1.dp, Billboard_green),
+                                shape = MaterialTheme.shapes.large,
+                            )
+                            .padding(15.dp)
                     ) {
-                        Text( text = member, textAlign = TextAlign.Center, fontSize = 19.sp )
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text( text = member, textAlign = TextAlign.Center, fontSize = 19.sp )
 
-                        Spacer(modifier = Modifier.height(5.dp))
+                            Spacer(modifier = Modifier.height(5.dp))
 
-                        Divider(
-                            modifier = Modifier.height(1.dp),
-                            color = Bilboard_green
-                        )
+                            Divider(
+                                modifier = Modifier.height(1.dp),
+                                color = Billboard_green
+                            )
 
-                        Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
 
-                        groupInfo.balance[member]?.forEach { other ->
-                            var color: Color = Color.White
-                            var amount: Double = 0.0
+                            groupInfo.balance[member]?.forEach { other ->
+                                var color: Color = Color.White
+                                var amount: Double = 0.0
 
 
-                            if ( other.value < 0 ) {
-                                color = Billboard_Red
-                                amount = other.value * -1
-                            } else if (other.value > 0){
-                                color = Bilboard_green
-                                amount = other.value
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text( text = other.key + ": " )
-                                Text( text = amount.toString(), color = color)
+                                if ( other.value < 0 ) {
+                                    color = Billboard_Red
+                                    amount = other.value * -1
+                                } else if (other.value > 0){
+                                    color = Billboard_green
+                                    amount = other.value
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text( text = other.key + ": " )
+                                    Text( text = amount.toString(), color = color)
+                                }
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
-                Spacer(modifier = Modifier.height(15.dp))
             }
         }
     }

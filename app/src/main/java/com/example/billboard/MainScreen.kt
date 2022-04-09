@@ -7,12 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
-import com.google.firebase.firestore.DocumentSnapshot
+import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -64,7 +62,7 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
                         },
                     elevation = 2.dp,
                     shape = MaterialTheme.shapes.large,
-                    border = BorderStroke(1.dp, Bilboard_green),
+                    border = BorderStroke(1.dp, Billboard_green),
                     backgroundColor = Color.Transparent
                 ) {
                     Column(

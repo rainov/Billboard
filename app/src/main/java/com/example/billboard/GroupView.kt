@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import com.example.billboard.ui.theme.BillBoard_Grey
 import kotlinx.coroutines.CoroutineScope
 
@@ -95,7 +95,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.add_members))
                 }
@@ -141,7 +141,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         .fillMaxWidth(.75f)
                         .height(50.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -151,7 +151,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         Icon(
                             painter = painterResource(R.drawable.forward),
                             contentDescription = "forward arrow",
-                            tint = Bilboard_green
+                            tint = Billboard_green
                         )
                     }
                 }
@@ -189,7 +189,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                             .fillMaxWidth(fraction = 0.75f),
                             elevation = 10.dp,
                             shape = MaterialTheme.shapes.large,
-                            border = BorderStroke(1.dp, Bilboard_green),
+                            border = BorderStroke(1.dp, Billboard_green),
                             backgroundColor = color
                         ) {
                             Text(

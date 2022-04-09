@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -42,14 +42,14 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
             label = { Text(text = stringResource(R.string.group_name)) },
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Bilboard_green,
+                focusedBorderColor = Billboard_green,
                 cursorColor = Color.White,
                 textColor = Color.White,
                 focusedLabelColor = Color.White
             ),
             modifier = Modifier.height(64.dp),
             shape = MaterialTheme.shapes.large,
-            textStyle = TextStyle(color = Bilboard_green)
+            textStyle = TextStyle(color = Billboard_green)
         )
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -62,7 +62,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
                 .fillMaxWidth(.75f)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
         ) {
             Text(text = stringResource(R.string.create_group))
         }
@@ -77,7 +77,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
                 .fillMaxWidth(.75f)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
         ) {
             Text(text = stringResource(R.string.cancel))
         }

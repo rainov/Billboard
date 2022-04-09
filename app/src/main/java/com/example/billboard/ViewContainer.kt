@@ -30,6 +30,7 @@ fun ViewContainer(){
     if (user != null) {
         userVM.setUser( user )
         groupsVM.setEmail(user.email.toString())
+        userVM.setEmail(user.email.toString())
         groupsVM.getGroups()
         Firebase.firestore
             .collection("users")
@@ -63,6 +64,9 @@ fun ViewContainer(){
             }
             composable( route = "Settings") {
                 SettingsView( scState, navControl, userVM, scope, auth )
+            }
+            composable( route = "About") {
+                AboutUs( scState, navControl, scope )
             }
         }
     }

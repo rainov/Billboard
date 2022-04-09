@@ -1,7 +1,9 @@
 package com.example.billboard
 
 import android.util.Log
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -63,148 +65,158 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         editGroup = newGroup
         newBalance = newGroup.balance
         groupsVM.editGroup(newGroup)
-//        groupsVM.editGroup(newGroup)
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(text = group.name, fontSize = 30.sp)
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(1.dp),
-                color = Bilboard_green
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            OutlinedTextField(
-                value = memberEmail,
-                onValueChange = { memberEmail = it },
-                label = { Text(text = stringResource(R.string.member_email)) },
-                singleLine = true,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Bilboard_green,
-                    cursorColor = Color.White,
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White
-                ),
-                modifier = Modifier.height(64.dp),
-                shape = MaterialTheme.shapes.large,
-                textStyle = TextStyle(color = Bilboard_green)
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+        Column() {
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(R.string.add_as_admin))
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Checkbox(
-                    checked = adminCheck,
-                    onCheckedChange = { adminCheck = it },
-                    colors = CheckboxDefaults.colors(Bilboard_green)
+                Text(text = group.name, fontSize = 30.sp)
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(1.dp),
+                    color = Billboard_green
                 )
-            }
 
-            Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
-            OutlinedButton(
-                onClick = { addMember() },
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(40.dp),
-                shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-            ) {
-                Text(text = stringResource(R.string.add_member))
-            }
+                OutlinedTextField(
+                    value = memberEmail,
+                    onValueChange = { memberEmail = it },
+                    label = { Text(text = stringResource(R.string.member_email)) },
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Billboard_green,
+                        cursorColor = Color.White,
+                        textColor = Color.White,
+                        focusedLabelColor = Color.White
+                    ),
+                    modifier = Modifier.height(64.dp),
+                    shape = MaterialTheme.shapes.large,
+                    textStyle = TextStyle(color = Billboard_green)
+                )
 
-            Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(1.dp),
-                color = Bilboard_green
-            )
-
-        }
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            membersList.forEach { member ->
-                Text(text = member, fontSize = 20.sp)
-                Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    OutlinedButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(35.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.edit))
-                    }
-                    OutlinedButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(150.dp)
-                            .height(35.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.make_admin))
-                    }
-                    OutlinedButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(35.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.delete))
-                    }
+                    Text(text = stringResource(R.string.add_as_admin))
+
+                    Checkbox(
+                        checked = adminCheck,
+                        onCheckedChange = { adminCheck = it },
+                        colors = CheckboxDefaults.colors(Billboard_green)
+                    )
                 }
+
                 Spacer(modifier = Modifier.height(15.dp))
+
+                OutlinedButton(
+                    onClick = { addMember() },
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                ) {
+                    Text(text = stringResource(R.string.add_member))
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(1.dp),
+                    color = Billboard_green
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize(.8f)
+                    .verticalScroll(enabled = true, state = ScrollState(1))
+            ) {
+                membersList.forEach { member ->
+                    Text(text = member, fontSize = 20.sp)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        OutlinedButton(
+                            onClick = { /*TODO*/ },
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(35.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        ) {
+                            Text(text = stringResource(R.string.edit))
+                        }
+                        OutlinedButton(
+                            onClick = { /*TODO*/ },
+                            modifier = Modifier
+                                .width(150.dp)
+                                .height(35.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        ) {
+                            Text(text = stringResource(R.string.make_admin))
+                        }
+                        OutlinedButton(
+                            onClick = { /*TODO*/ },
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(35.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        ) {
+                            Text(text = stringResource(R.string.delete))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth(.75f)
+                            .height(1.dp),
+                        color = Billboard_green
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                }
             }
         }
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(1.dp),
-                color = Bilboard_green
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedButton(
                 onClick = {
@@ -214,7 +226,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
             ) {
                 Text(text = stringResource(R.string.cancel))
             }
