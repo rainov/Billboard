@@ -99,14 +99,14 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     label = { Text(text = stringResource(R.string.member_email)) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Billboard_green,
-                        cursorColor = Color.White,
-                        textColor = Color.White,
-                        focusedLabelColor = Color.White
+                        focusedBorderColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        focusedLabelColor = MaterialTheme.colors.onPrimary
                     ),
                     modifier = Modifier.height(64.dp),
                     shape = MaterialTheme.shapes.large,
-                    textStyle = TextStyle(color = Billboard_green)
+                    textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
                 )
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -120,7 +120,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     Checkbox(
                         checked = adminCheck,
                         onCheckedChange = { adminCheck = it },
-                        colors = CheckboxDefaults.colors(Billboard_green)
+                        colors = CheckboxDefaults.colors(MaterialTheme.colors.onPrimary)
                     )
                 }
 
@@ -132,7 +132,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text(text = stringResource(R.string.add_member))
                 }
@@ -170,7 +171,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                 .width(80.dp)
                                 .height(35.dp),
                             shape = MaterialTheme.shapes.large,
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                         ) {
                             Text(text = stringResource(R.string.edit))
                         }
@@ -180,7 +182,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                 .width(150.dp)
                                 .height(35.dp),
                             shape = MaterialTheme.shapes.large,
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                         ) {
                             Text(text = stringResource(R.string.make_admin))
                         }
@@ -190,7 +193,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                 .width(80.dp)
                                 .height(35.dp),
                             shape = MaterialTheme.shapes.large,
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                         ) {
                             Text(text = stringResource(R.string.delete))
                         }
@@ -226,7 +230,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
             ) {
                 Text(text = stringResource(R.string.cancel))
             }

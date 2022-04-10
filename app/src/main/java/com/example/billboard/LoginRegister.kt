@@ -363,9 +363,9 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Billboard_green,
-                        cursorColor = Color.White,
-                        textColor = Color.White,
-                        focusedLabelColor = Color.White
+                        cursorColor = MaterialTheme.colors.onPrimary,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        focusedLabelColor = MaterialTheme.colors.onPrimary
                     ),
                     modifier = Modifier
                         .height(64.dp),
@@ -393,9 +393,9 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Billboard_green,
-                    cursorColor = Color.White,
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White
+                    cursorColor = MaterialTheme.colors.onPrimary,
+                    textColor = MaterialTheme.colors.onPrimary,
+                    focusedLabelColor = MaterialTheme.colors.onPrimary
                 ),
                 visualTransformation = if (showPassWd) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.height(64.dp),
@@ -422,15 +422,14 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Billboard_green,
-                        cursorColor = Color.White,
-                        textColor = Color.White,
-                        focusedLabelColor = Color.White
+                        cursorColor = MaterialTheme.colors.onPrimary,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        focusedLabelColor = MaterialTheme.colors.onPrimary
                     ),
                     visualTransformation = if (showPassWd2) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.height(64.dp),
                     shape = MaterialTheme.shapes.large,
-                    //textStyle = TextStyle(color = Bilboard_green)
                 )
             }
             //Repeat password end
@@ -447,7 +446,10 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Billboard_green,
+                        backgroundColor = MaterialTheme.colors.surface
+                    )
                 ) {
                     Text(text = stringResource(R.string.sign_in_text))
                 }

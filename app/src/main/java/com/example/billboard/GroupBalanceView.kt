@@ -1,14 +1,12 @@
 package com.example.billboard
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -78,7 +76,7 @@ fun GroupBalanceContent(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row( ) {
+            Row() {
                 Text( text = stringResource( R.string.total_spent ), fontSize = 20.sp)
                 Spacer(modifier = Modifier.width( 15.dp))
                 Text( text = totalSpent.toString(), fontSize = 20.sp, color = Billboard_green )
@@ -119,7 +117,7 @@ fun GroupBalanceContent(
                             Spacer(modifier = Modifier.height(10.dp))
 
                             groupInfo.balance[member]?.forEach { other ->
-                                var color: Color = Color.White
+                                var color: Color = MaterialTheme.colors.onPrimary
                                 var amount: Double = 0.0
 
 

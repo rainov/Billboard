@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -80,7 +81,8 @@ fun BottomBarGroupScreen(
                 .width(100.dp)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+            elevation = ButtonDefaults.elevation( 7.dp, 5.dp, 0.dp)
         ) {
             Text(text = stringResource(R.string.delete))
         }
@@ -165,7 +167,7 @@ fun BottomBarGroupScreen(
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
                     Text(stringResource(R.string.ok))
                 }
@@ -238,7 +240,7 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
                 Text(text = stringResource(R.string.delete))
             }
@@ -253,7 +255,7 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
                 Text(text = stringResource(R.string.clear_exp))
             }
@@ -268,7 +270,7 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
                 Text(text = stringResource(R.string.edit))
             }
@@ -302,7 +304,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(stringResource(R.string.delete))
                     }
@@ -316,7 +318,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(text = stringResource(R.string.cancel))
                     }
@@ -350,7 +352,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(stringResource(R.string.delete))
                     }
@@ -364,7 +366,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(text = stringResource(R.string.cancel))
                     }
@@ -399,7 +401,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(stringResource(R.string.confirm))
                     }
@@ -413,7 +415,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(text = stringResource(R.string.cancel))
                     }

@@ -53,28 +53,43 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
             Spacer(modifier = Modifier.height(20.dp))
             groups.forEach { group ->
                 Spacer(modifier = Modifier.height(5.dp))
-                Card(
+
+                OutlinedButton(
+                    onClick = { navControl.navigate( group.id ) },
                     modifier = Modifier
-                        .fillMaxWidth(fraction = 0.75f)
-                        .padding(5.dp)
-                        .clickable {
-                            navControl.navigate(group.id)
-                        },
-                    elevation = 2.dp,
+                        .fillMaxWidth(.75f)
+                        .height(50.dp),
                     shape = MaterialTheme.shapes.large,
-                    border = BorderStroke(1.dp, Billboard_green),
-                    backgroundColor = Color.Transparent
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colors.onPrimary,
+                    ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
-                    Column(
-                    ) {
-                        Text(
-                            text = group.name,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .padding(15.dp)
-                        )
-                    }
+                    Text(text = group.name )
                 }
+
+//                Card(
+//                    modifier = Modifier
+//                        .fillMaxWidth(fraction = 0.75f)
+//                        .padding(0.dp)
+//                        .clickable {
+//                            navControl.navigate(group.id)
+//                        },
+//                    elevation = 7.dp,
+//                    shape = MaterialTheme.shapes.large,
+//                    border = BorderStroke(1.dp, Billboard_green),
+//                    backgroundColor = MaterialTheme.colors.surface
+//                ) {
+//                    Column(
+//                    ) {
+//                        Text(
+//                            text = group.name,
+//                            textAlign = TextAlign.Center,
+//                            modifier = Modifier
+//                                .padding(15.dp)
+//                        )
+//                    }
+//                }
             }
         }
     }

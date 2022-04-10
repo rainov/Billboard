@@ -43,13 +43,13 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Billboard_green,
-                cursorColor = Color.White,
-                textColor = Color.White,
-                focusedLabelColor = Color.White
+                cursorColor = MaterialTheme.colors.onPrimary,
+                textColor = MaterialTheme.colors.onPrimary,
+                focusedLabelColor = MaterialTheme.colors.onPrimary
             ),
             modifier = Modifier.height(64.dp),
             shape = MaterialTheme.shapes.large,
-            textStyle = TextStyle(color = Billboard_green)
+            textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
         )
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -62,7 +62,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
                 .fillMaxWidth(.75f)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
         ) {
             Text(text = stringResource(R.string.create_group))
         }
@@ -77,7 +77,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
                 .fillMaxWidth(.75f)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
         ) {
             Text(text = stringResource(R.string.cancel))
         }

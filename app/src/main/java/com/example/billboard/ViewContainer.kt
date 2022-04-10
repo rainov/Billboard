@@ -1,6 +1,5 @@
 package com.example.billboard
 
-import android.util.Log
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
@@ -15,7 +14,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun ViewContainer(){
+fun ViewContainer( darkMode: MutableState<Boolean>){
 
     val scope = rememberCoroutineScope()
 
@@ -63,7 +62,7 @@ fun ViewContainer(){
 
             }
             composable( route = "Settings") {
-                SettingsView( scState, navControl, userVM, scope, auth )
+                SettingsView( scState, navControl, userVM, scope, auth, darkMode )
             }
             composable( route = "About") {
                 AboutUs( scState, navControl, scope )

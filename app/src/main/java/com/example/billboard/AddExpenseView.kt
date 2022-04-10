@@ -93,9 +93,9 @@ fun AddEditExpenseViewContent(
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Billboard_green,
-                    cursorColor = Color.White,
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White
+                    cursorColor = MaterialTheme.colors.onPrimary,
+                    textColor = MaterialTheme.colors.onPrimary,
+                    focusedLabelColor = MaterialTheme.colors.onPrimary
                 ),
                 modifier = Modifier
                     .height(64.dp)
@@ -111,9 +111,9 @@ fun AddEditExpenseViewContent(
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Billboard_green,
-                    cursorColor = Color.White,
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White
+                    cursorColor = MaterialTheme.colors.onPrimary,
+                    textColor = MaterialTheme.colors.onPrimary,
+                    focusedLabelColor = MaterialTheme.colors.onPrimary
                 ),
                 modifier = Modifier
                     .height(64.dp)
@@ -130,7 +130,7 @@ fun AddEditExpenseViewContent(
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
                     payerButtonText = if ( payerMember.isEmpty() ) {
                         stringResource(R.string.select)
@@ -190,7 +190,7 @@ fun AddEditExpenseViewContent(
                 .fillMaxWidth(.75f)
                 .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green ),
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                 onClick = {
                 if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
                     newExpense.name = expenseName
@@ -242,7 +242,7 @@ fun AddEditExpenseViewContent(
                                 .width(100.dp)
                                 .height(40.dp),
                             shape = MaterialTheme.shapes.large,
-                            colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                            colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
                         ) {
                             Text(stringResource(R.string.close))
                         }
@@ -269,6 +269,6 @@ fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : Exp
                 membersWhoPay.remove(member)
             }
         },
-        colors = CheckboxDefaults.colors(Billboard_green)
+        colors = CheckboxDefaults.colors(MaterialTheme.colors.onPrimary)
     )
 }

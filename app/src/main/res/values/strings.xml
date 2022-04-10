@@ -62,7 +62,7 @@
     <string name="delete_conf_mess_debts">Warning, some members have refund this expense. By deleting it, they will be refund.</string>
     <string name="delete_grp">Are you sure you want to delete the group ?</string>
     <string name="delete_grp_err">Error ! You can\'t delete the group as there is still some members who need to refund their debts</string>
-    <string name="balance_details">Group balance details</string>
+    <string name="balance_details">Group balance/details</string>
     <string name="verify_email">Please check your email for verification link and try again!</string>
     <string name="not_verifdied">Not verified!</string>
     <string name="register_fail">Registration failed!</string>

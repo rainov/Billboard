@@ -127,7 +127,7 @@ fun ExpenseViewContent(
                                     .width(150.dp)
                                     .height(40.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                             ) {
                                 Text(text = stringResource(R.string.erase_debt))
                             }
@@ -147,7 +147,7 @@ fun ExpenseViewContent(
                                     .width(150.dp)
                                     .height(40.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                             ) {
                                 Text(text = stringResource(R.string.cancel_erase_debt))
                             }

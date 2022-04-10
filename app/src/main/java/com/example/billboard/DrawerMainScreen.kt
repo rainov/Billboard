@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -31,7 +32,8 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
     Column (
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
             ){
@@ -46,7 +48,8 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
                 .fillMaxWidth(.85f)
                 .height(60.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+            colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
         ) {
             Text( text = stringResource(R.string.promotions))
         }
@@ -62,7 +65,8 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
                 .fillMaxWidth(.85f)
                 .height(60.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+            colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
         ) {
             Text( text = stringResource(R.string.about))
         }
@@ -78,7 +82,8 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
                 .fillMaxWidth(.85f)
                 .height(60.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+            colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
         ) {
             Text( text = stringResource(R.string.settings))
         }

@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -18,7 +19,8 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
     Column (
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -28,7 +30,8 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text( text = groupInfo.name, fontSize = 30.sp)
+            Spacer(modifier = Modifier.height(15.dp))
+            Text( text = groupInfo.name, fontSize = 30.sp )
             Spacer(modifier = Modifier.height(15.dp))
             Divider(
                 modifier = Modifier
@@ -47,7 +50,13 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
         ) {
             Column() {
                 groupInfo.members.forEach { member ->
-                    Text( text = member, fontSize = 20.sp )
+                    Row() {
+                        Text( text = member, fontSize = 20.sp )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        if ( groupInfo.admins.contains(member)) {
+                            Text( text = "Admin", fontSize = 12.sp, color = Billboard_green)
+                        }
+                    }
                     Spacer(modifier = Modifier.height(20.dp))
                 }
 
@@ -66,7 +75,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                         .fillMaxWidth(.85f)
                         .height(60.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
                     Text(text = stringResource(R.string.edit_members))
                 }
@@ -98,7 +107,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
             ) {
                 Text( text = stringResource(R.string.settings))
             }
@@ -114,7 +123,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
             ) {
                 Text( text = stringResource(R.string.about))
             }

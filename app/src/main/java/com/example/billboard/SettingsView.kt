@@ -2,7 +2,6 @@ package com.example.billboard
 
 import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -27,13 +26,14 @@ fun SettingsView (
     navControl: NavController,
     userVM: UserViewModel,
     scope: CoroutineScope,
-    auth: FirebaseAuth
+    auth: FirebaseAuth,
+    darkMode: MutableState<Boolean>
 ) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope ) },
-        content = { SettingsContent( navControl, userVM, scState, scope, auth ) },
+        content = { SettingsContent( navControl, userVM, scState, scope, auth, darkMode ) },
         drawerContent = { DrawerMainScreen (
                 scState,
                 scope,
@@ -46,13 +46,12 @@ fun SettingsView (
 
 
 @Composable
-fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope, auth: FirebaseAuth) {
+fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope, auth: FirebaseAuth, darkMode: MutableState<Boolean> ) {
 
-    val checkedState = remember { mutableStateOf(true) }
+    val checkedState = remember { mutableStateOf(darkMode.value) }
     val openDialog = remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf(userVM.userName.value) }
     var editUserName by remember { mutableStateOf(false)}
-    var darkTheme by remember { mutableStateOf(checkedState) }
 
     fun saveUserName( newUserName: String ) {
         Firebase.firestore
@@ -87,7 +86,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(stringResource(R.string.send))
                 }
@@ -101,7 +101,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(stringResource(R.string.cancel))
                 }
@@ -118,7 +119,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
         if ( !editUserName ) {
 
-            Spacer( modifier = Modifier.height(40.dp))
+            Spacer( modifier = Modifier.height(70.dp))
 
             Text( text = userVM.userName.value, fontSize = 20.sp )
 
@@ -130,9 +131,6 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Spacer(modifier = Modifier.height(5.dp))
-
-
                 OutlinedButton(
                     onClick = {
                         editUserName = true
@@ -141,7 +139,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text( text = stringResource(R.string.edit_username))
                     }
@@ -156,7 +155,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text( text = stringResource(R.string.reset_password))
                 }
@@ -169,7 +169,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text( text = stringResource( R.string.sign_out ))
                 }
@@ -185,6 +186,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         checked = checkedState.value,
                         onCheckedChange = {
                             checkedState.value = it
+                            darkMode.value = it
                             },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Billboard_green,
@@ -205,7 +207,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text( text = stringResource( R.string.exit_settings ))
                 }
@@ -221,15 +224,14 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_Red )
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_Red),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text( text = stringResource( R.string.delete_account ))
                 }
                 Spacer(modifier = Modifier.height(30.dp))
             }
         } else {
-//            Spacer(modifier = Modifier.height(20.dp))
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
@@ -242,9 +244,12 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Billboard_green,
-                        cursorColor = Color.White,
-                        textColor = Color.White,
-                        focusedLabelColor = Color.White
+                        cursorColor = MaterialTheme.colors.onPrimary,
+//                        cursorColor = Color.White,
+                        textColor = MaterialTheme.colors.onPrimary,
+//                        textColor = Color.White,
+                        focusedLabelColor = MaterialTheme.colors.onPrimary
+//                        focusedLabelColor = Color.White
                     ),
                     modifier = Modifier
                         .height(64.dp)
@@ -262,7 +267,9 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+                    colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+//                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
                 ) {
                     Text( text = stringResource(R.string.save))
                 }
@@ -278,7 +285,9 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.cancel))
                 }
