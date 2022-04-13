@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 
 //MAIN SCREEN BOTTOM
 @Composable
@@ -27,7 +28,7 @@ fun BottomBarMainScreen(
     ) {
         FloatingActionButton(
             onClick = { navControl.navigate( "CreateGroup" ) },
-            backgroundColor = Bilboard_green,
+            backgroundColor = Billboard_green,
             modifier = Modifier
                 .padding(30.dp, 20.dp),
             elevation = FloatingActionButtonDefaults.elevation(8.dp)
@@ -80,14 +81,15 @@ fun BottomBarGroupScreen(
                 .width(100.dp)
                 .height(40.dp),
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+            elevation = ButtonDefaults.elevation( 7.dp, 5.dp, 0.dp)
         ) {
             Text(text = stringResource(R.string.delete))
         }
 
         if (groupInfo.members.size > 1 ) {
             FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
-                backgroundColor = Bilboard_green,
+                backgroundColor = Billboard_green,
                 modifier = Modifier.padding(20.dp, 20.dp)
             ) {
                 Icon(
@@ -123,7 +125,7 @@ fun BottomBarGroupScreen(
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(stringResource(R.string.delete))
                 }
@@ -137,7 +139,7 @@ fun BottomBarGroupScreen(
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.cancel))
                 }
@@ -165,7 +167,7 @@ fun BottomBarGroupScreen(
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
                     Text(stringResource(R.string.ok))
                 }
@@ -238,7 +240,7 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
                 Text(text = stringResource(R.string.delete))
             }
@@ -253,7 +255,7 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
                 Text(text = stringResource(R.string.clear_exp))
             }
@@ -268,7 +270,7 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
                 Text(text = stringResource(R.string.edit))
             }
@@ -302,7 +304,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(stringResource(R.string.delete))
                     }
@@ -316,7 +318,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(text = stringResource(R.string.cancel))
                     }
@@ -350,7 +352,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(stringResource(R.string.delete))
                     }
@@ -364,7 +366,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(text = stringResource(R.string.cancel))
                     }
@@ -399,7 +401,7 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(stringResource(R.string.confirm))
                     }
@@ -413,12 +415,34 @@ fun BottomBarExpenseView(
                             .width(100.dp)
                             .height(40.dp),
                         shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                     ) {
                         Text(text = stringResource(R.string.cancel))
                     }
                 }
             )
         }
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@Composable
+fun BottomBarAboutUs(
+    navControl: NavController
+) {
+    Row(
+        Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_back),
+            contentDescription = "back icon",
+            modifier = Modifier
+                .clickable { navControl.navigate("MainScreen") }
+                .padding(35.dp, 30.dp)
+        )
     }
 }

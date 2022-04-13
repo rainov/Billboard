@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import com.example.billboard.ui.theme.BillBoard_Grey
 import kotlinx.coroutines.CoroutineScope
 
@@ -95,7 +95,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
                     Text(text = stringResource(R.string.add_members))
                 }
@@ -116,7 +116,6 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Text(
                     text = groupInfo.name,
-                    modifier = Modifier.clickable { navControl.navigate("MainScreen") },
                     textAlign = TextAlign.Center,
                     fontSize = 30.sp
                 )
@@ -141,32 +140,45 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         .fillMaxWidth(.75f)
                         .height(50.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = stringResource(R.string.balance_details))
                         Icon(
                             painter = painterResource(R.drawable.forward),
                             contentDescription = "forward arrow",
-                            tint = Bilboard_green
+                            tint = MaterialTheme.colors.onPrimary
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(
-                    text = stringResource(R.string.admins) + " " + adminlist,
-                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-                Text(
-                    text = stringResource(R.string.members) + " " + memberlist,
-                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+//                Text(
+//                    text = stringResource(R.string.admins) + " " + adminlist,
+//                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
+//                Text(
+//                    text = stringResource(R.string.members) + " " + memberlist,
+//                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
 
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = "Group expenses", fontSize = 20.sp, textAlign = TextAlign.Center)
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(1.dp),
+                    color = Billboard_green
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Column(
                     Modifier
@@ -178,26 +190,24 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                     expenses.forEach { expense ->
                         var color = BillBoard_Grey
                         expense.paidvalues.forEach { key ->
-                            if (!key.value) color = Color.Transparent
+                            if (!key.value) color = MaterialTheme.colors.surface
                         }
 
                         Spacer(modifier = Modifier.height(5.dp))
 
-                        Card(modifier = Modifier
-                            .padding(5.dp)
-                            .clickable { expenseNavControl.navigate(expense.expid) }
-                            .fillMaxWidth(fraction = 0.75f),
-                            elevation = 10.dp,
+                        OutlinedButton(
+                            onClick = { expenseNavControl.navigate( expense.expid ) },
+                            modifier = Modifier
+                                .fillMaxWidth(.75f)
+                                .height(50.dp),
                             shape = MaterialTheme.shapes.large,
-                            border = BorderStroke(1.dp, Bilboard_green),
-                            backgroundColor = color
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colors.onPrimary,
+                                backgroundColor = color
+                            ),
+                            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                         ) {
-                            Text(
-                                text = expense.name,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .padding(15.dp)
-                            )
+                                Text(text = expense.name )
                         }
                     }
                 }

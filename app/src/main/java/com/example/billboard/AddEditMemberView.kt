@@ -2,7 +2,9 @@ package com.example.billboard
 
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,14 +15,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass, userVM: UserViewModel) {
+fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass, userVM: UserViewModel ) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
         content = { AddEditMemberContent( groupsVM, expenseNavControl, group, userVM ) }
@@ -263,14 +265,14 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
     }
 
     if(!bool_edit) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column() {
             Column(
-                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -284,7 +286,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     modifier = Modifier
                         .fillMaxWidth(.75f)
                         .height(1.dp),
-                    color = Bilboard_green
+                    color = Billboard_green
                 )
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -295,14 +297,14 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     label = { Text(text = stringResource(R.string.member_email)) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Bilboard_green,
-                        cursorColor = Color.White,
-                        textColor = Color.White,
-                        focusedLabelColor = Color.White
+                        focusedBorderColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        focusedLabelColor = MaterialTheme.colors.onPrimary
                     ),
                     modifier = Modifier.height(64.dp),
                     shape = MaterialTheme.shapes.large,
-                    textStyle = TextStyle(color = Bilboard_green)
+                    textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
                 )
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -316,7 +318,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                     Checkbox(
                         checked = adminCheck,
                         onCheckedChange = { adminCheck = it },
-                        colors = CheckboxDefaults.colors(Bilboard_green)
+                        colors = CheckboxDefaults.colors(MaterialTheme.colors.onPrimary)
                     )
                 }
 
@@ -328,24 +330,31 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text(text = stringResource(R.string.add_member))
                 }
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Divider(
                     modifier = Modifier
                         .fillMaxWidth(.75f)
                         .height(1.dp),
-                    color = Bilboard_green
+                    color = Billboard_green
                 )
 
+                Spacer(modifier = Modifier.height(20.dp))
+
             }
+
             Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize(.8f)
+                    .verticalScroll(enabled = true, state = ScrollState(1))
             ) {
                 membersList.forEach { member ->
                     Text(text = member, fontSize = 20.sp)
@@ -364,7 +373,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                         .width(80.dp)
                                         .height(35.dp),
                                     shape = MaterialTheme.shapes.large,
-                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                                 ) {
                                     Text(text = stringResource(R.string.edit))
                                 }
@@ -379,7 +389,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                     .width(150.dp)
                                     .height(35.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                             ) {
                                 Text(text = stringResource(R.string.make_admin))
 
@@ -395,7 +406,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                     .width(150.dp)
                                     .height(35.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                             ) {
                                 Text(text = stringResource(R.string.rem_admin))
 
@@ -416,60 +428,66 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                     .width(80.dp)
                                     .height(35.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                             ) {
                                 Text(text = stringResource(R.string.delete))
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth(.75f)
+                            .height(1.dp),
+                        color = Billboard_green
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
                 }
             }
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedButton(
+                onClick = {
+                    expenseNavControl.navigate("group")
+                },
+                modifier = Modifier
+                    .fillMaxWidth(.75f)
+                    .height(40.dp),
+                shape = MaterialTheme.shapes.large,
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
             ) {
-
-                Divider(
-                    modifier = Modifier
-                        .fillMaxWidth(.75f)
-                        .height(1.dp),
-                    color = Bilboard_green
-                )
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                OutlinedButton(
-                    onClick = {
-                        expenseNavControl.navigate("group")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(.75f)
-                        .height(40.dp),
-                    shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                ) {
-                    Text(text = stringResource(R.string.cancel))
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
+                Text(text = stringResource(R.string.cancel))
             }
+
+            Spacer(modifier = Modifier.height(15.dp))
+        }
+        }
         }
     } else {
+        val oldMember by remember { mutableStateOf(memberEmail) }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(60.dp))
-            val oldMember by remember {mutableStateOf(memberEmail)}
             OutlinedTextField(
                 value = memberEmail,
                 onValueChange = { memberEmail = it },
                 label = { Text(text = stringResource(R.string.member_email)) },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Bilboard_green,
+                    focusedBorderColor = Billboard_green,
                     cursorColor = MaterialTheme.colors.onPrimary,
 //                        cursorColor = Color.White,
                     textColor = MaterialTheme.colors.onPrimary,
@@ -522,5 +540,4 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             }
         }
     }
-    }
-
+}

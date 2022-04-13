@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.billboard.ui.theme.Bilboard_green
+import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -92,10 +92,10 @@ fun AddEditExpenseViewContent(
                 label = { Text(text = stringResource(R.string.expense_name)) },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Bilboard_green,
-                    cursorColor = Color.White,
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White
+                    focusedBorderColor = Billboard_green,
+                    cursorColor = MaterialTheme.colors.onPrimary,
+                    textColor = MaterialTheme.colors.onPrimary,
+                    focusedLabelColor = MaterialTheme.colors.onPrimary
                 ),
                 modifier = Modifier
                     .height(64.dp)
@@ -110,10 +110,10 @@ fun AddEditExpenseViewContent(
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Bilboard_green,
-                    cursorColor = Color.White,
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White
+                    focusedBorderColor = Billboard_green,
+                    cursorColor = MaterialTheme.colors.onPrimary,
+                    textColor = MaterialTheme.colors.onPrimary,
+                    focusedLabelColor = MaterialTheme.colors.onPrimary
                 ),
                 modifier = Modifier
                     .height(64.dp)
@@ -130,7 +130,7 @@ fun AddEditExpenseViewContent(
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
                     payerButtonText = if ( payerMember.isEmpty() ) {
                         stringResource(R.string.select)
@@ -190,7 +190,7 @@ fun AddEditExpenseViewContent(
                 .fillMaxWidth(.75f)
                 .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green ),
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                 onClick = {
                 if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
                     newExpense.name = expenseName
@@ -242,7 +242,7 @@ fun AddEditExpenseViewContent(
                                 .width(100.dp)
                                 .height(40.dp),
                             shape = MaterialTheme.shapes.large,
-                            colors = ButtonDefaults.outlinedButtonColors( contentColor = Bilboard_green )
+                            colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
                         ) {
                             Text(stringResource(R.string.close))
                         }
@@ -269,6 +269,6 @@ fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : Exp
                 membersWhoPay.remove(member)
             }
         },
-        colors = CheckboxDefaults.colors(Bilboard_green)
+        colors = CheckboxDefaults.colors(MaterialTheme.colors.onPrimary)
     )
 }
