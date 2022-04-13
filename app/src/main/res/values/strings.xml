@@ -63,4 +63,7 @@
     <string name="delete_grp">Are you sure you want to delete the group ?</string>
     <string name="delete_grp_err">Error ! You can\'t delete the group as there is still some members who need to refund their debts</string>
     <string name="balance_details">Group balance details</string>
+    <string name="rem_admin">Remove admin</string>
+    <string name="clear_balance">Clear balance</string>
+    <string name="save">Save</string>
 </resources>

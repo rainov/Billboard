@@ -1,6 +1,7 @@
 package com.example.billboard
 
 import android.util.Log
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FieldValue
@@ -155,7 +156,6 @@ class ExpensesViewModel: ViewModel() {
 
                         groupsVM.getGroups()
                         navControl.navigate(group.id)
-                        //TODO previous line must be changed to lead on expense view
                     }
             }
     }
@@ -307,4 +307,6 @@ class ExpensesViewModel: ViewModel() {
                 }
             }
     }
+
+
 }

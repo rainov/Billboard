@@ -17,7 +17,8 @@ fun GroupViewNavigationContainer(
     groupInfo: GroupClass,
     scState: ScaffoldState,
     groupsVM: GroupsViewModel,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    userVM : UserViewModel
 ) {
 
     val expensesVM: ExpensesViewModel = viewModel()
@@ -33,7 +34,7 @@ fun GroupViewNavigationContainer(
             GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope, groupsVM )
         }
         composable( route = "addMembers") {
-            AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo )
+            AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo, userVM)
         }
         composable( route = "groupBalance" ) {
             GroupBalanceView(scState, expenseNavControl, groupInfo, expenses , scope, navControl )

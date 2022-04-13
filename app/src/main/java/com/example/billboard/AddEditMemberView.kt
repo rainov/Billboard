@@ -1,6 +1,7 @@
 package com.example.billboard
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,26 +14,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Bilboard_green
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass) {
+fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass, userVM: UserViewModel) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
-        content = { AddEditMemberContent( groupsVM, expenseNavControl, group ) }
+        content = { AddEditMemberContent( groupsVM, expenseNavControl, group, userVM ) }
     )
 
 }
 
 @Composable
-fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavController, group: GroupClass) {
+fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavController, group: GroupClass, userVM: UserViewModel) {
 
     var memberEmail by remember { mutableStateOf("") }
     var membersList by remember { mutableStateOf(group.members) }
     var adminsList by remember { mutableStateOf(group.admins) }
     var adminCheck by remember { mutableStateOf(false) }
     var editGroup by remember { mutableStateOf(group) }
-    var newBalance by remember { mutableStateOf( group.balance ) }
+    var newBalance by remember { mutableStateOf(group.balance) }
+
+    var bool_edit by remember { mutableStateOf(false)}
 
     fun addMember() {
         val newMemberBalanceMap = mutableMapOf<String, Double>()
@@ -58,39 +64,405 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             adminsList = tempAdmins
             Log.d("Admins ====> ", adminsList.toString())
         }
-        val newGroup = GroupClass(adminsList, group.expenses, membersList, group.name, newBalance, group.id)
+        val newGroup =
+            GroupClass(adminsList, group.expenses, membersList, group.name, newBalance, group.id)
         Log.d("NewGroup: ", newGroup.toString())
         editGroup = newGroup
         newBalance = newGroup.balance
         groupsVM.editGroup(newGroup)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    fun edit_member_name(groupsVM: GroupsViewModel, group: GroupClass, member: String, newemail : String){
+        // Edit in group collection//
 
+        // Apply changes in group balance //
+        membersList.forEach { m ->
+            if(m == member){
+                //Adding new key in map//
+                val oldMemberBalance = editGroup.balance[m]!!
+                newBalance[newemail] = oldMemberBalance
+                //Deleting old key in map//
+                newBalance.remove(m)
+            } else {
+                //In each member balance, adding new key with old value
+                var oldBalance = editGroup.balance[m]!!.getValue(member)
+                newBalance[m]?.set(newemail, oldBalance)
+
+                //Deleting old key balance//
+                newBalance[m]?.remove(member)
+            }
+        }
+
+        // Apply changes in members list //
+
+        val tempMembers = mutableListOf<String>()
+        membersList.forEach { m -> if(m != member) tempMembers.add(m) }
+        tempMembers.add(newemail)
+        membersList = tempMembers
+
+
+        // Apply changes in admins list //
+
+        if(adminsList.contains(member)){
+            val tempAdmins = mutableListOf<String>()
+            adminsList.forEach { admin -> if(admin != member) tempAdmins.add(admin) }
+            tempAdmins.add(newemail)
+            adminsList = tempAdmins
+        }
+
+        val newGroup = GroupClass(
+            adminsList,
+            group.expenses,
+            membersList,
+            group.name,
+            newBalance,
+            group.id
+        )
+
+
+
+        // Edit in expense collection //
+        // In each expense, edit member email in rest list or payer and/or paidvalues map //
+
+        group.expenses.forEach { exp ->
+            val fexp = Firebase.firestore.collection("expenses").document(exp)
+
+            fexp.get()
+                .addOnSuccessListener { expenseSnapshot ->
+                    val oldExpense = ExpenseClass(
+                        expenseSnapshot.get("name").toString(),
+                        expenseSnapshot.get("amount") as Double,
+                        expenseSnapshot.get("payer").toString(),
+                        expenseSnapshot.get("date").toString(),
+                        expenseSnapshot.get("groupid").toString(),
+                        expenseSnapshot.get("rest") as MutableList<String>,
+                        expenseSnapshot.get("expid").toString(),
+                        expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>
+                    )
+
+                    //Edit payer//
+                    if(member == oldExpense.payer){
+                        fexp.update("payer",newemail)
+                    }
+
+                    //Edit rest//
+                    if(oldExpense.rest.contains(member)) {
+                        fexp.update("rest", FieldValue.arrayRemove(member))
+                        fexp.update("rest", FieldValue.arrayUnion(newemail))
+                    }
+
+                    //Edit paid values//
+                    if(oldExpense.paidvalues.containsKey(member)){
+                        var newPaidValuesMap = mutableMapOf<String,Boolean>()
+                        oldExpense.paidvalues.forEach { other ->
+                            newPaidValuesMap[other.key] = other.value
+                        }
+                        newPaidValuesMap[newemail] = newPaidValuesMap[member]!!
+                        newPaidValuesMap.remove(member)
+
+                        fexp.update("paidvalues", newPaidValuesMap)
+                        bool_edit = false
+                    }
+                }
+        }
+
+        editGroup = newGroup
+        groupsVM.editGroup(newGroup)
+        memberEmail = ""
+        /*TODO refresh the expense */
+    }
+
+    fun makeAdmin(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
+        val tempAdmins = mutableListOf<String>()
+        adminsList.forEach { admin -> tempAdmins.add(admin) }
+        tempAdmins.add(member)
+        adminsList = tempAdmins
+        Log.d("Admins ====> ", adminsList.toString())
+        val newGroup = GroupClass(
+            adminsList,
+            group.expenses,
+            group.members,
+            group.name,
+            group.balance,
+            group.id
+        )
+        Log.d("Add admin : ", newGroup.toString())
+        editGroup = newGroup
+        groupsVM.editGroup(newGroup)
+    }
+
+    fun deleteAdmin(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
+
+        val tempAdmins = mutableListOf<String>()
+        adminsList.forEach { admin -> tempAdmins.add(admin) }
+        tempAdmins.remove(member)
+        adminsList = tempAdmins
+
+        val newGroup = GroupClass(
+            adminsList,
+            group.expenses,
+            group.members,
+            group.name,
+            group.balance,
+            group.id
+        )
+
+        editGroup = newGroup
+        groupsVM.editGroup(newGroup)
+    }
+
+    fun isMemberBalanceClear(
+        groupsVM: GroupsViewModel,
+        group: GroupClass,
+        member: String
+    ): Boolean {
+        group.balance[member]?.forEach { other ->
+            if (other.value != 0.0) return false
+        }
+        return true
+    }
+
+
+    fun deleteMember(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
+
+        /* Delete members line from group balance */
+        membersList.forEach { m ->
+            if(m == member){
+                newBalance.remove(m)
+            } else {
+                //In each member balance, remove member balance
+                newBalance[m]?.remove(member)
+            }
+        }
+
+        /* Delete from admins */
+        if(group.admins.contains(member)){
+            val tempAdmins = mutableListOf<String>()
+            adminsList.forEach { admin -> if(admin != member) tempAdmins.add(admin) }
+            adminsList = tempAdmins
+        }
+
+        /* Delete from members */
+        val tempMembers = mutableListOf<String>()
+        membersList.forEach { m -> if(m != member) tempMembers.add(m) }
+        membersList = tempMembers
+
+
+        val newGroup = GroupClass(
+            adminsList,
+            group.expenses,
+            membersList,
+            group.name,
+            newBalance,
+            group.id
+        )
+
+        editGroup = newGroup
+        groupsVM.editGroup(newGroup)
+
+    }
+
+    if(!bool_edit) {
         Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.Top,
+            modifier = Modifier
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = group.name, fontSize = 30.sp)
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Text(text = group.name, fontSize = 30.sp)
 
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(1.dp),
-                color = Bilboard_green
-            )
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(15.dp))
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(1.dp),
+                    color = Bilboard_green
+                )
 
+                Spacer(modifier = Modifier.height(15.dp))
+
+                OutlinedTextField(
+                    value = memberEmail,
+                    onValueChange = { memberEmail = it },
+                    label = { Text(text = stringResource(R.string.member_email)) },
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Bilboard_green,
+                        cursorColor = Color.White,
+                        textColor = Color.White,
+                        focusedLabelColor = Color.White
+                    ),
+                    modifier = Modifier.height(64.dp),
+                    shape = MaterialTheme.shapes.large,
+                    textStyle = TextStyle(color = Bilboard_green)
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Text(text = stringResource(R.string.add_as_admin))
+
+                    Checkbox(
+                        checked = adminCheck,
+                        onCheckedChange = { adminCheck = it },
+                        colors = CheckboxDefaults.colors(Bilboard_green)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                OutlinedButton(
+                    onClick = { addMember() },
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.add_member))
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(1.dp),
+                    color = Bilboard_green
+                )
+
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                membersList.forEach { member ->
+                    Text(text = member, fontSize = 20.sp)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+
+                        if (!userVM.userEmail.equals(member)) {
+                                OutlinedButton(
+                                    onClick = {
+                                        memberEmail = member
+                                        bool_edit = true },
+                                    modifier = Modifier
+                                        .width(80.dp)
+                                        .height(35.dp),
+                                    shape = MaterialTheme.shapes.large,
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                                ) {
+                                    Text(text = stringResource(R.string.edit))
+                                }
+                        }
+
+                        if (!group.admins.contains(member)) {
+                            OutlinedButton(
+                                onClick = {
+                                    makeAdmin(groupsVM, group, member)
+                                },
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(35.dp),
+                                shape = MaterialTheme.shapes.large,
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                            ) {
+                                Text(text = stringResource(R.string.make_admin))
+
+                            }
+                        }
+
+                        if (group.admins.contains(member) && !userVM.userEmail.equals(member)) {
+                            OutlinedButton(
+                                onClick = {
+                                    deleteAdmin(groupsVM, group, member)
+                                },
+                                modifier = Modifier
+                                    .width(150.dp)
+                                    .height(35.dp),
+                                shape = MaterialTheme.shapes.large,
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                            ) {
+                                Text(text = stringResource(R.string.rem_admin))
+
+                            }
+                        }
+
+                        if (isMemberBalanceClear(
+                                groupsVM,
+                                group,
+                                member
+                            ) && !userVM.userEmail.equals(
+                                member
+                            )
+                        ) {
+                            OutlinedButton(
+                                onClick = { deleteMember(groupsVM, group, member) },
+                                modifier = Modifier
+                                    .width(80.dp)
+                                    .height(35.dp),
+                                shape = MaterialTheme.shapes.large,
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                            ) {
+                                Text(text = stringResource(R.string.delete))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                }
+            }
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(1.dp),
+                    color = Bilboard_green
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                OutlinedButton(
+                    onClick = {
+                        expenseNavControl.navigate("group")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                ) {
+                    Text(text = stringResource(R.string.cancel))
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+        }
+    } else {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Spacer(modifier = Modifier.height(60.dp))
+            val oldMember by remember {mutableStateOf(memberEmail)}
             OutlinedTextField(
                 value = memberEmail,
                 onValueChange = { memberEmail = it },
@@ -98,127 +470,57 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Bilboard_green,
-                    cursorColor = Color.White,
-                    textColor = Color.White,
-                    focusedLabelColor = Color.White
+                    cursorColor = MaterialTheme.colors.onPrimary,
+//                        cursorColor = Color.White,
+                    textColor = MaterialTheme.colors.onPrimary,
+//                        textColor = Color.White,
+                    focusedLabelColor = MaterialTheme.colors.onPrimary
+//                        focusedLabelColor = Color.White
                 ),
-                modifier = Modifier.height(64.dp),
-                shape = MaterialTheme.shapes.large,
-                textStyle = TextStyle(color = Bilboard_green)
+                modifier = Modifier
+                    .height(64.dp)
+                    .clickable { Log.d("MESSAGE", "CLICKED") },
+                shape = MaterialTheme.shapes.large
             )
 
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(text = stringResource(R.string.add_as_admin))
-
-                Checkbox(
-                    checked = adminCheck,
-                    onCheckedChange = { adminCheck = it },
-                    colors = CheckboxDefaults.colors(Bilboard_green)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            OutlinedButton(
-                onClick = { addMember() },
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(40.dp),
-                shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-            ) {
-                Text(text = stringResource(R.string.add_member))
-            }
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(1.dp),
-                color = Bilboard_green
-            )
-
-        }
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            membersList.forEach { member ->
-                Text(text = member, fontSize = 20.sp)
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    OutlinedButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(35.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.edit))
-                    }
-                    OutlinedButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(150.dp)
-                            .height(35.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.make_admin))
-                    }
-                    OutlinedButton(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(35.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
-                    ) {
-                        Text(text = stringResource(R.string.delete))
-                    }
-                }
-                Spacer(modifier = Modifier.height(15.dp))
-            }
-        }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(1.dp),
-                color = Bilboard_green
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedButton(
                 onClick = {
-                    expenseNavControl.navigate("group")
+                    edit_member_name(
+                        groupsVM,
+                        group,
+                        oldMember,
+                        memberEmail)
                 },
                 modifier = Modifier
                     .fillMaxWidth(.75f)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Bilboard_green)
+                colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+//                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
+            ) {
+                Text( text = stringResource(R.string.save))
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedButton(
+                onClick = {
+                    bool_edit = false
+                },
+                modifier = Modifier
+                    .fillMaxWidth(.75f)
+                    .height(40.dp),
+                shape = MaterialTheme.shapes.large,
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
             ) {
                 Text(text = stringResource(R.string.cancel))
             }
-
-            Spacer(modifier = Modifier.height(15.dp))
         }
     }
-}
+    }
+
