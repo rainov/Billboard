@@ -59,6 +59,15 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
             composable( route = "Affiliate") {
                 AffiliatePartnersView( navControl, scState, scope )
             }
+//            composable( route = "Travel") {
+//                AffiliatePartnersView( navControl, scState, scope )
+//            }
+//            composable( route = "Shopping") {
+//                AffiliatePartnersView( navControl, scState, scope )
+//            }
+//            composable( route = "GroupActivities") {
+//                AffiliatePartnersView( navControl, scState, scope )
+//            }
             groups.forEach { groupInfo ->
                 composable(route = groupInfo.id) {
                     GroupViewNavigationContainer( navControl, groupInfo, scState, groupsVM, scope, userVM )

@@ -29,7 +29,8 @@ fun GroupView(
     navControl: NavController,
     scState: ScaffoldState,
     scope: CoroutineScope,
-    groupsViewModel: GroupsViewModel
+    groupsViewModel: GroupsViewModel,
+    userVM : UserViewModel
 ) {
 
     Scaffold(
@@ -40,7 +41,7 @@ fun GroupView(
             DrawerMainScreen (
                 scState,
                 scope,
-                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl )
+                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl, userVM )
             )
         },
         content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
@@ -55,7 +56,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
         totalSpent += expense.amount
     }
 
-    if (groupInfo.members.size == 1) {
+    if (groupInfo.members.size == 1 && groupInfo.expenses.size > 0) {
 
         Column(
             modifier = Modifier.fillMaxSize(),

@@ -74,4 +74,5 @@
     <string name="save">Save</string>
     <string name="resend">Resend</string>
     <string name="your_groups">Your groups</string>
+    <string name="err_add_member">Couldn\'t add this new member as it already exists in the group</string>
 </resources>

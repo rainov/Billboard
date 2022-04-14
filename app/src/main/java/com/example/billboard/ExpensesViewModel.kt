@@ -224,7 +224,6 @@ class ExpensesViewModel: ViewModel() {
         groupsVM.getGroups()
         //navControl.navigate(group.id)
         expenseNavControl.navigate(expense.expid)
-        //TODO previous line must be changed to lead on expense view
     }
 
     fun cancelEraseDebt(group: GroupClass, member : String, expense: ExpenseClass, expenseNavControl: NavController,
