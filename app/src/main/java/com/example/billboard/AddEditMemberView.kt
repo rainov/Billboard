@@ -22,16 +22,16 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass, userVM: UserViewModel ) {
+fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass, userVM: UserViewModel, expensesVM : ExpensesViewModel ) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
-        content = { AddEditMemberContent( groupsVM, expenseNavControl, group, userVM ) }
+        content = { AddEditMemberContent( groupsVM, expenseNavControl, group, userVM, expensesVM ) }
     )
 
 }
 
 @Composable
-fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavController, group: GroupClass, userVM: UserViewModel) {
+fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavController, group: GroupClass, userVM: UserViewModel, expensesVM : ExpensesViewModel) {
 
     var memberEmail by remember { mutableStateOf("") }
     var membersList by remember { mutableStateOf(group.members) }
@@ -41,6 +41,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
     var newBalance by remember { mutableStateOf(group.balance) }
 
     var bool_edit by remember { mutableStateOf(false)}
+    var alert_existing_m = remember { mutableStateOf(false)}
 
     fun addMember() {
         val newMemberBalanceMap = mutableMapOf<String, Double>()
@@ -171,7 +172,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         editGroup = newGroup
         groupsVM.editGroup(newGroup)
         memberEmail = ""
-        /*TODO refresh the expense */
+        /* TODO refresh expenses */
     }
 
     fun makeAdmin(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
@@ -325,7 +326,10 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 Spacer(modifier = Modifier.height(15.dp))
 
                 OutlinedButton(
-                    onClick = { addMember() },
+                    onClick = { if(group.members.contains(memberEmail)) {
+                        alert_existing_m.value = true
+                    } else {
+                        addMember() }},
                     modifier = Modifier
                         .fillMaxWidth(.75f)
                         .height(40.dp),
@@ -364,7 +368,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
 
-                        if (!userVM.userEmail.equals(member)) {
+                        if (!userVM.userEmail.value.equals(member)) {
                                 OutlinedButton(
                                     onClick = {
                                         memberEmail = member
@@ -397,7 +401,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                             }
                         }
 
-                        if (group.admins.contains(member) && !userVM.userEmail.equals(member)) {
+                        if (group.admins.contains(member) && !userVM.userEmail.value.equals(member)) {
                             OutlinedButton(
                                 onClick = {
                                     deleteAdmin(groupsVM, group, member)
@@ -418,7 +422,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                                 groupsVM,
                                 group,
                                 member
-                            ) && !userVM.userEmail.equals(
+                            ) && !userVM.userEmail.value.equals(
                                 member
                             )
                         ) {
@@ -474,6 +478,33 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         }
         }
         }
+        if(alert_existing_m.value){
+            AlertDialog(
+                onDismissRequest = {
+                    alert_existing_m.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.error))
+                },
+                text = {
+                    Text(text = stringResource(R.string.err_add_member))
+                },
+                confirmButton = {
+                    OutlinedButton(
+                        onClick = {
+                            alert_existing_m.value = false
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     } else {
         val oldMember by remember { mutableStateOf(memberEmail) }
         Column(
@@ -510,6 +541,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                         group,
                         oldMember,
                         memberEmail)
+                    bool_edit = false
                 },
                 modifier = Modifier
                     .fillMaxWidth(.75f)

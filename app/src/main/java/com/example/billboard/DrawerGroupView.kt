@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope: CoroutineScope, groupInfo: GroupClass, expenseNavControl: NavController) {
+fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope: CoroutineScope, groupInfo: GroupClass, expenseNavControl: NavController, userVM : UserViewModel) {
 
     Column (
         modifier = Modifier
@@ -66,20 +66,22 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedButton(
-                    onClick = {
-                        expenseNavControl.navigate("addMembers")
-                        scope.launch { scState.drawerState.close() }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(.85f)
-                        .height(60.dp),
-                    shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
-                ) {
-                    Text(text = stringResource(R.string.edit_members))
+                if (groupInfo.admins.contains(userVM.userEmail.value)){
+                    OutlinedButton(
+                        onClick = {
+                            expenseNavControl.navigate("addMembers")
+                            scope.launch { scState.drawerState.close() }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(.85f)
+                            .height(60.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.edit_members))
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
-                Spacer(modifier = Modifier.height(10.dp))
             }
         }
 

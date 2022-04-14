@@ -447,7 +447,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = Billboard_green,
+                        contentColor = Color.White,
                         backgroundColor = MaterialTheme.colors.surface
                     )
                 ) {

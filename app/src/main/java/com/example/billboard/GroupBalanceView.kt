@@ -24,7 +24,8 @@ fun GroupBalanceView (
     groupInfo: GroupClass,
     expenses: List<ExpenseClass>,
     scope: CoroutineScope,
-    navControl: NavController
+    navControl: NavController,
+    userVM: UserViewModel
 ) {
 
     Scaffold(
@@ -41,7 +42,8 @@ fun GroupBalanceView (
                     scState,
                     scope,
                     groupInfo,
-                    expenseNavControl
+                    expenseNavControl,
+                    userVM
                 )
             )
         }

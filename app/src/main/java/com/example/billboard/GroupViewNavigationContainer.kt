@@ -31,13 +31,13 @@ fun GroupViewNavigationContainer(
 
     NavHost(navController = expenseNavControl, startDestination = "group" ) {
         composable( route = "group" ) {
-            GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope, groupsVM )
+            GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope, groupsVM, userVM)
         }
         composable( route = "addMembers") {
-            AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo, userVM)
+            AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo, userVM, expensesVM)
         }
         composable( route = "groupBalance" ) {
-            GroupBalanceView(scState, expenseNavControl, groupInfo, expenses , scope, navControl )
+            GroupBalanceView(scState, expenseNavControl, groupInfo, expenses , scope, navControl, userVM )
         }
         composable( route = "addExpense") {
             val name = ""

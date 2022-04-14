@@ -99,6 +99,9 @@ fun ExpenseViewContent(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(text = stringResource(R.string.payer_member) + ": " + expensePayer)
+            if(!groupInfo.members.contains(expensePayer)){
+                Text( text = "Deleted", fontSize = 12.sp, color = Billboard_green)
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -109,47 +112,51 @@ fun ExpenseViewContent(
             expenseRest.forEach { member ->
                 Row() {
                     Text(text = member, modifier = Modifier.padding(15.dp))
+                    if (!groupInfo.members.contains(member)) {
+                        Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
+                    } else {
 
-                    if (isUserAdmin.value) {
-                        if (expense.paidvalues[member] == false) {
-                            OutlinedButton(
-                                onClick = {
-                                    expensesViewModel.eraseDebt(
-                                        groupInfo,
-                                        member,
-                                        expense,
-                                        expenseNavControl,
-                                        groupsViewModel,
-                                        navControl
-                                    )
-                                },
-                                modifier = Modifier
-                                    .width(150.dp)
-                                    .height(40.dp),
-                                shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                            ) {
-                                Text(text = stringResource(R.string.erase_debt))
-                            }
-                        } else {
-                            OutlinedButton(
-                                onClick = {
-                                    expensesViewModel.cancelEraseDebt(
-                                        groupInfo,
-                                        member,
-                                        expense,
-                                        expenseNavControl,
-                                        groupsViewModel,
-                                        navControl
-                                    )
-                                },
-                                modifier = Modifier
-                                    .width(150.dp)
-                                    .height(40.dp),
-                                shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                            ) {
-                                Text(text = stringResource(R.string.cancel_erase_debt))
+                        if (isUserAdmin.value) {
+                            if (expense.paidvalues[member] == false) {
+                                OutlinedButton(
+                                    onClick = {
+                                        expensesViewModel.eraseDebt(
+                                            groupInfo,
+                                            member,
+                                            expense,
+                                            expenseNavControl,
+                                            groupsViewModel,
+                                            navControl
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .height(40.dp),
+                                    shape = MaterialTheme.shapes.large,
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                                ) {
+                                    Text(text = stringResource(R.string.erase_debt))
+                                }
+                            } else {
+                                OutlinedButton(
+                                    onClick = {
+                                        expensesViewModel.cancelEraseDebt(
+                                            groupInfo,
+                                            member,
+                                            expense,
+                                            expenseNavControl,
+                                            groupsViewModel,
+                                            navControl
+                                        )
+                                    },
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .height(40.dp),
+                                    shape = MaterialTheme.shapes.large,
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                                ) {
+                                    Text(text = stringResource(R.string.cancel_erase_debt))
+                                }
                             }
                         }
                     }
