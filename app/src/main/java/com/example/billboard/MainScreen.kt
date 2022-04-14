@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -51,6 +52,7 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
+            Text( text = stringResource( R.string.your_groups))
             groups.forEach { group ->
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -67,29 +69,6 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
                 ) {
                     Text(text = group.name )
                 }
-
-//                Card(
-//                    modifier = Modifier
-//                        .fillMaxWidth(fraction = 0.75f)
-//                        .padding(0.dp)
-//                        .clickable {
-//                            navControl.navigate(group.id)
-//                        },
-//                    elevation = 7.dp,
-//                    shape = MaterialTheme.shapes.large,
-//                    border = BorderStroke(1.dp, Billboard_green),
-//                    backgroundColor = MaterialTheme.colors.surface
-//                ) {
-//                    Column(
-//                    ) {
-//                        Text(
-//                            text = group.name,
-//                            textAlign = TextAlign.Center,
-//                            modifier = Modifier
-//                                .padding(15.dp)
-//                        )
-//                    }
-//                }
             }
         }
     }

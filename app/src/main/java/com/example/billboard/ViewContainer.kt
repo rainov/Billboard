@@ -12,11 +12,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun ViewContainer( darkMode: MutableState<Boolean>){
+fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSetting: Boolean){
 
-    val scope = rememberCoroutineScope()
+    //val scope = rememberCoroutineScope()
 
     val userVM: UserViewModel = viewModel()
 
@@ -55,6 +56,9 @@ fun ViewContainer( darkMode: MutableState<Boolean>){
             composable( route = "CreateGroup") {
                 CreateGroupView( groupsVM, navControl, scState, scope )
             }
+            composable( route = "Affiliate") {
+                AffiliatePartnersView( navControl, scState, scope )
+            }
             groups.forEach { groupInfo ->
                 composable(route = groupInfo.id) {
                     GroupViewNavigationContainer( navControl, groupInfo, scState, groupsVM, scope, userVM )
@@ -62,7 +66,7 @@ fun ViewContainer( darkMode: MutableState<Boolean>){
 
             }
             composable( route = "Settings") {
-                SettingsView( scState, navControl, userVM, scope, auth, darkMode )
+                SettingsView( scState, navControl, userVM, scope, auth, themeStore, themeSetting )
             }
             composable( route = "About") {
                 AboutUs( scState, navControl, scope )

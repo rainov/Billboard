@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsView (
@@ -27,13 +28,14 @@ fun SettingsView (
     userVM: UserViewModel,
     scope: CoroutineScope,
     auth: FirebaseAuth,
-    darkMode: MutableState<Boolean>
+    themeStore: ThemePreference,
+    themeSetting: Boolean
 ) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope ) },
-        content = { SettingsContent( navControl, userVM, scState, scope, auth, darkMode ) },
+        content = { SettingsContent( navControl, userVM, scState, scope, auth, themeStore, themeSetting ) },
         drawerContent = { DrawerMainScreen (
                 scState,
                 scope,
@@ -46,9 +48,11 @@ fun SettingsView (
 
 
 @Composable
-fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope, auth: FirebaseAuth, darkMode: MutableState<Boolean> ) {
+fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope, auth: FirebaseAuth, themeStore: ThemePreference, themeSetting: Boolean ) {
 
-    val checkedState = remember { mutableStateOf(darkMode.value) }
+    val ddd = themeStore.getTheme.collectAsState(initial = Boolean)
+    val checkedState = remember { mutableStateOf(ddd.value) }
+//    val checkedState = remember { mutableStateOf(darkMode.value) }
     val openDialog = remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf(userVM.userName.value) }
     var editUserName by remember { mutableStateOf(false)}
@@ -183,10 +187,13 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                 ) {
                     Text( text = stringResource(R.string.dark_mode))
                     Switch(
-                        checked = checkedState.value,
+                        checked = themeSetting,
                         onCheckedChange = {
                             checkedState.value = it
-                            darkMode.value = it
+                            //darkMode.value = it
+                            scope.launch {
+                                themeStore.saveTheme(it)
+                            }
                             },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Billboard_green,
