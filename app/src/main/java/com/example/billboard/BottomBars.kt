@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -64,7 +65,6 @@ fun BottomBarGroupScreen(
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "back icon",
-
             modifier = Modifier
                 .clickable { navControl.navigate("MainScreen") }
                 .padding(35.dp, 30.dp)
@@ -442,6 +442,57 @@ fun BottomBarAboutUs(
             contentDescription = "back icon",
             modifier = Modifier
                 .clickable { navControl.navigate("MainScreen") }
+                .padding(35.dp, 30.dp)
+        )
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@Composable
+fun BottomBarAffiliate(
+    navControl: NavController,
+    categoryName: MutableState<String>
+) {
+    Row(
+        Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_back),
+            contentDescription = "back icon",
+            modifier = Modifier
+                .clickable {
+                    if( categoryName.value == "" ){
+                        navControl.navigate("MainScreen")
+                    } else {
+                        categoryName.value = ""
+                    }
+                }
+                .padding(35.dp, 30.dp)
+        )
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@Composable
+fun BottomBarPartner(
+    affiliateNavControl: NavController
+) {
+    Row(
+        Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_back),
+            contentDescription = "back icon",
+            modifier = Modifier
+                .clickable { affiliateNavControl.navigate("affiliate_categories")}
                 .padding(35.dp, 30.dp)
         )
     }

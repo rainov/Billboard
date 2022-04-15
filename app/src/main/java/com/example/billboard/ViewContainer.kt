@@ -19,6 +19,8 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
 
     //val scope = rememberCoroutineScope()
 
+    val affiliateVM: AffiliatePartnersViewModel = viewModel()
+
     val userVM: UserViewModel = viewModel()
 
     val groupsVM: GroupsViewModel = viewModel()
@@ -32,6 +34,7 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
         groupsVM.setEmail(user.email.toString())
         userVM.setEmail(user.email.toString())
         groupsVM.getGroups()
+        affiliateVM.getPartners()
         Firebase.firestore
             .collection("users")
             .document(user.email.toString())
@@ -57,17 +60,8 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
                 CreateGroupView( groupsVM, navControl, scState, scope )
             }
             composable( route = "Affiliate") {
-                AffiliatePartnersView( navControl, scState, scope )
+                AffiliateNavContainer( navControl, scState, scope, affiliateVM, userVM )
             }
-//            composable( route = "Travel") {
-//                AffiliatePartnersView( navControl, scState, scope )
-//            }
-//            composable( route = "Shopping") {
-//                AffiliatePartnersView( navControl, scState, scope )
-//            }
-//            composable( route = "GroupActivities") {
-//                AffiliatePartnersView( navControl, scState, scope )
-//            }
             groups.forEach { groupInfo ->
                 composable(route = groupInfo.id) {
                     GroupViewNavigationContainer( navControl, groupInfo, scState, groupsVM, scope, userVM )
