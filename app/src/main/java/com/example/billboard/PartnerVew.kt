@@ -2,9 +2,7 @@ package com.example.billboard
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.CornerPathEffect
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -31,10 +29,10 @@ fun PartnerView(
     scope: CoroutineScope
 ) {
 
-    val QRcontent = partner.name + userVM.userEmail
+    val qrContent = partner.name + userVM.userEmail
 
     val writer = QRCodeWriter()
-    val bitMatrix = writer.encode( QRcontent, BarcodeFormat.QR_CODE, 1024, 1024 )
+    val bitMatrix = writer.encode( qrContent, BarcodeFormat.QR_CODE, 1024, 1024 )
     val width = bitMatrix.width
     val height = bitMatrix.height
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
@@ -44,12 +42,11 @@ fun PartnerView(
         }
     }
 
-
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope) },
         bottomBar = { BottomBarPartner( affiliateNavControl ) },
-        content = { PartnerContent( partner, bitmap, affiliateNavControl ) },
+        content = { PartnerContent( partner, bitmap ) },
         drawerContent = { DrawerMainScreen (
             scState,
             scope,
@@ -57,18 +54,15 @@ fun PartnerView(
         )
         }
     )
-//
+
 }
 
 @Composable
-fun PartnerContent( partner: AffiliatePartner, bitmap: Bitmap, affiliateNavControl: NavController) {
+fun PartnerContent( partner: AffiliatePartner, bitmap: Bitmap ) {
 
     Column(
         modifier = Modifier
-//            .fillMaxSize()
             .fillMaxWidth(),
-//            .padding(15.dp)
-//            .border( width = 1.dp,color = Billboard_green, shape = MaterialTheme.shapes.large),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer( modifier = Modifier.height(10.dp))
