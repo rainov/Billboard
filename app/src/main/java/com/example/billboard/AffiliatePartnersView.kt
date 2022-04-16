@@ -1,8 +1,9 @@
 package com.example.billboard
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -14,15 +15,19 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun AffiliatePartnersView(
     navControl: NavController,
+    affiliateNavControl: NavController,
     scState: ScaffoldState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    partners: MutableList<AffiliatePartner>,
+    categories: MutableList<String>,
+    selectedCategory: MutableState<String>
 ) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope) },
-        bottomBar = { BottomBarAboutUs( navControl ) },
-        content = { AffiliatePartnersContent( navControl ) },
+        bottomBar = { BottomBarAffiliate( navControl, selectedCategory ) },
+        content = { AffiliatePartnersContent( partners, affiliateNavControl, selectedCategory, categories ) },
         drawerContent = { DrawerMainScreen (
             scState,
             scope,
@@ -30,12 +35,16 @@ fun AffiliatePartnersView(
         )
         }
     )
+
 }
 
 @Composable
-fun AffiliatePartnersContent(navControl: NavController) {
-
-    val categories = listOf("Travel", "Shopping", "Group activities")
+fun AffiliatePartnersContent(
+    partners: MutableList<AffiliatePartner>,
+    affiliateNavControl: NavController,
+    categoryName: MutableState<String>,
+    categories: MutableList<String>
+) {
 
     Column(
         Modifier.fillMaxSize(),
@@ -43,22 +52,57 @@ fun AffiliatePartnersContent(navControl: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Spacer(modifier = Modifier.height(20.dp))
-        categories.forEach { category ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(.8f)
-                    .height(140.dp),
-                shape = MaterialTheme.shapes.large,
-                elevation = 7.dp
-            ) {
-                Column (
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+
+
+        if ( categoryName.value == "" ) {
+            categories.forEach { category ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f)
+                        .clickable {
+                            categoryName.value = category
+                        }
+                        .height(140.dp),
+                    shape = MaterialTheme.shapes.large,
+                    elevation = 7.dp
                 ) {
-                    Text( text = category, textAlign = TextAlign.Center, fontSize = 30.sp, color = MaterialTheme.colors.onPrimary )
+                    Column (
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text( text = category.uppercase(), textAlign = TextAlign.Center, fontSize = 25.sp, color = MaterialTheme.colors.onPrimary )
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+
+            }
+        } else {
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                partners.forEach { partner ->
+                    if (partner.category == categoryName.value) {
+                        Card(
+                            modifier = Modifier
+                                .clickable { affiliateNavControl.navigate(partner.id) }
+                                .fillMaxWidth(.8f)
+                                .height(70.dp),
+                            shape = MaterialTheme.shapes.large,
+                            elevation = 7.dp
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(text = partner.name, textAlign = TextAlign.Center, fontSize = 20.sp)
+                            }
+                        }
+                        Spacer( modifier = Modifier.height(20.dp))
+                    }
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

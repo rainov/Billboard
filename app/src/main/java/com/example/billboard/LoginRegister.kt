@@ -59,7 +59,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                 Text(text = stringResource(R.string.passwd_reset))
             },
             text = {
-                Column(){
+                Column {
                     Text(text = stringResource(R.string.email_reset))
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
@@ -269,7 +269,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
     fun login(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener() { task ->
+                .addOnCompleteListener { task ->
                     if(task.isSuccessful){
                         if (auth.currentUser?.isEmailVerified == true) {
                             userVM.setEmail(email)

@@ -1,4 +1,12 @@
+@file:Suppress("UNCHECKED_CAST", "SpellCheckingInspection")
+
 package com.example.billboard
+
+/*===================================================/
+|| Edit members views with input for adding a new
+|| member and the list of all the members with
+|| buttons to edit, change admin status and delete
+/====================================================*/
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -9,11 +17,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.google.firebase.firestore.FieldValue
@@ -22,16 +28,31 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun AddEditMemberView(groupsVM: GroupsViewModel, expenseNavControl: NavController, scState: ScaffoldState, scope: CoroutineScope, group: GroupClass, userVM: UserViewModel, expensesVM : ExpensesViewModel ) {
+fun AddEditMemberView(
+    groupsVM: GroupsViewModel,
+    userVM: UserViewModel,
+    scState: ScaffoldState,
+    scope: CoroutineScope,
+    group: GroupClass,
+    expenseNavControl: NavController,
+    navControl : NavController
+) {
+
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
-        content = { AddEditMemberContent( groupsVM, expenseNavControl, group, userVM, expensesVM ) }
+        content = { AddEditMemberContent( groupsVM, userVM, group, expenseNavControl, navControl) }
     )
 
 }
 
 @Composable
-fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavController, group: GroupClass, userVM: UserViewModel, expensesVM : ExpensesViewModel) {
+fun AddEditMemberContent(
+    groupsVM: GroupsViewModel,
+    userVM: UserViewModel,
+    group: GroupClass,
+    expenseNavControl: NavController,
+    navControl : NavController
+) {
 
     var memberEmail by remember { mutableStateOf("") }
     var membersList by remember { mutableStateOf(group.members) }
@@ -40,9 +61,9 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
     var editGroup by remember { mutableStateOf(group) }
     var newBalance by remember { mutableStateOf(group.balance) }
 
-    var bool_edit by remember { mutableStateOf(false)}
-    var alert_existing_m = remember { mutableStateOf(false)}
-    var alert_delete_m = remember { mutableStateOf(false)}
+    val boolEdit = remember { mutableStateOf(false)}
+    val existingMemberAlert = remember { mutableStateOf(false)}
+    val deleteMemberAlert = remember { mutableStateOf(false)}
 
     fun addMember() {
         val newMemberBalanceMap = mutableMapOf<String, Double>()
@@ -74,9 +95,11 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         editGroup = newGroup
         newBalance = newGroup.balance
         groupsVM.editGroup(newGroup)
+        memberEmail = ""
+
     }
 
-    fun edit_member_name(groupsVM: GroupsViewModel, group: GroupClass, member: String, newemail : String){
+    fun editMemberName(member: String, editedMember : String){
         // Edit in group collection//
 
         // Apply changes in group balance //
@@ -84,13 +107,13 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
             if(m == member){
                 //Adding new key in map//
                 val oldMemberBalance = editGroup.balance[m]!!
-                newBalance[newemail] = oldMemberBalance
+                newBalance[editedMember] = oldMemberBalance
                 //Deleting old key in map//
                 newBalance.remove(m)
             } else {
                 //In each member balance, adding new key with old value
-                var oldBalance = editGroup.balance[m]!!.getValue(member)
-                newBalance[m]?.set(newemail, oldBalance)
+                val oldBalance = editGroup.balance[m]!!.getValue(member)
+                newBalance[m]?.set(editedMember, oldBalance)
 
                 //Deleting old key balance//
                 newBalance[m]?.remove(member)
@@ -101,7 +124,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
         val tempMembers = mutableListOf<String>()
         membersList.forEach { m -> if(m != member) tempMembers.add(m) }
-        tempMembers.add(newemail)
+        tempMembers.add(editedMember)
         membersList = tempMembers
 
 
@@ -110,7 +133,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         if(adminsList.contains(member)){
             val tempAdmins = mutableListOf<String>()
             adminsList.forEach { admin -> if(admin != member) tempAdmins.add(admin) }
-            tempAdmins.add(newemail)
+            tempAdmins.add(editedMember)
             adminsList = tempAdmins
         }
 
@@ -146,60 +169,45 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
                     //Edit payer//
                     if(member == oldExpense.payer){
-                        fexp.update("payer",newemail)
+                        fexp.update("payer",editedMember)
                     }
 
                     //Edit rest//
                     if(oldExpense.rest.contains(member)) {
                         fexp.update("rest", FieldValue.arrayRemove(member))
-                        fexp.update("rest", FieldValue.arrayUnion(newemail))
+                        fexp.update("rest", FieldValue.arrayUnion(editedMember))
                     }
 
                     //Edit paid values//
                     if(oldExpense.paidvalues.containsKey(member)){
-                        var newPaidValuesMap = mutableMapOf<String,Boolean>()
+                        val newPaidValuesMap = mutableMapOf<String,Boolean>()
                         oldExpense.paidvalues.forEach { other ->
                             newPaidValuesMap[other.key] = other.value
                         }
-                        newPaidValuesMap[newemail] = newPaidValuesMap[member]!!
+                        newPaidValuesMap[editedMember] = newPaidValuesMap[member]!!
                         newPaidValuesMap.remove(member)
 
+                        Log.d("newPaidValuesMap",newPaidValuesMap.toString())
+
                         fexp.update("paidvalues", newPaidValuesMap)
-                        bool_edit = false
+                        boolEdit.value = false
                     }
                 }
         }
 
         editGroup = newGroup
         groupsVM.editGroup(newGroup)
-        memberEmail = ""
-        /* TODO refresh expenses */
+
+        groupsVM.getGroups()
+        navControl.navigate(group.id)
     }
 
-    fun makeAdmin(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
-        val tempAdmins = mutableListOf<String>()
-        adminsList.forEach { admin -> tempAdmins.add(admin) }
-        tempAdmins.add(member)
-        adminsList = tempAdmins
-        Log.d("Admins ====> ", adminsList.toString())
-        val newGroup = GroupClass(
-            adminsList,
-            group.expenses,
-            group.members,
-            group.name,
-            group.balance,
-            group.id
-        )
-        Log.d("Add admin : ", newGroup.toString())
-        editGroup = newGroup
-        groupsVM.editGroup(newGroup)
-    }
-
-    fun deleteAdmin(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
+    // Function to add a member to the admin group list
+    fun makeAdmin() {
 
         val tempAdmins = mutableListOf<String>()
         adminsList.forEach { admin -> tempAdmins.add(admin) }
-        tempAdmins.remove(member)
+        tempAdmins.add(memberEmail)
         adminsList = tempAdmins
 
         val newGroup = GroupClass(
@@ -215,9 +223,29 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         groupsVM.editGroup(newGroup)
     }
 
+    //Function to delete a member from the admin group list
+    fun deleteAdmin() {
+
+        val tempAdmins = mutableListOf<String>()
+        adminsList.forEach { admin -> tempAdmins.add(admin) }
+        tempAdmins.remove(memberEmail)
+        adminsList = tempAdmins
+
+        val newGroup = GroupClass(
+            adminsList,
+            group.expenses,
+            group.members,
+            group.name,
+            group.balance,
+            group.id
+        )
+
+        editGroup = newGroup
+        groupsVM.editGroup(newGroup)
+    }
+
+    //Function to check if a member's balance is clear
     fun isMemberBalanceClear(
-        groupsVM: GroupsViewModel,
-        group: GroupClass,
         member: String
     ): Boolean {
         group.balance[member]?.forEach { other ->
@@ -226,29 +254,28 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         return true
     }
 
-
-    fun deleteMember(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
+    fun deleteMember() {
 
         /* Delete members line from group balance */
         membersList.forEach { m ->
-            if(m == member){
+            if(m == memberEmail){
                 newBalance.remove(m)
             } else {
                 //In each member balance, remove member balance
-                newBalance[m]?.remove(member)
+                newBalance[m]?.remove(memberEmail)
             }
         }
 
         /* Delete from admins */
-        if(group.admins.contains(member)){
+        if(group.admins.contains(memberEmail)){
             val tempAdmins = mutableListOf<String>()
-            adminsList.forEach { admin -> if(admin != member) tempAdmins.add(admin) }
+            adminsList.forEach { admin -> if(admin != memberEmail) tempAdmins.add(admin) }
             adminsList = tempAdmins
         }
 
         /* Delete from members */
         val tempMembers = mutableListOf<String>()
-        membersList.forEach { m -> if(m != member) tempMembers.add(m) }
+        membersList.forEach { m -> if(m != memberEmail) tempMembers.add(m) }
         membersList = tempMembers
 
 
@@ -266,14 +293,14 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
     }
 
-    if(!bool_edit) {
+    if(!boolEdit.value) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column() {
+        Column {
             Column(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -328,7 +355,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
                 OutlinedButton(
                     onClick = { if(group.members.contains(memberEmail)) {
-                        alert_existing_m.value = true
+                        existingMemberAlert.value = true
                     } else {
                         addMember() }},
                     modifier = Modifier
@@ -369,11 +396,11 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
 
-                        if (!userVM.userEmail.value.equals(member)) {
+                        if (userVM.userEmail.value != member) {
                                 OutlinedButton(
                                     onClick = {
                                         memberEmail = member
-                                        bool_edit = true },
+                                        boolEdit.value = true },
                                     modifier = Modifier
                                         .width(80.dp)
                                         .height(35.dp),
@@ -388,7 +415,8 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                         if (!group.admins.contains(member)) {
                             OutlinedButton(
                                 onClick = {
-                                    makeAdmin(groupsVM, group, member)
+                                    memberEmail = member
+                                    makeAdmin()
                                 },
                                 modifier = Modifier
                                     .width(150.dp)
@@ -402,10 +430,11 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                             }
                         }
 
-                        if (group.admins.contains(member) && !userVM.userEmail.value.equals(member)) {
+                        if (group.admins.contains(member) && userVM.userEmail.value != member) {
                             OutlinedButton(
                                 onClick = {
-                                    deleteAdmin(groupsVM, group, member)
+                                    memberEmail = member
+                                    deleteAdmin()
                                 },
                                 modifier = Modifier
                                     .width(150.dp)
@@ -419,21 +448,15 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                             }
                         }
 
-                        if (!userVM.userEmail.value.equals(
-                                member
-                            )
-                        ) {
+                        if (userVM.userEmail.value != member) {
                             OutlinedButton(
-                                onClick = { if(isMemberBalanceClear(
-                                        groupsVM,
-                                        group,
-                                        member
-                                    )) deleteMember(groupsVM, group, member) else {alert_delete_m.value = true} },
+                                onClick = { if(isMemberBalanceClear(member)) { memberEmail = member; deleteMember() } else {deleteMemberAlert.value = true} },
                                 modifier = Modifier
                                     .width(80.dp)
                                     .height(35.dp),
                                 shape = MaterialTheme.shapes.large,
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                             ) {
                                 Text(text = stringResource(R.string.delete))
                             }
@@ -479,10 +502,10 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         }
         }
         }
-        if(alert_existing_m.value){
+        if(existingMemberAlert.value){
             AlertDialog(
                 onDismissRequest = {
-                    alert_existing_m.value = false
+                    existingMemberAlert.value = false
                 },
                 title = {
                     Text(text = stringResource(R.string.error))
@@ -493,7 +516,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 confirmButton = {
                     OutlinedButton(
                         onClick = {
-                            alert_existing_m.value = false
+                            existingMemberAlert.value = false
                         },
                         modifier = Modifier
                             .width(100.dp)
@@ -506,10 +529,10 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 }
             )
         }
-        if(alert_delete_m.value){
+        if(deleteMemberAlert.value){
             AlertDialog(
                 onDismissRequest = {
-                    alert_delete_m.value = false
+                    deleteMemberAlert.value = false
                 },
                 title = {
                     Text(text = stringResource(R.string.error))
@@ -520,7 +543,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 confirmButton = {
                     OutlinedButton(
                         onClick = {
-                            alert_delete_m.value = false
+                            deleteMemberAlert.value = false
                         },
                         modifier = Modifier
                             .width(100.dp)
@@ -565,12 +588,10 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
             OutlinedButton(
                 onClick = {
-                    edit_member_name(
-                        groupsVM,
-                        group,
+                    editMemberName(
                         oldMember,
                         memberEmail)
-                    bool_edit = false
+                    boolEdit.value = false
                 },
                 modifier = Modifier
                     .fillMaxWidth(.75f)
@@ -587,7 +608,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
             OutlinedButton(
                 onClick = {
-                    bool_edit = false
+                    boolEdit.value = false
                 },
                 modifier = Modifier
                     .fillMaxWidth(.75f)

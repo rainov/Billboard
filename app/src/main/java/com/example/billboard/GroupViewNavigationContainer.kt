@@ -34,10 +34,18 @@ fun GroupViewNavigationContainer(
             GroupView( groupInfo, expenses, expenseNavControl, navControl, scState, scope, groupsVM, userVM)
         }
         composable( route = "addMembers") {
-            AddEditMemberView(groupsVM, expenseNavControl, scState, scope, groupInfo, userVM, expensesVM)
+            AddEditMemberView(
+                groupsVM,
+                userVM,
+                scState,
+                scope,
+                groupInfo,
+                expenseNavControl,
+                navControl
+            )
         }
         composable( route = "groupBalance" ) {
-            GroupBalanceView(scState, expenseNavControl, groupInfo, expenses , scope, navControl, userVM )
+            GroupBalanceView(scState, expenseNavControl, groupInfo, expenses , scope, navControl, userVM, groupsVM)
         }
         composable( route = "addExpense") {
             val name = ""

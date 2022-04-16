@@ -3,7 +3,7 @@ package com.example.billboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -15,15 +15,71 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope: CoroutineScope, groupInfo: GroupClass, expenseNavControl: NavController, userVM : UserViewModel) {
+fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope: CoroutineScope, groupInfo: GroupClass, expenseNavControl: NavController, userVM : UserViewModel, groupsVM: GroupsViewModel) {
 
-    Column (
+    var membersList by remember { mutableStateOf(groupInfo.members) }
+    var adminsList by remember { mutableStateOf(groupInfo.admins) }
+    var newBalance by remember { mutableStateOf(groupInfo.balance) }
+
+    var alert_dialog_admin = remember { mutableStateOf(false)}
+    var alert_dialog_balance = remember { mutableStateOf(false)}
+
+    fun leaveGroup() {
+        val member = userVM.userEmail.value
+
+        /* Delete members line from group balance */
+        membersList.forEach { m ->
+            if (m == member) {
+                newBalance.remove(m)
+            } else {
+                //In each member balance, remove member balance
+                newBalance[m]?.remove(member)
+            }
+        }
+
+        /* Delete from admins */
+        if (groupInfo.admins.contains(member)) {
+            val tempAdmins = mutableListOf<String>()
+            adminsList.forEach { admin -> if (admin != member) tempAdmins.add(admin) }
+            adminsList = tempAdmins
+        }
+
+        /* Delete from members */
+        val tempMembers = mutableListOf<String>()
+        membersList.forEach { m -> if (m != member) tempMembers.add(m) }
+        membersList = tempMembers
+
+
+        val newGroup = GroupClass(
+            adminsList,
+            groupInfo.expenses,
+            membersList,
+            groupInfo.name,
+            newBalance,
+            groupInfo.id
+        )
+
+        groupsVM.editGroup(newGroup)
+    }
+
+    fun isBalanceClear() : Boolean {
+        groupInfo.balance[userVM.userEmail.value]?.forEach { other ->
+            if (other.value != 0.0) return false
+        }
+        return true
+    }
+
+    fun isOneAdminLeft() : Boolean {
+        return groupInfo.admins.contains(userVM.userEmail.value) && groupInfo.admins.size >= 2 || !groupInfo.admins.contains(userVM.userEmail.value)
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
 
         Column(
             modifier = Modifier.weight(1f),
@@ -31,7 +87,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(15.dp))
-            Text( text = groupInfo.name, fontSize = 30.sp )
+            Text(text = groupInfo.name, fontSize = 30.sp)
             Spacer(modifier = Modifier.height(15.dp))
             Divider(
                 modifier = Modifier
@@ -51,10 +107,10 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             Column() {
                 groupInfo.members.forEach { member ->
                     Row() {
-                        Text( text = member, fontSize = 20.sp )
+                        Text(text = member, fontSize = 20.sp)
                         Spacer(modifier = Modifier.width(5.dp))
-                        if ( groupInfo.admins.contains(member)) {
-                            Text( text = "Admin", fontSize = 12.sp, color = Billboard_green)
+                        if (groupInfo.admins.contains(member)) {
+                            Text(text = "Admin", fontSize = 12.sp, color = Billboard_green)
                         }
                     }
                     Spacer(modifier = Modifier.height(20.dp))
@@ -66,7 +122,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (groupInfo.admins.contains(userVM.userEmail.value)){
+                if (groupInfo.admins.contains(userVM.userEmail.value)) {
                     OutlinedButton(
                         onClick = {
                             expenseNavControl.navigate("addMembers")
@@ -85,8 +141,15 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
                 OutlinedButton(
                     onClick = {
-                        expenseNavControl.navigate("addMembers")
-                        scope.launch { scState.drawerState.close() }
+                        if(isBalanceClear()){
+                            if(isOneAdminLeft()){
+                            leaveGroup()
+                            scope.launch { scState.drawerState.close() }
+                        } else {
+                            alert_dialog_admin.value = true
+                        }} else {
+                            alert_dialog_balance.value = true
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth(.85f)
@@ -94,7 +157,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
-                    Text(text = stringResource(R.string.leave_group))
+                    Text(text = stringResource(R.string.leave_grp))
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -102,7 +165,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             }
         }
 
-        Column (
+        Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
@@ -126,9 +189,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
-                Text( text = stringResource(R.string.settings))
+                Text(text = stringResource(R.string.settings))
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -142,9 +205,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     .fillMaxWidth(.85f)
                     .height(60.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
             ) {
-                Text( text = stringResource(R.string.about))
+                Text(text = stringResource(R.string.about))
             }
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -158,5 +221,61 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
             Spacer(modifier = Modifier.height(10.dp))
         }
+    }
+
+    if(alert_dialog_balance.value){
+        AlertDialog(
+            onDismissRequest = {
+                alert_dialog_balance.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.error))
+            },
+            text = {
+                Text(text = stringResource(R.string.err_balance_clear))
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        alert_dialog_balance.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                ) {
+                    Text(text = stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    if(alert_dialog_admin.value){
+        AlertDialog(
+            onDismissRequest = {
+                alert_dialog_admin.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.error))
+            },
+            text = {
+                Text(text = stringResource(R.string.err_admin_left))
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        alert_dialog_admin.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                ) {
+                    Text(text = stringResource(R.string.cancel))
+                }
+            }
+        )
     }
 }

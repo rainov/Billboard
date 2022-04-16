@@ -41,7 +41,7 @@ fun GroupView(
             DrawerMainScreen (
                 scState,
                 scope,
-                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl, userVM )
+                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl, userVM, groupsViewModel )
             )
         },
         content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
