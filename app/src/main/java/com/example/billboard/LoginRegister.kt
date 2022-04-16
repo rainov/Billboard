@@ -47,6 +47,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
 
     var emailinput by remember { mutableStateOf("")}
 
+    var resendVerificationLink by remember { mutableStateOf(false)}
+
     if (dialogForgotPw.value) {
 
         AlertDialog(
@@ -98,7 +100,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
                     Text(text = stringResource(R.string.send))
                 }
@@ -112,7 +114,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
                     Text(text = stringResource(R.string.cancel))
                 }
@@ -141,7 +143,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
                     Text(text = stringResource(R.string.ok))
                 }
@@ -160,7 +162,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
             text = {
                 Text(text = errorMessage)
             },
-            confirmButton = {
+            dismissButton = {
                 OutlinedButton(
                     onClick = {
                         notVerified = false
@@ -169,9 +171,34 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
-                    Text(text = stringResource(R.string.ok))
+                    Text(text = stringResource(R.string.close))
+                }
+            },
+            confirmButton = {
+                if ( !resendVerificationLink ) {
+                    OutlinedButton(
+                        onClick = {
+                            auth.fetchSignInMethodsForEmail(email).addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    auth.currentUser?.sendEmailVerification()
+                                    errorMessage = context.getString(R.string.verification_email)
+                                    auth.signOut()
+                                    resendVerificationLink = true
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
+                    ) {
+                        Text(text = stringResource(R.string.resend))
+                    }
+                } else {
+                    null
                 }
             }
         )
@@ -200,7 +227,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
                     Text(text = stringResource(R.string.ok))
                 }
@@ -231,7 +258,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
                     Text(text = stringResource(R.string.ok))
                 }
@@ -447,7 +474,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = Color.White,
+                        contentColor = MaterialTheme.colors.onPrimary,
                         backgroundColor = MaterialTheme.colors.surface
                     )
                 ) {
@@ -505,7 +532,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
                     Text(text = stringResource(R.string.register_text))
                 }
@@ -535,4 +562,5 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         }
     }
 }
+
 

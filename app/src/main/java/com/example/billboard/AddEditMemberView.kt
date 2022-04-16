@@ -42,6 +42,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
 
     var bool_edit by remember { mutableStateOf(false)}
     var alert_existing_m = remember { mutableStateOf(false)}
+    var alert_delete_m = remember { mutableStateOf(false)}
 
     fun addMember() {
         val newMemberBalanceMap = mutableMapOf<String, Double>()
@@ -418,16 +419,16 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                             }
                         }
 
-                        if (isMemberBalanceClear(
-                                groupsVM,
-                                group,
-                                member
-                            ) && !userVM.userEmail.value.equals(
+                        if (!userVM.userEmail.value.equals(
                                 member
                             )
                         ) {
                             OutlinedButton(
-                                onClick = { deleteMember(groupsVM, group, member) },
+                                onClick = { if(isMemberBalanceClear(
+                                        groupsVM,
+                                        group,
+                                        member
+                                    )) deleteMember(groupsVM, group, member) else {alert_delete_m.value = true} },
                                 modifier = Modifier
                                     .width(80.dp)
                                     .height(35.dp),
@@ -505,9 +506,37 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
                 }
             )
         }
+        if(alert_delete_m.value){
+            AlertDialog(
+                onDismissRequest = {
+                    alert_delete_m.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.error))
+                },
+                text = {
+                    Text(text = stringResource(R.string.err_del_member))
+                },
+                confirmButton = {
+                    OutlinedButton(
+                        onClick = {
+                            alert_delete_m.value = false
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     } else {
         val oldMember by remember { mutableStateOf(memberEmail) }
         Column(
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {

@@ -82,6 +82,23 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
+
+                OutlinedButton(
+                    onClick = {
+                        expenseNavControl.navigate("addMembers")
+                        scope.launch { scState.drawerState.close() }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(.85f)
+                        .height(60.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                ) {
+                    Text(text = stringResource(R.string.leave_group))
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
             }
         }
 

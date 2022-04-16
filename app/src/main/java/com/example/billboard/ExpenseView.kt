@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +28,8 @@ fun ExpenseView(
     expensesViewModel: ExpensesViewModel,
     groupsViewModel: GroupsViewModel,
     groupInfo : GroupClass,
-    navControl : NavController
+    navControl : NavController,
+    userVM : UserViewModel
 ) {
     val groupAdmins = remember { mutableStateOf(groupInfo.admins) }
     val isUserAdmin = remember { mutableStateOf(false) }
@@ -52,7 +54,8 @@ fun ExpenseView(
                 groupsViewModel,
                 groupInfo,
                 navControl,
-                isUserAdmin
+                isUserAdmin,
+                userVM
             )
         }
     )
@@ -66,7 +69,8 @@ fun ExpenseViewContent(
     groupsViewModel: GroupsViewModel,
     groupInfo: GroupClass,
     navControl : NavController,
-    isUserAdmin: MutableState<Boolean>
+    isUserAdmin: MutableState<Boolean>,
+    userVM : UserViewModel
 ) {
 
     val expenseName = expense.name
@@ -111,12 +115,12 @@ fun ExpenseViewContent(
 
             expenseRest.forEach { member ->
                 Row() {
-                    Text(text = member, modifier = Modifier.padding(15.dp))
+                    Text(text = member, modifier = Modifier.padding(15.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
                     if (!groupInfo.members.contains(member)) {
                         Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
-                    } else {
+                    } else if(groupInfo.members.contains(expensePayer)){
 
-                        if (isUserAdmin.value) {
+                        if (isUserAdmin.value || userVM.userEmail.value.equals(expensePayer) ) {
                             if (expense.paidvalues[member] == false) {
                                 OutlinedButton(
                                     onClick = {

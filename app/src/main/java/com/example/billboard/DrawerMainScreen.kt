@@ -42,7 +42,8 @@ fun DrawerContent( navControl: NavController, scState: ScaffoldState, scope: Cor
 
         OutlinedButton(
             onClick = {
-
+                navControl.navigate("Affiliate")
+                scope.launch { scState.drawerState.close() }
             },
             modifier = Modifier
                 .fillMaxWidth(.85f)

@@ -36,7 +36,7 @@ fun GroupView(
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-        bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl, groupInfo, groupsViewModel )},
+        bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl, groupInfo, groupsViewModel, userVM)},
         drawerContent = {
             DrawerMainScreen (
                 scState,
@@ -56,7 +56,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
         totalSpent += expense.amount
     }
 
-    if (groupInfo.members.size == 1 && groupInfo.expenses.size > 0) {
+    if (groupInfo.members.size == 1 && groupInfo.expenses.isEmpty()) {
 
         Column(
             modifier = Modifier.fillMaxSize(),
