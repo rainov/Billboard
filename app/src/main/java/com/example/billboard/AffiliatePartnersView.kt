@@ -29,10 +29,10 @@ fun AffiliatePartnersView(
         bottomBar = { BottomBarAffiliate( navControl, selectedCategory ) },
         content = { AffiliatePartnersContent( partners, affiliateNavControl, selectedCategory, categories ) },
         drawerContent = { DrawerMainScreen (
-            scState,
-            scope,
-            DrawerContent( navControl, scState, scope )
-        )
+                scState,
+                scope,
+                DrawerContent( navControl, scState, scope )
+            )
         }
     )
 
@@ -90,6 +90,7 @@ fun AffiliatePartnersContent(
                                 .fillMaxWidth(.8f)
                                 .height(70.dp),
                             shape = MaterialTheme.shapes.large,
+                            contentColor = MaterialTheme.colors.onPrimary,
                             elevation = 7.dp
                         ) {
                             Column(

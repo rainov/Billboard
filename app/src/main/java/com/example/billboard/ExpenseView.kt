@@ -27,7 +27,8 @@ fun ExpenseView(
     expensesViewModel: ExpensesViewModel,
     groupsViewModel: GroupsViewModel,
     groupInfo : GroupClass,
-    navControl : NavController
+    navControl : NavController,
+    userVM: UserViewModel
 ) {
     val groupAdmins = remember { mutableStateOf(groupInfo.admins) }
     val isUserAdmin = remember { mutableStateOf(false) }
@@ -42,7 +43,8 @@ fun ExpenseView(
             isUserAdmin.value,
             expensesViewModel,
             groupsViewModel,
-            groupInfo
+            groupInfo,
+            userVM
         )},
         content = {
             ExpenseViewContent(
@@ -52,7 +54,8 @@ fun ExpenseView(
                 groupsViewModel,
                 groupInfo,
                 navControl,
-                isUserAdmin
+                isUserAdmin,
+                userVM
             )
         }
     )
@@ -66,7 +69,8 @@ fun ExpenseViewContent(
     groupsViewModel: GroupsViewModel,
     groupInfo: GroupClass,
     navControl : NavController,
-    isUserAdmin: MutableState<Boolean>
+    isUserAdmin: MutableState<Boolean>,
+    userVM: UserViewModel
 ) {
 
     val expenseName = expense.name
@@ -126,7 +130,8 @@ fun ExpenseViewContent(
                                             expense,
                                             expenseNavControl,
                                             groupsViewModel,
-                                            navControl
+                                            navControl,
+                                            userVM
                                         )
                                     },
                                     modifier = Modifier
@@ -146,7 +151,8 @@ fun ExpenseViewContent(
                                             expense,
                                             expenseNavControl,
                                             groupsViewModel,
-                                            navControl
+                                            navControl,
+                                            userVM
                                         )
                                     },
                                     modifier = Modifier

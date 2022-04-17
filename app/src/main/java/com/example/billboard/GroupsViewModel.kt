@@ -46,7 +46,7 @@ class GroupsViewModel: ViewModel() {
             }
     }
 
-    fun createGroup( name: String, navControl: NavController) {
+    fun createGroup( name: String, navControl: NavController, userVM: UserViewModel) {
         val adminsList: List<String> = listOf(userEmail.value)
         val expensesList: List<String> = listOf()
         val membersList: List<String> = listOf(userEmail.value)
@@ -62,21 +62,23 @@ class GroupsViewModel: ViewModel() {
                     .collection("groups")
                     .document(group.id)
                     .update("id", group.id)
+                userVM.logAction("Create group")
                 navControl.navigate(group.id)
             }
     }
 
-    fun editGroup( group: GroupClass ) {
+    fun editGroup( group: GroupClass, userVM: UserViewModel, actionType: String ) {
         Firebase.firestore
             .collection("groups")
             .document(group.id)
             .set( group )
             .addOnSuccessListener {
                 getGroups()
+                userVM.logAction(actionType)
             }
     }
 
-    fun deleteGroup(group : GroupClass) {
+    fun deleteGroup(group : GroupClass, userVM: UserViewModel) {
         //First delete all expenses related to the group
         val fexp = Firebase.firestore.collection("expenses")
         val fgrp = Firebase.firestore.collection("groups")
@@ -86,7 +88,9 @@ class GroupsViewModel: ViewModel() {
         }
 
         //Then delete the group
-        fgrp.document(group.id).delete()
+        fgrp.document(group.id).delete().addOnSuccessListener {
+            userVM.logAction("Deleted group")
+        }
 
         getGroups()
     }

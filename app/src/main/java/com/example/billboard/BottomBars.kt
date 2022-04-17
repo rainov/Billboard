@@ -48,7 +48,8 @@ fun BottomBarGroupScreen(
     navControl: NavController,
     expenseNavControl: NavController,
     groupInfo: GroupClass,
-    groupsVM: GroupsViewModel
+    groupsVM: GroupsViewModel,
+    userVM: UserViewModel
 ) {
 
     val openDialog = remember { mutableStateOf(false) }
@@ -117,7 +118,8 @@ fun BottomBarGroupScreen(
                     onClick = {
                         openDialog.value = false
                         groupsVM.deleteGroup(
-                            groupInfo
+                            groupInfo,
+                            userVM
                         )
                     },
                     modifier = Modifier
@@ -207,7 +209,8 @@ fun BottomBarExpenseView(
     isUserAdmin: Boolean,
     expensesViewModel: ExpensesViewModel,
     groupsViewModel: GroupsViewModel,
-    groupInfo: GroupClass
+    groupInfo: GroupClass,
+    userVM: UserViewModel
 ) {
     Row(
         modifier = Modifier
@@ -296,7 +299,8 @@ fun BottomBarExpenseView(
                                 expenseNavControl,
                                 groupsViewModel,
                                 groupInfo,
-                                navControl
+                                navControl,
+                                userVM
                             )
                         },
                         modifier = Modifier
@@ -344,7 +348,8 @@ fun BottomBarExpenseView(
                                 expense,
                                 groupsViewModel,
                                 groupInfo,
-                                navControl
+                                navControl,
+                                userVM
                             )
                         },
                         modifier = Modifier
@@ -393,7 +398,8 @@ fun BottomBarExpenseView(
                                 expense,
                                 expenseNavControl,
                                 groupsViewModel,
-                                navControl
+                                navControl,
+                                userVM
                             )
                         },
                         modifier = Modifier

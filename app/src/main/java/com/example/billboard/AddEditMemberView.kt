@@ -72,7 +72,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         Log.d("NewGroup: ", newGroup.toString())
         editGroup = newGroup
         newBalance = newGroup.balance
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup(newGroup, userVM, "Group member added")
     }
 
     fun edit_member_name(groupsVM: GroupsViewModel, group: GroupClass, member: String, newemail : String){
@@ -170,7 +170,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         }
 
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup(newGroup, userVM, "Group member change email")
         memberEmail = ""
         /* TODO refresh expenses */
     }
@@ -191,7 +191,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         )
         Log.d("Add admin : ", newGroup.toString())
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup(newGroup, userVM, "Group member added as admin")
     }
 
     fun deleteAdmin(groupsVM: GroupsViewModel, group: GroupClass, member: String) {
@@ -211,7 +211,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         )
 
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup( newGroup, userVM, "Group member removed admin")
     }
 
     fun isMemberBalanceClear(
@@ -261,7 +261,7 @@ fun AddEditMemberContent( groupsVM: GroupsViewModel, expenseNavControl: NavContr
         )
 
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup( newGroup, userVM, "Group member deleted")
 
     }
 

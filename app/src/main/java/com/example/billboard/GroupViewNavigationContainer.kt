@@ -48,15 +48,15 @@ fun GroupViewNavigationContainer(
             val rest = mutableListOf<String>()
             val paidvalues = mutableMapOf<String,Boolean>()
             val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid, paidvalues)
-            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope)
+            AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope, userVM)
 
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
-                ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupsVM, groupInfo, navControl)
+                ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupsVM, groupInfo, navControl, userVM)
             }
             composable( route = "${expense.expid}_edit"){
-                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope)
+                AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope, userVM)
             }
         }
     }

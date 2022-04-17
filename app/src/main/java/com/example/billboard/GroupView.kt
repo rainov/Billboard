@@ -1,6 +1,7 @@
 package com.example.billboard
 
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.example.billboard.ui.theme.BillBoard_Grey
 import kotlinx.coroutines.CoroutineScope
+import java.util.*
 
 @Composable
 fun GroupView(
@@ -36,7 +38,7 @@ fun GroupView(
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-        bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl, groupInfo, groupsViewModel )},
+        bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl, groupInfo, groupsViewModel, userVM )},
         drawerContent = {
             DrawerMainScreen (
                 scState,
