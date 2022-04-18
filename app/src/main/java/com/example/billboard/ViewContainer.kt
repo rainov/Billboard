@@ -1,6 +1,7 @@
 package com.example.billboard
 
 import android.annotation.SuppressLint
+import android.app.appsearch.StorageInfo
 import android.util.Log
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.rememberDrawerState
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
@@ -32,6 +34,7 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
     val groups = groupsVM.groups.value
 
     val auth = FirebaseAuth.getInstance()
+
     val user: FirebaseUser? = auth.currentUser
     if (user != null) {
         FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->

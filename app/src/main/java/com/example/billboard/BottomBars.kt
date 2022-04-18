@@ -69,22 +69,25 @@ fun BottomBarGroupScreen(
                 .clickable { navControl.navigate("MainScreen") }
                 .padding(35.dp, 30.dp)
         )
-        OutlinedButton(
-            onClick = {
-                if (groupBalanceClear(groupInfo)) {
-                    openDialog.value = true
-                } else {
-                    openErrors.value = true
-                }
-            },
-            modifier = Modifier
-                .width(100.dp)
-                .height(40.dp),
-            shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
-            elevation = ButtonDefaults.elevation( 7.dp, 5.dp, 0.dp)
-        ) {
-            Text(text = stringResource(R.string.delete))
+
+        if(groupInfo.admins.contains(userVM.userEmail.value)) {
+            OutlinedButton(
+                onClick = {
+                    if (groupBalanceClear(groupInfo)) {
+                        openDialog.value = true
+                    } else {
+                        openErrors.value = true
+                    }
+                },
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(40.dp),
+                shape = MaterialTheme.shapes.large,
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+            ) {
+                Text(text = stringResource(R.string.delete))
+            }
         }
 
         if (groupInfo.members.size > 1 ) {

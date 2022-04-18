@@ -1,14 +1,23 @@
 package com.example.billboard
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.Image
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -16,7 +25,9 @@ import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
+import java.io.File
 
 @Composable
 fun ExpenseView(
@@ -73,6 +84,27 @@ fun ExpenseViewContent(
     userVM: UserViewModel
 ) {
 
+    val context = LocalContext.current
+
+    val storageRef = Firebase.storage.reference
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val path = Uri.parse(imageUri.toString())
+
+    var file = Uri.fromFile(File(path.toString() ))
+
+    val receiptRef = storageRef.child("receipts/${file.lastPathSegment}")
+
+
+    val launcher = rememberLauncherForActivityResult(contract =
+    ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imageUri = uri
+    }
+
+
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
     val expensePayer = expense.payer
@@ -88,6 +120,24 @@ fun ExpenseViewContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Button(onClick = {
+                launcher.launch("image/*")
+            }) {
+                Text(text = "Pick image")
+            }
+
+            if ( imageUri != null ) {
+//                Button(onClick = {
+//                    receiptRef.putFile(file).addOnSuccessListener {
+//                        Log.d("UPLOAD", it.task.snapshot.toString())
+//                    }
+//                }) {
+//                    Text( text = "UPLOAD")
+//                }
+                Text( text = path.toString())
+            }
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(text = expenseName, textAlign = TextAlign.Center, fontSize = 30.sp)
@@ -115,12 +165,12 @@ fun ExpenseViewContent(
 
             expenseRest.forEach { member ->
                 Row() {
-                    Text(text = member, modifier = Modifier.padding(15.dp))
+                    Text(text = member, modifier = Modifier.padding(15.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
                     if (!groupInfo.members.contains(member)) {
                         Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
-                    } else {
+                    } else if(groupInfo.members.contains(expensePayer)){
 
-                        if (isUserAdmin.value) {
+                        if (isUserAdmin.value || userVM.userEmail.value.equals(expensePayer) ) {
                             if (expense.paidvalues[member] == false) {
                                 OutlinedButton(
                                     onClick = {

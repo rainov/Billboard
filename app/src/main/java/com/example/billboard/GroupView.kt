@@ -43,7 +43,7 @@ fun GroupView(
             DrawerMainScreen (
                 scState,
                 scope,
-                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl, userVM )
+                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl, userVM, groupsViewModel )
             )
         },
         content = { GroupViewContent( groupInfo, expenses, expenseNavControl, navControl ) },
@@ -58,7 +58,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
         totalSpent += expense.amount
     }
 
-    if (groupInfo.members.size == 1 && groupInfo.expenses.size > 0) {
+    if (groupInfo.members.size == 1 && groupInfo.expenses.isEmpty()) {
 
         Column(
             modifier = Modifier.fillMaxSize(),

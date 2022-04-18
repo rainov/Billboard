@@ -76,4 +76,16 @@
     <string name="your_groups">Your groups</string>
     <string name="your_code">This is your personal discount code</string>
     <string name="err_add_member">Couldn\'t add this new member as it already exists in the group</string>
+    <string name="err_del_member">Can\'t delete a member with not clear balance !</string>
+    <string name="leave_grp">Leave group</string>
+    <string name="err_admin_left">You can\'t leave the group if you are the last admin. Please make another member admin or if you want to delete the group, click the corresponding button.</string>
+    <string name="err_balance_clear">You can\'t leave the group if your balance is not clear. Erase your debts or ask a group admin !</string>
+    <string name="slogan">~Pay less together~</string>
+    <string name="description_1"> is a student project for the University of applied sciences Oulu - Finland.</string>
+    <string name="description_2">The idea of the app is to serve as an expense tracker for groups, where they </string>
+    <string name="description_3">can share their bills and keep track of the money flow between the members.</string>
+    <string name="description_4">The business plan for the project is to serve as a real Billboard, </string>
+    <string name="description_5">and advertise our affiliate partners and their products/services to our end users.</string>
+    <string name="authors">Authors:</string>
+    <string name="git_repo">Github repository</string>
 </resources>
