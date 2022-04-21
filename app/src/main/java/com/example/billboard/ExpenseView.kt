@@ -1,22 +1,13 @@
 package com.example.billboard
 
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.foundation.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,9 +16,8 @@ import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
-import java.io.File
+import kotlin.math.roundToInt
 
 @Composable
 fun ExpenseView(
@@ -84,32 +74,28 @@ fun ExpenseViewContent(
     userVM: UserViewModel
 ) {
 
-    val context = LocalContext.current
+//    val context = LocalContext.current
+//
+//    val storageRef = Firebase.storage.reference
 
-    val storageRef = Firebase.storage.reference
-
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-
-    val path = Uri.parse(imageUri.toString())
-
-    var file = Uri.fromFile(File(path.toString() ))
-
-    val receiptRef = storageRef.child("receipts/${file.lastPathSegment}")
+//    val bitmap =  remember {
+//        mutableStateOf<Bitmap?>(null)
+//    }
 
 
-    val launcher = rememberLauncherForActivityResult(contract =
-    ActivityResultContracts.GetContent()) { uri: Uri? ->
-        imageUri = uri
-    }
+//    val launcher = rememberLauncherForActivityResult(contract =
+//        ActivityResultContracts.GetContent()) { uri: Uri? ->
+//            imageUri = uri
+//        }
+
 
 
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
     val expensePayer = expense.payer
-
     val expenseRest = expense.rest
+
+    val amountForEach = ((expense.amount / ( expense.rest.size + 1 )) * 100.0 ).roundToInt() / 100.0
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -121,103 +107,167 @@ fun ExpenseViewContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Button(onClick = {
-                launcher.launch("image/*")
-            }) {
-                Text(text = "Pick image")
-            }
-
-            if ( imageUri != null ) {
-//                Button(onClick = {
-//                    receiptRef.putFile(file).addOnSuccessListener {
-//                        Log.d("UPLOAD", it.task.snapshot.toString())
-//                    }
-//                }) {
-//                    Text( text = "UPLOAD")
-//                }
-                Text( text = path.toString())
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
             Text(text = expenseName, textAlign = TextAlign.Center, fontSize = 30.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            //TODO need to discuss about default currency, can the user choose one or the group
-            Text(
-                text = stringResource(R.string.amount_paid)
-                        + expenseAmount + "€"
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth(.85f),
+                elevation = 7.dp,
+                shape = MaterialTheme.shapes.large
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.amount_paid),
+                            fontSize = 18.sp
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(text = expenseAmount + "€", fontSize = 21.sp)
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Divider(
+                        modifier = Modifier
+                            .height(1.dp)
+                            .fillMaxWidth(.9f),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(text = stringResource(R.string.payer_member) + ": " + expensePayer)
-            if(!groupInfo.members.contains(expensePayer)){
-                Text( text = "Deleted", fontSize = 12.sp, color = Billboard_green)
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(text = stringResource(R.string.rest))
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            expenseRest.forEach { member ->
-                Row() {
-                    Text(text = member, modifier = Modifier.padding(15.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
-                    if (!groupInfo.members.contains(member)) {
-                        Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
-                    } else if(groupInfo.members.contains(expensePayer)){
-
-                        if (isUserAdmin.value || userVM.userEmail.value.equals(expensePayer) ) {
-                            if (expense.paidvalues[member] == false) {
-                                OutlinedButton(
-                                    onClick = {
-                                        expensesViewModel.eraseDebt(
-                                            groupInfo,
-                                            member,
-                                            expense,
-                                            expenseNavControl,
-                                            groupsViewModel,
-                                            navControl,
-                                            userVM
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .width(150.dp)
-                                        .height(40.dp),
-                                    shape = MaterialTheme.shapes.large,
-                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                                ) {
-                                    Text(text = stringResource(R.string.erase_debt))
-                                }
-                            } else {
-                                OutlinedButton(
-                                    onClick = {
-                                        expensesViewModel.cancelEraseDebt(
-                                            groupInfo,
-                                            member,
-                                            expense,
-                                            expenseNavControl,
-                                            groupsViewModel,
-                                            navControl,
-                                            userVM
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .width(150.dp)
-                                        .height(40.dp),
-                                    shape = MaterialTheme.shapes.large,
-                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                                ) {
-                                    Text(text = stringResource(R.string.cancel_erase_debt))
-                                }
-                            }
-                        }
+                    Text(text = stringResource(R.string.payer_member), fontSize = 17.sp)
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Divider(
+                        modifier = Modifier
+                            .height(1.dp)
+                            .fillMaxWidth(.83f),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(text = expensePayer, fontSize = 20.sp)
+                    if(!groupInfo.members.contains(expensePayer)){
+                        Text( text = "Deleted", fontSize = 12.sp, color = Billboard_green)
                     }
                 }
             }
+
+            //TODO need to discuss about default currency, can the user choose one or the group
+
+
+
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(text = stringResource(R.string.rest), fontSize = 18.sp)
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth(.83f),
+                color = MaterialTheme.colors.onPrimary
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(.85f)
+                    .fillMaxHeight(.79f)
+                    .verticalScroll(enabled = true, state = ScrollState(1)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+                expenseRest.forEach { member ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = 7.dp,
+                        shape = MaterialTheme.shapes.large
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(2.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = member, modifier = Modifier.padding(10.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
+                            if( expense.paidvalues[member] == false ) {
+                                Text( text = stringResource(R.string.owes) + " " + amountForEach + stringResource(R.string.euro_sign) )
+                            } else {
+                                Text( text = stringResource(R.string.has_paid) + " " + amountForEach + stringResource(R.string.euro_sign) )
+                            }
+                            Spacer(modifier = Modifier.height(5.dp))
+                            if (!groupInfo.members.contains(member)) {
+                                Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
+                            } else if(groupInfo.members.contains(expensePayer)){
+                                if (isUserAdmin.value || userVM.userEmail.value.equals(expensePayer) ) {
+                                    if (expense.paidvalues[member] == false) {
+                                        OutlinedButton(
+                                            onClick = {
+                                                expensesViewModel.eraseDebt(
+                                                    groupInfo,
+                                                    member,
+                                                    expense,
+                                                    expenseNavControl,
+                                                    groupsViewModel,
+                                                    navControl,
+                                                    userVM
+                                                )
+                                            },
+                                            modifier = Modifier
+                                                .fillMaxWidth(.8f)
+                                                .height(37.dp),
+                                            shape = MaterialTheme.shapes.large,
+                                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                                            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                                        ) {
+                                            Text(text = stringResource(R.string.erase_debt))
+                                        }
+                                    } else {
+                                        OutlinedButton(
+                                            onClick = {
+                                                expensesViewModel.cancelEraseDebt(
+                                                    groupInfo,
+                                                    member,
+                                                    expense,
+                                                    expenseNavControl,
+                                                    groupsViewModel,
+                                                    navControl,
+                                                    userVM
+                                                )
+                                            },
+                                            modifier = Modifier
+                                                .width(150.dp)
+                                                .height(37.dp),
+                                            shape = MaterialTheme.shapes.large,
+                                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                                            elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                                        ) {
+                                            Text(text = stringResource(R.string.cancel_erase_debt))
+                                        }
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+            }
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth(.85f),
+                color = MaterialTheme.colors.onPrimary
+            )
         }
     }
 }

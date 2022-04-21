@@ -189,7 +189,7 @@ fun BottomBarBack(
     Row(
         Modifier
             .fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Icon(
@@ -197,7 +197,7 @@ fun BottomBarBack(
             contentDescription = "back icon",
             modifier = Modifier
                 .clickable { expenseNavControl.navigate("group") }
-                .padding(35.dp, 30.dp)
+                .padding(35.dp, 20.dp)
         )
     }
 }
