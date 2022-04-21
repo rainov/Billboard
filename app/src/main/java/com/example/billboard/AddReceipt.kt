@@ -44,7 +44,7 @@ fun AddReceipt(
 }
 
 @Composable
-fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, expenseVM: ExpensesViewModel, groupsVM: GroupsViewModel) {
+fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, expenseVM: ExpensesViewModel, groupsVM: GroupsViewModel ) {
 
     var selectedImageUri by remember {
         mutableStateOf<Uri?>(null)
@@ -79,7 +79,7 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { url ->
                         Log.d("imageURL:", url.toString())
-                        expenseVM.addReceipt( expense.expid, expense.groupid, url.toString(), groupsVM, expenseNavControl)
+                        expenseVM.addReceipt( expense.expid, expense.groupid, url.toString(), groupsVM, expenseNavControl )
                     }
             }
     }
