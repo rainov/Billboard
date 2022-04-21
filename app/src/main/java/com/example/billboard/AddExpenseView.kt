@@ -62,6 +62,7 @@ fun AddEditExpenseViewContent(
     var payerMember: String by remember { mutableStateOf(expense.payer) }
     val membersWhoPay by remember {mutableStateOf(expense.rest)}
     val openDialog = remember { mutableStateOf(false) }
+    val dialogAmountTooLittle = remember { mutableStateOf(false)}
     var payerButtonText by remember { mutableStateOf("")}
 
     Column(
@@ -196,6 +197,9 @@ fun AddEditExpenseViewContent(
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                 onClick = {
                 if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
+                    if(expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01){
+                        dialogAmountTooLittle.value = true
+                    } else {
                     newExpense.name = expenseName
                     newExpense.amount = expenseAmount.toDouble()
                     newExpense.payer = payerMember
@@ -216,6 +220,7 @@ fun AddEditExpenseViewContent(
                             newExpense,
                             userVM
                         )
+                    }
                     }
                 } else {
                     openDialog.value = true
@@ -242,6 +247,34 @@ fun AddEditExpenseViewContent(
                         OutlinedButton(
                             onClick = {
                                 openDialog.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
+                        ) {
+                            Text(stringResource(R.string.close))
+                        }
+                    }
+                )
+            }
+
+            if (dialogAmountTooLittle.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        dialogAmountTooLittle.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.error))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.amount_too_short))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                dialogAmountTooLittle.value = false
                             },
                             modifier = Modifier
                                 .width(100.dp)

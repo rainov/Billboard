@@ -99,4 +99,5 @@
     <string name="select_image">Select image</string>
     <string name="change_image">Change image</string>
     <string name="upload_image">Upload image</string>
+    <string name="amount_too_short">The expense amount is too little for the member of people involved in it. The littlest amount per people is 0.01€.</string>
 </resources>

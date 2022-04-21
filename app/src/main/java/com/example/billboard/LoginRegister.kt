@@ -75,10 +75,10 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         },
                         singleLine = true,
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Billboard_green,
-                            cursorColor = Color.White,
-                            textColor = Color.White,
-                            focusedLabelColor = Color.White
+                            focusedBorderColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            textColor = MaterialTheme.colors.onPrimary,
+                            focusedLabelColor = MaterialTheme.colors.onPrimary
                         ),
                         modifier = Modifier
                             .height(64.dp),
@@ -363,13 +363,12 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         singleLine = true,
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Billboard_green,
-                            cursorColor = Color.White,
-                            textColor = Color.White,
-                            focusedLabelColor = Color.White
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            textColor = MaterialTheme.colors.onPrimary,
+                            focusedLabelColor = MaterialTheme.colors.onPrimary
                         ),
                         modifier = Modifier
-                            .height(64.dp)
-                            .padding(0.dp),
+                            .height(64.dp),
                         shape = MaterialTheme.shapes.large
                     )
                 }

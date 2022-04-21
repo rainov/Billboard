@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -61,6 +62,8 @@ fun GroupBalanceContent(
     var totalSpent = 0.0
     expenses.forEach { expense ->
         totalSpent += expense.amount
+        Log.d("****", expense.amount.toString())
+        Log.d("****", totalSpent.toString())
     }
 
     Column(
