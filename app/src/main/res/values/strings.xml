@@ -94,4 +94,9 @@
     <string name="euro_sign">€</string>
     <string name="owes">Owes: </string>
     <string name="has_paid">Has paid: </string>
+    <string name="add_receipt">Add receipt</string>
+    <string name="show_receipt">Show receipt</string>
+    <string name="select_image">Select image</string>
+    <string name="change_image">Change image</string>
+    <string name="upload_image">Upload image</string>
 </resources>

@@ -74,22 +74,6 @@ fun ExpenseViewContent(
     userVM: UserViewModel
 ) {
 
-//    val context = LocalContext.current
-//
-//    val storageRef = Firebase.storage.reference
-
-//    val bitmap =  remember {
-//        mutableStateOf<Bitmap?>(null)
-//    }
-
-
-//    val launcher = rememberLauncherForActivityResult(contract =
-//        ActivityResultContracts.GetContent()) { uri: Uri? ->
-//            imageUri = uri
-//        }
-
-
-
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
     val expensePayer = expense.payer
@@ -109,7 +93,7 @@ fun ExpenseViewContent(
 
             Text(text = expenseName, textAlign = TextAlign.Center, fontSize = 30.sp)
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(.85f),
@@ -159,10 +143,41 @@ fun ExpenseViewContent(
 
             //TODO need to discuss about default currency, can the user choose one or the group
 
+            Spacer(modifier = Modifier.height(10.dp))
 
+            if ( expense.receiptURL == "" ) {
+                OutlinedButton(
+                    onClick = {
+                        expenseNavControl.navigate("${expense.expid}_addReceipt")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                )
+                {
+                    Text(text = stringResource(R.string.add_receipt))
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        expenseNavControl.navigate("${expense.expid}_showReceipt")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                )
+                {
+                    Text(text = stringResource(R.string.show_receipt))
+                }
+            }
 
-
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(text = stringResource(R.string.rest), fontSize = 18.sp)
 
@@ -206,7 +221,7 @@ fun ExpenseViewContent(
                             if (!groupInfo.members.contains(member)) {
                                 Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
                             } else if(groupInfo.members.contains(expensePayer)){
-                                if (isUserAdmin.value || userVM.userEmail.value.equals(expensePayer) ) {
+                                if (isUserAdmin.value || userVM.userEmail.value == expensePayer) {
                                     if (expense.paidvalues[member] == false) {
                                         OutlinedButton(
                                             onClick = {

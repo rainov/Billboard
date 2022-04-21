@@ -55,13 +55,26 @@ fun GroupViewNavigationContainer(
             val date = Calendar.getInstance().time.toString()
             val rest = mutableListOf<String>()
             val paidvalues = mutableMapOf<String,Boolean>()
-            val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid, paidvalues)
+            val receiptURL = ""
+            val expense = ExpenseClass( name, amount, payer, date, groupInfo.id, rest, expid, paidvalues, receiptURL)
             AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope, userVM)
 
         }
         expenses.forEach { expense ->
             composable( route = expense.expid) {
                 ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupsVM, groupInfo, navControl, userVM)
+            }
+            composable( route = "${expense.expid}_addReceipt") {
+                AddReceipt( expense, expenseNavControl, scState, scope, expensesVM, groupsVM )
+            }
+            composable( route = "${expense.expid}_showReceipt"){
+                ReceiptView(
+                    expenseID = expense.expid,
+                    receiptURL = expense.receiptURL,
+                    expenseNavControl,
+                    scState,
+                    scope
+                )
             }
             composable( route = "${expense.expid}_edit"){
                 AddEditExpenseView(groupInfo, expenseNavControl, expensesVM, expense, scState, groupsVM, scope, userVM)

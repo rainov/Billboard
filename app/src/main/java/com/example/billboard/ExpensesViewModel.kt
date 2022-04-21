@@ -89,7 +89,8 @@ class ExpensesViewModel: ViewModel() {
                     expenseSnapshot.get("groupid").toString(),
                     expenseSnapshot.get("rest") as MutableList<String>,
                     expenseSnapshot.get("expid").toString(),
-                    expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>
+                    expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>,
+                    expenseSnapshot.get("receiptURL").toString()
                 )
 
                 var oldSingleShare: Double = oldExpense.amount / (oldExpense.rest.size + 1)
@@ -313,7 +314,8 @@ class ExpensesViewModel: ViewModel() {
                             expense.get("groupid").toString(),
                             expense.get("rest") as MutableList<String>,
                             expense.id,
-                            expense.get("paidvalues") as MutableMap<String,Boolean>
+                            expense.get("paidvalues") as MutableMap<String,Boolean>,
+                            expense.get("receiptURL").toString()
                         )
                         tempExpenses.add(newExpense)
                     }
@@ -322,5 +324,17 @@ class ExpensesViewModel: ViewModel() {
             }
     }
 
+    fun addReceipt( id: String, groupId: String, receiptURL: String, groupsVM: GroupsViewModel, expenseNavControl: NavController){
+        Firebase.firestore
+            .collection("expenses")
+            .document(id)
+            .update("receiptURL", receiptURL)
+            .addOnSuccessListener {
+                groupsVM.getGroups()
+                getExpenses(groupId)
+                expenseNavControl.navigate(id)
+            }
+//        groupsVM.getGroups()
+    }
 
 }

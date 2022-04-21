@@ -8,6 +8,7 @@ data class ExpenseClass(
     var groupid: String,
     var rest: MutableList<String>,
     var expid: String,
-    var paidvalues : MutableMap<String,Boolean>
+    var paidvalues : MutableMap<String,Boolean>,
+    var receiptURL: String
 )
 

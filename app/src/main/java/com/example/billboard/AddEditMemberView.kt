@@ -163,7 +163,8 @@ fun AddEditMemberContent(
                         expenseSnapshot.get("groupid").toString(),
                         expenseSnapshot.get("rest") as MutableList<String>,
                         expenseSnapshot.get("expid").toString(),
-                        expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>
+                        expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>,
+                        expenseSnapshot.get("receiptURL").toString()
                     )
 
                     //Edit payer//
