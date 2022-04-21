@@ -65,40 +65,44 @@ fun AddEditMemberContent(
     val existingMemberAlert = remember { mutableStateOf(false)}
     val deleteMemberAlert = remember { mutableStateOf(false)}
 
+    //Add member function
     fun addMember() {
+
         val newMemberBalanceMap = mutableMapOf<String, Double>()
+
         membersList.forEach { member ->
             val oldMemberBalance = editGroup.balance[member]!!
             val newMemberBalance = mutableMapOf(memberEmail to 0.0)
             newMemberBalanceMap[member] = 0.0
             oldMemberBalance[memberEmail] = 0.0
             newBalance[member] = oldMemberBalance
-            Log.d("oldMemberBalance", oldMemberBalance.toString())
-            Log.d("newMemberBalance", newMemberBalance.toString())
         }
+
         newBalance[memberEmail] = newMemberBalanceMap
+
         val tempMembers = mutableListOf<String>()
         membersList.forEach { member -> tempMembers.add(member) }
         tempMembers.add(memberEmail)
         membersList = tempMembers
-        Log.d("Members ====> ", membersList.toString())
+
+        //If admin checkbox is checked, add to admin's list aswell
         if (adminCheck) {
             val tempAdmins = mutableListOf<String>()
             adminsList.forEach { admin -> tempAdmins.add(admin) }
             tempAdmins.add(memberEmail)
             adminsList = tempAdmins
-            Log.d("Admins ====> ", adminsList.toString())
         }
+
         val newGroup =
             GroupClass(adminsList, group.expenses, membersList, group.name, newBalance, group.id)
-        Log.d("NewGroup: ", newGroup.toString())
+
         editGroup = newGroup
         newBalance = newGroup.balance
         groupsVM.editGroup(newGroup)
         memberEmail = ""
-
     }
 
+    //Edit a member email function
     fun editMemberName(member: String, editedMember : String){
         // Edit in group collection//
 
@@ -127,7 +131,6 @@ fun AddEditMemberContent(
         tempMembers.add(editedMember)
         membersList = tempMembers
 
-
         // Apply changes in admins list //
 
         if(adminsList.contains(member)){
@@ -145,8 +148,6 @@ fun AddEditMemberContent(
             newBalance,
             group.id
         )
-
-
 
         // Edit in expense collection //
         // In each expense, edit member email in rest list or payer and/or paidvalues map //
@@ -197,7 +198,7 @@ fun AddEditMemberContent(
 
         editGroup = newGroup
         groupsVM.editGroup(newGroup)
-
+        memberEmail = ""
         groupsVM.getGroups()
         navControl.navigate(group.id)
     }
@@ -219,6 +220,7 @@ fun AddEditMemberContent(
             group.id
         )
 
+        memberEmail = ""
         editGroup = newGroup
         groupsVM.editGroup(newGroup)
     }
@@ -240,6 +242,7 @@ fun AddEditMemberContent(
             group.id
         )
 
+        memberEmail = ""
         editGroup = newGroup
         groupsVM.editGroup(newGroup)
     }
@@ -254,6 +257,7 @@ fun AddEditMemberContent(
         return true
     }
 
+    //Function to delete a member from group
     fun deleteMember() {
 
         /* Delete members line from group balance */
@@ -290,9 +294,11 @@ fun AddEditMemberContent(
 
         editGroup = newGroup
         groupsVM.editGroup(newGroup)
+        memberEmail = ""
 
     }
 
+    //Using if statement to display input field to modify an user's email if the edit button is pressed
     if(!boolEdit.value) {
     Column(
         modifier = Modifier
@@ -559,7 +565,8 @@ fun AddEditMemberContent(
     } else {
         val oldMember by remember { mutableStateOf(memberEmail) }
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .verticalScroll(enabled = true, state = ScrollState(1)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -572,15 +579,11 @@ fun AddEditMemberContent(
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Billboard_green,
                     cursorColor = MaterialTheme.colors.onPrimary,
-//                        cursorColor = Color.White,
                     textColor = MaterialTheme.colors.onPrimary,
-//                        textColor = Color.White,
                     focusedLabelColor = MaterialTheme.colors.onPrimary
-//                        focusedLabelColor = Color.White
                 ),
                 modifier = Modifier
-                    .height(64.dp)
-                    .clickable { Log.d("MESSAGE", "CLICKED") },
+                    .height(64.dp),
                 shape = MaterialTheme.shapes.large
             )
 
@@ -599,7 +602,6 @@ fun AddEditMemberContent(
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                 elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-//                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
             ) {
                 Text( text = stringResource(R.string.save))
             }
@@ -616,7 +618,6 @@ fun AddEditMemberContent(
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
                 elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
             ) {
                 Text(text = stringResource(R.string.cancel))
             }
