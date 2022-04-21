@@ -160,14 +160,6 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-//                Text(
-//                    text = stringResource(R.string.admins) + " " + adminlist,
-//                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-//                Text(
-//                    text = stringResource(R.string.members) + " " + memberlist,
-//                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-
-
                 Text(text = "Group expenses", fontSize = 20.sp, textAlign = TextAlign.Center)
 
                 Spacer(modifier = Modifier.height(10.dp))

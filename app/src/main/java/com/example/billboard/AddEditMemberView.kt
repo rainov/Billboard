@@ -64,6 +64,7 @@ fun AddEditMemberContent(
     val boolEdit = remember { mutableStateOf(false)}
     val existingMemberAlert = remember { mutableStateOf(false)}
     val deleteMemberAlert = remember { mutableStateOf(false)}
+    val emptyFieldAlert = remember { mutableStateOf(false)}
 
     //Add member function
     fun addMember() {
@@ -360,10 +361,13 @@ fun AddEditMemberContent(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 OutlinedButton(
-                    onClick = { if(group.members.contains(memberEmail)) {
+                    onClick = { if(memberEmail.isNotEmpty()){
+                        if(memberEmail.)
+                        if(group.members.contains(memberEmail)) {
                         existingMemberAlert.value = true
                     } else {
-                        addMember() }},
+                        addMember() }} else emptyFieldAlert.value = true
+                              },
                     modifier = Modifier
                         .fillMaxWidth(.75f)
                         .height(40.dp),
@@ -562,6 +566,33 @@ fun AddEditMemberContent(
                 }
             )
         }
+        if(emptyFieldAlert.value){
+            AlertDialog(
+                onDismissRequest = {
+                    emptyFieldAlert.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.error))
+                },
+                text = {
+                    Text(text = stringResource(R.string.all_inputs_required))
+                },
+                confirmButton = {
+                    OutlinedButton(
+                        onClick = {
+                            emptyFieldAlert.value = false
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     } else {
         val oldMember by remember { mutableStateOf(memberEmail) }
         Column(
@@ -591,11 +622,19 @@ fun AddEditMemberContent(
 
             OutlinedButton(
                 onClick = {
-                    editMemberName(
-                        oldMember,
-                        memberEmail)
-                    boolEdit.value = false
-                },
+                    if (memberEmail.isNotEmpty()) {
+                        if (group.members.contains(memberEmail)) {
+                            existingMemberAlert.value = true
+                        } else {
+                        editMemberName(
+                            oldMember,
+                            memberEmail
+                        )
+                        boolEdit.value = false
+                    }
+                } else {
+                    emptyFieldAlert.value = true
+            }},
                 modifier = Modifier
                     .fillMaxWidth(.75f)
                     .height(40.dp),

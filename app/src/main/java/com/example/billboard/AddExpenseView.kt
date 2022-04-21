@@ -59,6 +59,7 @@ fun AddEditExpenseViewContent(
     var payerMember: String by remember { mutableStateOf(expense.payer) }
     val membersWhoPay by remember {mutableStateOf(expense.rest)}
     val openDialog = remember { mutableStateOf(false) }
+    val dialogInvalidAmnt = remember { mutableStateOf(false) }
     val dialogAmountTooLittle = remember { mutableStateOf(false)}
     var payerButtonText by remember { mutableStateOf("")}
 
@@ -193,29 +194,33 @@ fun AddEditExpenseViewContent(
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                 onClick = {
-                if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
-                    if(expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01){
-                        dialogAmountTooLittle.value = true
+                if (expenseName.isNotEmpty() && expenseAmount != "0.0" && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
+                    if(expenseAmount.toDoubleOrNull() == null) {
+                        dialogInvalidAmnt.value = true
                     } else {
-                    newExpense.name = expenseName
-                    newExpense.amount = expenseAmount.toDouble()
-                    newExpense.payer = payerMember
-                    newExpense.rest = membersWhoPay
-                    if (expense.expid.isEmpty()) {
-                        expensesViewModel.addExpenseLine(
-                            newExpense,
-                            expenseNavControl,
-                            groupInfo,
-                            groupsVM
-                        )
-                    } else {
-                        expensesViewModel.editExpenseLine(
-                            expenseNavControl,
-                            groupInfo,
-                            groupsVM,
-                            newExpense
-                        )
-                    }
+                        if (expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01) {
+                            dialogAmountTooLittle.value = true
+                        } else {
+                            newExpense.name = expenseName
+                            newExpense.amount = expenseAmount.toDouble()
+                            newExpense.payer = payerMember
+                            newExpense.rest = membersWhoPay
+                            if (expense.expid.isEmpty()) {
+                                expensesViewModel.addExpenseLine(
+                                    newExpense,
+                                    expenseNavControl,
+                                    groupInfo,
+                                    groupsVM
+                                )
+                            } else {
+                                expensesViewModel.editExpenseLine(
+                                    expenseNavControl,
+                                    groupInfo,
+                                    groupsVM,
+                                    newExpense
+                                )
+                            }
+                        }
                     }
                 } else {
                     openDialog.value = true
@@ -270,6 +275,33 @@ fun AddEditExpenseViewContent(
                         OutlinedButton(
                             onClick = {
                                 dialogAmountTooLittle.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary )
+                        ) {
+                            Text(stringResource(R.string.close))
+                        }
+                    }
+                )
+            }
+            if (dialogInvalidAmnt.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        dialogAmountTooLittle.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.error))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.amount_invalid))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                dialogInvalidAmnt.value = false
                             },
                             modifier = Modifier
                                 .width(100.dp)
