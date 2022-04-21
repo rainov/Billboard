@@ -342,10 +342,8 @@ class ExpensesViewModel: ViewModel() {
             .addOnSuccessListener {
                 groupsVM.getGroups()
                 getExpenses(groupId)
-                expenseNavControl.clearBackStack(id)
                 expenseNavControl.navigate(id)
             }
-//        groupsVM.getGroups()
     }
 
 }
