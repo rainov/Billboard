@@ -18,7 +18,7 @@ fun ReceiptView(
     receiptURL: String,
     expenseNavControl: NavController,
     scState: ScaffoldState,
-    scope: CoroutineScope,
+    scope: CoroutineScope
 ) {
 
     Scaffold(
@@ -30,7 +30,7 @@ fun ReceiptView(
 }
 
 @Composable
-fun ReceiptViewContent(expenseNavControl: NavController, expenseID: String, receiptURL: String) {
+fun ReceiptViewContent(expenseNavControl: NavController, expenseID: String, receiptURL: String ) {
 
     Column(
         modifier = Modifier.fillMaxSize(),

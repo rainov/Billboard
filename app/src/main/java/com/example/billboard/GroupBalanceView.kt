@@ -86,16 +86,23 @@ fun GroupBalanceContent(
             Row() {
                 Text( text = stringResource( R.string.total_spent ), fontSize = 20.sp)
                 Spacer(modifier = Modifier.width( 15.dp))
-                Text( text = totalSpent.toString(), fontSize = 20.sp, color = Billboard_green )
+                Text( text = totalSpent.toString() + stringResource(R.string.euro_sign), fontSize = 20.sp, color = Billboard_green )
             }
 
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth(.83f),
+                color = Billboard_green
+            )
+            Spacer(modifier = Modifier.height(15.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxSize(.88f)
+                    .fillMaxSize(.86f)
                     .verticalScroll(enabled = true, state = ScrollState(1)),
             ) {
                 groupInfo.members.forEach { member ->

@@ -20,23 +20,34 @@ import com.example.billboard.ui.theme.Billboard_green
 fun BottomBarMainScreen(
     navControl: NavController
 ) {
-    Row(
-        Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.End
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FloatingActionButton(
-            onClick = { navControl.navigate( "CreateGroup" ) },
-            backgroundColor = Billboard_green,
+        Divider(
             modifier = Modifier
-                .padding(30.dp, 20.dp),
-            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+                .height(1.dp)
+                .fillMaxWidth(.83f),
+            color = Billboard_green
+        )
+        Row(
+            Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.End
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_add),
-                contentDescription = "add group",
-            )
+            FloatingActionButton(
+                onClick = { navControl.navigate( "CreateGroup" ) },
+                backgroundColor = Billboard_green,
+                modifier = Modifier
+                    .padding(30.dp, 20.dp),
+                elevation = FloatingActionButtonDefaults.elevation(8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_add),
+                    contentDescription = "add group",
+                )
+            }
         }
     }
 }
@@ -55,55 +66,67 @@ fun BottomBarGroupScreen(
     val openDialog = remember { mutableStateOf(false) }
     val openErrors = remember { mutableStateOf(false) }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 0.dp, start = 0.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ){
-        Icon(
-            painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = "back icon",
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Divider(
             modifier = Modifier
-                .clickable { navControl.navigate("MainScreen") }
-                .padding(35.dp, 30.dp)
+                .height(1.dp)
+                .fillMaxWidth(.83f),
+            color = Billboard_green
         )
-
-        if(groupInfo.admins.contains(userVM.userEmail.value)) {
-            OutlinedButton(
-                onClick = {
-                    if (groupBalanceClear(groupInfo)) {
-                        openDialog.value = true
-                    } else {
-                        openErrors.value = true
-                    }
-                },
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 0.dp, start = 0.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Icon(
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "back icon",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(40.dp),
-                shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
-                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-            ) {
-                Text(text = stringResource(R.string.delete))
-            }
-        }
+                    .clickable { navControl.navigate("MainScreen") }
+                    .padding(35.dp, 30.dp)
+            )
 
-        if (groupInfo.members.size > 1 ) {
-            FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
-                backgroundColor = Billboard_green,
-                modifier = Modifier.padding(20.dp, 20.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_add),
-                    contentDescription = "add expense",
-                )
+            if(groupInfo.admins.contains(userVM.userEmail.value)) {
+                OutlinedButton(
+                    onClick = {
+                        if (groupBalanceClear(groupInfo)) {
+                            openDialog.value = true
+                        } else {
+                            openErrors.value = true
+                        }
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                ) {
+                    Text(text = stringResource(R.string.delete))
+                }
             }
-        } else {
-            Spacer(modifier = Modifier.width(95.dp))
+
+            if (groupInfo.members.size > 1 ) {
+                FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
+                    backgroundColor = Billboard_green,
+                    modifier = Modifier.padding(20.dp, 20.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_add),
+                        contentDescription = "add expense",
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.width(95.dp))
+            }
         }
     }
+
 
     if (openDialog.value) {
         AlertDialog(
@@ -186,19 +209,30 @@ fun BottomBarGroupScreen(
 fun BottomBarBack(
     expenseNavControl: NavController
 ) {
-    Row(
-        Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = "back icon",
+        Divider(
             modifier = Modifier
-                .clickable { expenseNavControl.navigate("group") }
-                .padding(35.dp, 20.dp)
+                .height(1.dp)
+                .fillMaxWidth(.83f),
+            color = Billboard_green
         )
+        Row(
+            Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "back icon",
+                modifier = Modifier
+                    .clickable { expenseNavControl.navigate("group") }
+                    .padding(35.dp, 20.dp)
+            )
+        }
     }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,223 +249,234 @@ fun BottomBarExpenseView(
     groupInfo: GroupClass,
     userVM: UserViewModel
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Divider(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth(.83f),
+            color = Billboard_green
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
 
-        val openDialogDeleteWithDebts = remember { mutableStateOf(false) }
-        val openDialogDelete = remember { mutableStateOf(false) }
-        val openDialogClear = remember { mutableStateOf(false) }
+            val openDialogDeleteWithDebts = remember { mutableStateOf(false) }
+            val openDialogDelete = remember { mutableStateOf(false) }
+            val openDialogClear = remember { mutableStateOf(false) }
 
-        Icon(
-            painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = "back icon",
-            modifier = Modifier.clickable { expenseNavControl.navigate("group") })
+            Icon(
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "back icon",
+                modifier = Modifier.clickable { expenseNavControl.navigate("group") })
 
-        if (isUserAdmin) {
-            OutlinedButton(
-                onClick = {
-                    if (statusEraseDebts(expense)) {
-                        openDialogDeleteWithDebts.value = true
-                    } else {
-                        openDialogDelete.value = true
-                    }
-                },
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(40.dp),
-                shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
-                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-            ) {
-                Text(text = stringResource(R.string.delete))
-            }
-        }
-
-        if (isUserAdmin) {
-            OutlinedButton(
-                onClick = {
-                    openDialogClear.value = true
-                },
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(40.dp),
-                shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
-                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-            ) {
-                Text(text = stringResource(R.string.clear_exp))
-            }
-        }
-
-        if (isUserAdmin) {
-            OutlinedButton(
-                onClick = {
-                    expenseNavControl.navigate("${expense.expid}_edit")
-                },
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(40.dp),
-                shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
-                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-            ) {
-                Text(text = stringResource(R.string.edit))
-            }
-        }
-
-        if (openDialogDelete.value) {
-
-            AlertDialog(
-                onDismissRequest = {
-                    openDialogDelete.value = false
-                },
-                title = {
-                    Text(text = stringResource(R.string.delete_conf))
-                },
-                text = {
-                    Text(text = stringResource(R.string.delete_conf_mess))
-                },
-                confirmButton = {
-                    OutlinedButton(
-                        onClick = {
-                            openDialogDelete.value = false
-                            expensesViewModel.deleteExpenseLine(
-                                expense,
-                                expenseNavControl,
-                                groupsViewModel,
-                                groupInfo,
-                                navControl,
-                                userVM
-                            )
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                    ) {
-                        Text(stringResource(R.string.delete))
-                    }
-                },
-                dismissButton = {
-                    OutlinedButton(
-                        onClick = {
-                            openDialogDelete.value = false
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                    ) {
-                        Text(text = stringResource(R.string.cancel))
-                    }
+            if (isUserAdmin) {
+                OutlinedButton(
+                    onClick = {
+                        if (statusEraseDebts(expense)) {
+                            openDialogDeleteWithDebts.value = true
+                        } else {
+                            openDialogDelete.value = true
+                        }
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                ) {
+                    Text(text = stringResource(R.string.delete))
                 }
-            )
-        }
+            }
 
-        if (openDialogDeleteWithDebts.value) {
-            AlertDialog(
-                onDismissRequest = {
-                    openDialogDeleteWithDebts.value = false
-                },
-                title = {
-                    Text(text = stringResource(R.string.delete_conf))
-                },
-                text = {
-                    Text(text = stringResource(R.string.delete_conf_mess_debts))
-                },
-                confirmButton = {
-                    OutlinedButton(
-                        onClick = {
-                            openDialogDeleteWithDebts.value = false
-                            expensesViewModel.deleteExpenseLineCancelEraseDebts(
-                                expense,
-                                groupsViewModel,
-                                groupInfo,
-                                navControl,
-                                userVM
-                            )
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                    ) {
-                        Text(stringResource(R.string.delete))
-                    }
-                },
-                dismissButton = {
-                    OutlinedButton(
-                        onClick = {
-                            openDialogDeleteWithDebts.value = false
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                    ) {
-                        Text(text = stringResource(R.string.cancel))
-                    }
-                }
-            )
-        }
-
-        if (openDialogClear.value) {
-            AlertDialog(
-                onDismissRequest = {
-                    openDialogClear.value = false
-                },
-                title = {
+            if (isUserAdmin) {
+                OutlinedButton(
+                    onClick = {
+                        openDialogClear.value = true
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                ) {
                     Text(text = stringResource(R.string.clear_exp))
-                },
-                text = {
-                    Text(text = stringResource(R.string.clear_conf))
-                },
-                confirmButton = {
-                    OutlinedButton(
-                        onClick = {
-                            openDialogClear.value = false
-                            expensesViewModel.eraseAllDebts(
-                                groupInfo,
-                                expense,
-                                expenseNavControl,
-                                groupsViewModel,
-                                navControl,
-                                userVM
-                            )
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                    ) {
-                        Text(stringResource(R.string.confirm))
-                    }
-                },
-                dismissButton = {
-                    OutlinedButton(
-                        onClick = {
-                            openDialogClear.value = false
-                        },
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
-                        shape = MaterialTheme.shapes.large,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-                    ) {
-                        Text(text = stringResource(R.string.cancel))
-                    }
                 }
-            )
+            }
+
+            if (isUserAdmin) {
+                OutlinedButton(
+                    onClick = {
+                        expenseNavControl.navigate("${expense.expid}_edit")
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                ) {
+                    Text(text = stringResource(R.string.edit))
+                }
+            }
+
+            if (openDialogDelete.value) {
+
+                AlertDialog(
+                    onDismissRequest = {
+                        openDialogDelete.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.delete_conf))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.delete_conf_mess))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialogDelete.value = false
+                                expensesViewModel.deleteExpenseLine(
+                                    expense,
+                                    expenseNavControl,
+                                    groupsViewModel,
+                                    groupInfo,
+                                    navControl,
+                                    userVM
+                                )
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                        ) {
+                            Text(stringResource(R.string.delete))
+                        }
+                    },
+                    dismissButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialogDelete.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                        ) {
+                            Text(text = stringResource(R.string.cancel))
+                        }
+                    }
+                )
+            }
+
+            if (openDialogDeleteWithDebts.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        openDialogDeleteWithDebts.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.delete_conf))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.delete_conf_mess_debts))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialogDeleteWithDebts.value = false
+                                expensesViewModel.deleteExpenseLineCancelEraseDebts(
+                                    expense,
+                                    groupsViewModel,
+                                    groupInfo,
+                                    navControl,
+                                    userVM
+                                )
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                        ) {
+                            Text(stringResource(R.string.delete))
+                        }
+                    },
+                    dismissButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialogDeleteWithDebts.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                        ) {
+                            Text(text = stringResource(R.string.cancel))
+                        }
+                    }
+                )
+            }
+
+            if (openDialogClear.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        openDialogClear.value = false
+                    },
+                    title = {
+                        Text(text = stringResource(R.string.clear_exp))
+                    },
+                    text = {
+                        Text(text = stringResource(R.string.clear_conf))
+                    },
+                    confirmButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialogClear.value = false
+                                expensesViewModel.eraseAllDebts(
+                                    groupInfo,
+                                    expense,
+                                    expenseNavControl,
+                                    groupsViewModel,
+                                    navControl,
+                                    userVM
+                                )
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                        ) {
+                            Text(stringResource(R.string.confirm))
+                        }
+                    },
+                    dismissButton = {
+                        OutlinedButton(
+                            onClick = {
+                                openDialogClear.value = false
+                            },
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(40.dp),
+                            shape = MaterialTheme.shapes.large,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                        ) {
+                            Text(text = stringResource(R.string.cancel))
+                        }
+                    }
+                )
+            }
         }
     }
 }

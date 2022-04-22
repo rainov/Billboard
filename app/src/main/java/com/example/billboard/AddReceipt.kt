@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -7,6 +8,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -32,19 +34,18 @@ fun AddReceipt(
     scState: ScaffoldState,
     scope: CoroutineScope,
     expenseVM: ExpensesViewModel,
-    groupsVM: GroupsViewModel
 ) {
 
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(showMenu = false, scState, false, scope) },
         bottomBar = { BottomBarAddReceipt(expenseNavControl, expense.expid ) },
-        content = { AddReceiptContent( expenseNavControl, expense, expenseVM, groupsVM ) }
+        content = { AddReceiptContent( expenseNavControl, expense, expenseVM ) }
     )
 }
 
 @Composable
-fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, expenseVM: ExpensesViewModel, groupsVM: GroupsViewModel) {
+fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, expenseVM: ExpensesViewModel ) {
 
     var selectedImageUri by remember {
         mutableStateOf<Uri?>(null)
@@ -61,25 +62,31 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
     val launcher = rememberLauncherForActivityResult(contract =
     ActivityResultContracts.GetContent()) { uri: Uri? ->
         selectedImageUri = uri
-        Log.d("URI", selectedImageUri.toString())
         if (selectedImageUri != null ) {
             val imageExts = MimeTypeMap.getSingleton()
                 .getExtensionFromMimeType(context.contentResolver.getType(selectedImageUri!!))
             imageExtension = imageExts.toString()
-            val path = selectedImageUri!!.path
-            Log.d("extension", imageExtension)
-            Log.d("path", path.toString())
         }
     }
 
+    fun upToast(context: Context){
+        Toast.makeText( context, "UPLOADING", Toast.LENGTH_SHORT).show()
+    }
+    fun doneToast(context: Context){
+        Toast.makeText( context, "UPLOADING COMPLETE", Toast.LENGTH_SHORT).show()
+    }
+
     fun uploadImage() {
+        upToast(context)
         val receiptRef = storageRef.child("Receipt" + System.currentTimeMillis() + "." + imageExtension)
         receiptRef.putFile(selectedImageUri!!)
             .addOnSuccessListener { taskSnapshot ->
+                doneToast(context)
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { url ->
                         Log.d("imageURL:", url.toString())
-                        expenseVM.addReceipt( expense.expid, expense.groupid, url.toString(), groupsVM, expenseNavControl)
+                        expense.receiptURL = url.toString()
+                        expenseVM.addReceipt( expense.expid, url.toString(), expenseNavControl )
                     }
             }
     }

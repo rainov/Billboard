@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.google.firebase.firestore.ktx.firestore
@@ -46,18 +47,37 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
 
     Column(
         Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
+//        verticalArrangement = Arrangement.SpaceBetween
     ){
         //Group cards
         Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text( text = stringResource( R.string.your_groups), fontSize = 25.sp)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth(.83f),
+                color = Billboard_green
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+        Column(
             Modifier
                 .fillMaxWidth()
-                .fillMaxSize(.88f)
+                .fillMaxSize(.82f)
                 .verticalScroll(enabled = true, state = ScrollState(1)),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            Text( text = stringResource( R.string.your_groups))
+
             groups.forEach { group ->
                 Spacer(modifier = Modifier.height(5.dp))
 
