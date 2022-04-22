@@ -65,7 +65,7 @@ fun GroupViewNavigationContainer(
                 ExpenseView( expense, expenseNavControl, scState, scope, expensesVM, groupsVM, groupInfo, navControl, userVM)
             }
             composable( route = "${expense.expid}_addReceipt") {
-                AddReceipt( expense, expenseNavControl, scState, scope, expensesVM, groupsVM )
+                AddReceipt( expense, expenseNavControl, scState, scope, expensesVM )
             }
             composable( route = "${expense.expid}_showReceipt"){
                 ReceiptView(

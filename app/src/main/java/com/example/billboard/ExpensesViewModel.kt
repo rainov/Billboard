@@ -313,7 +313,8 @@ class ExpensesViewModel: ViewModel() {
             .addSnapshotListener { expensesList, error ->
                 if (error != null) {
                     error.message?.let { Log.d("err msg: ", it) }
-                } else if (expensesList != null && !expensesList.isEmpty) {
+//                } else if (expensesList != null && !expensesList.isEmpty) {
+                } else if (expensesList != null) {
                     val tempExpenses = mutableListOf<ExpenseClass>()
                     expensesList.documents.forEach { expense ->
                         val newExpense = ExpenseClass(
@@ -334,14 +335,14 @@ class ExpensesViewModel: ViewModel() {
             }
     }
 
-    fun addReceipt( id: String, groupId: String, receiptURL: String, groupsVM: GroupsViewModel, expenseNavControl: NavController){
+    fun addReceipt( id: String, receiptURL: String, expenseNavControl: NavController){
         Firebase.firestore
             .collection("expenses")
             .document(id)
             .update("receiptURL", receiptURL)
             .addOnSuccessListener {
-                groupsVM.getGroups()
-                getExpenses(groupId)
+//                groupsVM.getGroups()
+//                getExpenses(groupId)
                 expenseNavControl.navigate(id)
             }
     }

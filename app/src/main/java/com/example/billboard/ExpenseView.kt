@@ -1,6 +1,8 @@
 package com.example.billboard
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -73,11 +75,13 @@ fun ExpenseViewContent(
     isUserAdmin: MutableState<Boolean>,
     userVM: UserViewModel
 ) {
+    expensesViewModel.getExpenses(groupInfo.id)
 
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
     val expensePayer = expense.payer
     val expenseRest = expense.rest
+    val receiptUrl = expense.receiptURL
 
     val amountForEach = ((expense.amount / ( expense.rest.size + 1 )) * 100.0 ).roundToInt() / 100.0
 
@@ -96,7 +100,12 @@ fun ExpenseViewContent(
             Spacer(modifier = Modifier.height(10.dp))
 
             Card(
-                modifier = Modifier.fillMaxWidth(.85f),
+                modifier = Modifier
+                    .fillMaxWidth(.85f)
+                    .border(
+                        BorderStroke(1.dp, MaterialTheme.colors.onPrimary),
+                        shape = MaterialTheme.shapes.large,
+                    ),
                 elevation = 7.dp,
                 shape = MaterialTheme.shapes.large
             ) {
@@ -145,7 +154,7 @@ fun ExpenseViewContent(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            if ( expense.receiptURL == "" ) {
+            if ( receiptUrl.isEmpty() ) {
                 OutlinedButton(
                     onClick = {
                         expenseNavControl.navigate("${expense.expid}_addReceipt")
@@ -194,8 +203,8 @@ fun ExpenseViewContent(
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(.85f)
-                    .fillMaxHeight(.79f)
+                    .fillMaxWidth(.83f)
+                    .fillMaxHeight(.77f)
                     .verticalScroll(enabled = true, state = ScrollState(1)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
@@ -275,14 +284,6 @@ fun ExpenseViewContent(
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Divider(
-                modifier = Modifier
-                    .height(1.dp)
-                    .fillMaxWidth(.85f),
-                color = MaterialTheme.colors.onPrimary
-            )
         }
     }
 }

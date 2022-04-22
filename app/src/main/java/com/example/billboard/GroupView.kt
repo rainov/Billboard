@@ -125,17 +125,17 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                var adminlist = ""
-                groupInfo.admins.forEach { admin ->
-                    adminlist = if (adminlist.isEmpty()) admin.substringBefore("@")
-                    else adminlist + ", " + admin.substringBefore("@")
-                }
-
-                var memberlist = ""
-                groupInfo.members.forEach { member ->
-                    memberlist = if (memberlist.isEmpty()) member.substringBefore("@")
-                    else memberlist + ", " + member.substringBefore("@")
-                }
+//                var adminlist = ""
+//                groupInfo.admins.forEach { admin ->
+//                    adminlist = if (adminlist.isEmpty()) admin.substringBefore("@")
+//                    else adminlist + ", " + admin.substringBefore("@")
+//                }
+//
+//                var memberlist = ""
+//                groupInfo.members.forEach { member ->
+//                    memberlist = if (memberlist.isEmpty()) member.substringBefore("@")
+//                    else memberlist + ", " + member.substringBefore("@")
+//                }
 
                 OutlinedButton(
                     onClick = { expenseNavControl.navigate("groupBalance") },
@@ -162,14 +162,6 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-//                Text(
-//                    text = stringResource(R.string.admins) + " " + adminlist,
-//                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-//                Text(
-//                    text = stringResource(R.string.members) + " " + memberlist,
-//                    modifier = Modifier.clickable { navControl.navigate("MainScreen") })
-
-
                 Text(text = "Group expenses", fontSize = 20.sp, textAlign = TextAlign.Center)
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -186,7 +178,7 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .fillMaxSize(.8f)
+                        .fillMaxSize(.79f)
                         .verticalScroll(enabled = true, state = ScrollState(1)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
