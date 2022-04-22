@@ -167,11 +167,10 @@ class ExpensesViewModel: ViewModel() {
                             val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
                             val formatedPayerAmt = ((- 1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
                             group.balance[member]?.set(expense.payer, amountforeach + previousamt )
-                            group.balance[expense.payer]?.set(member, - 1 * amountforeach + prevAmountPayer )
+                            group.balance[expense.payer]?.set(member, formatedPayerAmt )
                         }
 
                         fsgrp.update("balance", group.balance, "expenses", FieldValue.arrayRemove(expense.expid))
-
                         groupsVM.getGroups()
                         navControl.navigate(group.id)
                     }
@@ -341,8 +340,6 @@ class ExpensesViewModel: ViewModel() {
             .document(id)
             .update("receiptURL", receiptURL)
             .addOnSuccessListener {
-//                groupsVM.getGroups()
-//                getExpenses(groupId)
                 expenseNavControl.navigate(id)
             }
     }
