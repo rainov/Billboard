@@ -19,7 +19,8 @@ class ExpensesViewModel: ViewModel() {
         newExpense: ExpenseClass,
         expenseNavControl: NavController,
         group: GroupClass,
-        groupsVM: GroupsViewModel
+        groupsVM: GroupsViewModel,
+        userVM: UserViewModel
     ) {
 
         var amountforeach: Double = newExpense.amount / (newExpense.rest.size + 1)
@@ -50,14 +51,16 @@ class ExpensesViewModel: ViewModel() {
                 Log.d("Add new expense", expense.id)
                 fexp.document(expense.id).update("expid", expense.id)
                 if ( newExpense.expid.isEmpty() ) {
-                fgrp.document(newExpense.groupid)
-                    .update("expenses", FieldValue.arrayUnion(expense.id), "balance", group.balance )
-                    .addOnSuccessListener {
-                        Log.d("New expense groupid", newExpense.groupid)
-                        groupsVM.getGroups()
-                        expenseNavControl.navigate("group")
-                    }
+                    userVM.logAction("Expense added")
+                    fgrp.document(newExpense.groupid)
+                        .update("expenses", FieldValue.arrayUnion(expense.id), "balance", group.balance )
+                        .addOnSuccessListener {
+                            Log.d("New expense groupid", newExpense.groupid)
+                            groupsVM.getGroups()
+                            expenseNavControl.navigate("group")
+                        }
                 } else {
+                    userVM.logAction("Expense edited")
                     fexp.document(newExpense.expid)
                         .delete()
                         .addOnSuccessListener {
@@ -79,7 +82,8 @@ class ExpensesViewModel: ViewModel() {
         expenseNavControl: NavController,
         group: GroupClass,
         groupsVM: GroupsViewModel,
-        newExpense : ExpenseClass
+        newExpense : ExpenseClass,
+        userVM: UserViewModel
     ) {
 
         Firebase.firestore
@@ -95,7 +99,8 @@ class ExpensesViewModel: ViewModel() {
                     expenseSnapshot.get("groupid").toString(),
                     expenseSnapshot.get("rest") as MutableList<String>,
                     expenseSnapshot.get("expid").toString(),
-                    expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>
+                    expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>,
+                    expenseSnapshot.get("receiptURL").toString()
                 )
 
                 var oldSingleShare: Double = oldExpense.amount / (oldExpense.rest.size + 1)
@@ -127,7 +132,7 @@ class ExpensesViewModel: ViewModel() {
                                 newExpense.paidvalues.remove(newExpense.payer)
                             }
                         }
-                        addExpenseLine(newExpense, expenseNavControl, group, groupsVM)
+                        addExpenseLine( newExpense, expenseNavControl, group, groupsVM, userVM )
                     }
             }
     }
@@ -137,7 +142,8 @@ class ExpensesViewModel: ViewModel() {
         expenseNavControl : NavController,
         groupsVM: GroupsViewModel,
         group: GroupClass,
-        navControl : NavController
+        navControl : NavController,
+        userVM: UserViewModel
     ) {
 
         //If a user has erased a debt before deleting the expense, it will refund him, and the payer member will have to pay him back
@@ -151,6 +157,7 @@ class ExpensesViewModel: ViewModel() {
         fsexp.delete()
             .addOnSuccessListener {
                 Log.d("Delete expense", expense.expid)
+                userVM.logAction("Clear balance expense deleted")
                 fsgrp.update("expenses", FieldValue.arrayRemove(expense.expid))
                     .addOnSuccessListener {
                         Log.d("Delete group expense", expense.expid)
@@ -175,7 +182,8 @@ class ExpensesViewModel: ViewModel() {
         expense: ExpenseClass,
         groupsVM: GroupsViewModel,
         group: GroupClass,
-        navControl : NavController
+        navControl : NavController,
+        userVM: UserViewModel
     ){
         val fsexp = Firebase.firestore.collection("expenses").document(expense.expid)
         val fsgrp = Firebase.firestore.collection("groups").document(expense.groupid)
@@ -185,6 +193,7 @@ class ExpensesViewModel: ViewModel() {
 
         fsexp.delete()
             .addOnSuccessListener {
+                userVM.logAction("Dirty balance expense deleted")
                 Log.d("Delete expense", expense.expid)
                 fsgrp.update("expenses", FieldValue.arrayRemove(expense.expid))
                     .addOnSuccessListener {
@@ -217,7 +226,7 @@ class ExpensesViewModel: ViewModel() {
     }
 
     fun eraseDebt(group: GroupClass, member : String, expense: ExpenseClass, expenseNavControl: NavController,
-                  groupsVM: GroupsViewModel, navControl: NavController ){
+                  groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel ){
 
         var amountforeach: Double = expense.amount / (expense.rest.size + 1)
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
@@ -231,6 +240,9 @@ class ExpensesViewModel: ViewModel() {
         expense.paidvalues[member] = true
 
         fexp.document(expense.expid).update("paidvalues",expense.paidvalues)
+            .addOnSuccessListener {
+                userVM.logAction("Erased user debt from expense")
+            }
         fgrp.document(group.id).update("balance", group.balance)
 
         groupsVM.getGroups()
@@ -238,7 +250,7 @@ class ExpensesViewModel: ViewModel() {
     }
 
     fun cancelEraseDebt(group: GroupClass, member : String, expense: ExpenseClass, expenseNavControl: NavController,
-                  groupsVM: GroupsViewModel, navControl: NavController ){
+                  groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel ){
 
         var amountforeach: Double = expense.amount / (expense.rest.size + 1)
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
@@ -252,6 +264,9 @@ class ExpensesViewModel: ViewModel() {
         expense.paidvalues[member] = false
 
         fexp.document(expense.expid).update("paidvalues",expense.paidvalues)
+            .addOnSuccessListener {
+                userVM.logAction("Renew erased user debt")
+            }
         fgrp.document(group.id).update("balance", group.balance)
 
         groupsVM.getGroups()
@@ -259,7 +274,7 @@ class ExpensesViewModel: ViewModel() {
     }
 
     fun eraseAllDebts(group: GroupClass, expense: ExpenseClass, expenseNavControl: NavController,
-                      groupsVM: GroupsViewModel, navControl: NavController){
+                      groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel){
 
         var amountforeach: Double = expense.amount / (expense.rest.size + 1)
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
@@ -281,6 +296,7 @@ class ExpensesViewModel: ViewModel() {
         val fsgrp = Firebase.firestore.collection("groups").document(expense.groupid)
         fsgrp.update("balance", group.balance )
             .addOnSuccessListener {
+                userVM.logAction("Cleared all debts in an expense")
                 groupsVM.getGroups()
             }
 
@@ -308,7 +324,8 @@ class ExpensesViewModel: ViewModel() {
                             expense.get("groupid").toString(),
                             expense.get("rest") as MutableList<String>,
                             expense.id,
-                            expense.get("paidvalues") as MutableMap<String,Boolean>
+                            expense.get("paidvalues") as MutableMap<String,Boolean>,
+                            expense.get("receiptURL").toString()
                         )
                         tempExpenses.add(newExpense)
                     }
@@ -317,5 +334,16 @@ class ExpensesViewModel: ViewModel() {
             }
     }
 
+    fun addReceipt( id: String, groupId: String, receiptURL: String, groupsVM: GroupsViewModel, expenseNavControl: NavController){
+        Firebase.firestore
+            .collection("expenses")
+            .document(id)
+            .update("receiptURL", receiptURL)
+            .addOnSuccessListener {
+                groupsVM.getGroups()
+                getExpenses(groupId)
+                expenseNavControl.navigate(id)
+            }
+    }
 
 }

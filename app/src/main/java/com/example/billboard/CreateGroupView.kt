@@ -14,17 +14,17 @@ import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun CreateGroupView( groupsVM: GroupsViewModel, navControl: NavController, scState: ScaffoldState, scope: CoroutineScope) {
+fun CreateGroupView( groupsVM: GroupsViewModel, navControl: NavController, scState: ScaffoldState, scope: CoroutineScope, userVM: UserViewModel) {
 
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope ) },
-        content = { CreateGroupContent( groupsVM, navControl ) }
+        content = { CreateGroupContent( groupsVM, navControl, userVM ) }
     )
 
 }
 
 @Composable
-fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
+fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel ) {
 
     var groupName by remember { mutableStateOf("")}
 
@@ -56,7 +56,7 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController ) {
 
         OutlinedButton(
             onClick = {
-                groupsVM.createGroup( groupName, navControl )
+                groupsVM.createGroup( groupName, navControl, userVM )
             },
             modifier = Modifier
                 .fillMaxWidth(.75f)

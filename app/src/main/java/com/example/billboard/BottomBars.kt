@@ -49,7 +49,7 @@ fun BottomBarGroupScreen(
     expenseNavControl: NavController,
     groupInfo: GroupClass,
     groupsVM: GroupsViewModel,
-    userVM : UserViewModel
+    userVM: UserViewModel
 ) {
 
     val openDialog = remember { mutableStateOf(false) }
@@ -121,7 +121,8 @@ fun BottomBarGroupScreen(
                     onClick = {
                         openDialog.value = false
                         groupsVM.deleteGroup(
-                            groupInfo
+                            groupInfo,
+                            userVM
                         )
                     },
                     modifier = Modifier
@@ -188,7 +189,7 @@ fun BottomBarBack(
     Row(
         Modifier
             .fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Icon(
@@ -196,7 +197,7 @@ fun BottomBarBack(
             contentDescription = "back icon",
             modifier = Modifier
                 .clickable { expenseNavControl.navigate("group") }
-                .padding(35.dp, 30.dp)
+                .padding(35.dp, 20.dp)
         )
     }
 }
@@ -211,7 +212,8 @@ fun BottomBarExpenseView(
     isUserAdmin: Boolean,
     expensesViewModel: ExpensesViewModel,
     groupsViewModel: GroupsViewModel,
-    groupInfo: GroupClass
+    groupInfo: GroupClass,
+    userVM: UserViewModel
 ) {
     Row(
         modifier = Modifier
@@ -243,7 +245,8 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
             ) {
                 Text(text = stringResource(R.string.delete))
             }
@@ -258,7 +261,8 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
             ) {
                 Text(text = stringResource(R.string.clear_exp))
             }
@@ -273,7 +277,8 @@ fun BottomBarExpenseView(
                     .width(100.dp)
                     .height(40.dp),
                 shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
             ) {
                 Text(text = stringResource(R.string.edit))
             }
@@ -300,7 +305,8 @@ fun BottomBarExpenseView(
                                 expenseNavControl,
                                 groupsViewModel,
                                 groupInfo,
-                                navControl
+                                navControl,
+                                userVM
                             )
                         },
                         modifier = Modifier
@@ -348,7 +354,8 @@ fun BottomBarExpenseView(
                                 expense,
                                 groupsViewModel,
                                 groupInfo,
-                                navControl
+                                navControl,
+                                userVM
                             )
                         },
                         modifier = Modifier
@@ -397,7 +404,8 @@ fun BottomBarExpenseView(
                                 expense,
                                 expenseNavControl,
                                 groupsViewModel,
-                                navControl
+                                navControl,
+                                userVM
                             )
                         },
                         modifier = Modifier
@@ -496,6 +504,29 @@ fun BottomBarPartner(
             contentDescription = "back icon",
             modifier = Modifier
                 .clickable { affiliateNavControl.navigate("affiliate_categories")}
+                .padding(35.dp, 30.dp)
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@Composable
+fun BottomBarAddReceipt(
+    expenseNavControl: NavController,
+    expId: String
+){
+    Row(
+        Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_back),
+            contentDescription = "back icon",
+            modifier = Modifier
+                .clickable { expenseNavControl.navigate(expId)}
                 .padding(35.dp, 30.dp)
         )
     }

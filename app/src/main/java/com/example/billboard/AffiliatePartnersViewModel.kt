@@ -26,7 +26,8 @@ class AffiliatePartnersViewModel: ViewModel() {
                         category = affPartner.get("category").toString(),
                         description = affPartner.get("description").toString(),
                         name = affPartner.get("name").toString(),
-                        id = affPartner.id
+                        id = affPartner.id,
+                        imgURL = affPartner.get("imgURL").toString()
                     )
                     tempPartners.add(partner)
                 }

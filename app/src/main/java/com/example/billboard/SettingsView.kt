@@ -155,8 +155,6 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             confirmButton = {
                 OutlinedButton(
                     onClick = {
-                        deleteAccount(userVM)
-                        deleteAcntAlert.value = false
                     },
                     modifier = Modifier
                         .width(100.dp)
@@ -385,7 +383,3 @@ fun resetPassword(userVM: UserViewModel, email : String = ""){
     }
 }
 
-//Delete user account function : delete the user's data, including its email in the group and expenses
-fun deleteAccount(userVM :UserViewModel){
-
-}

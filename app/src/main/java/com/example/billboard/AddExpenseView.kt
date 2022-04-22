@@ -25,7 +25,8 @@ fun AddEditExpenseView(
     expense : ExpenseClass,
     scState: ScaffoldState,
     groupsVM: GroupsViewModel,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    userVM: UserViewModel
 ) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
@@ -36,7 +37,8 @@ fun AddEditExpenseView(
                 expenseNavControl = expenseNavControl,
                 expensesViewModel = expensesViewModel,
                 expense = expense,
-                groupsVM = groupsVM
+                groupsVM = groupsVM,
+                userVM
             )
         }
     )
@@ -48,7 +50,8 @@ fun AddEditExpenseViewContent(
                    expenseNavControl: NavController,
                    expensesViewModel: ExpensesViewModel,
                    expense : ExpenseClass,
-                   groupsVM: GroupsViewModel
+                   groupsVM: GroupsViewModel,
+                   userVM: UserViewModel
 ) {
 
     val newExpense by remember { mutableStateOf( expense ) }
@@ -210,14 +213,16 @@ fun AddEditExpenseViewContent(
                                     newExpense,
                                     expenseNavControl,
                                     groupInfo,
-                                    groupsVM
+                                    groupsVM,
+                                    userVM
                                 )
                             } else {
                                 expensesViewModel.editExpenseLine(
                                     expenseNavControl,
                                     groupInfo,
                                     groupsVM,
-                                    newExpense
+                                    newExpense,
+                                    userVM
                                 )
                             }
                         }

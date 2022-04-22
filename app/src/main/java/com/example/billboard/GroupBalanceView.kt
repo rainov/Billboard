@@ -96,20 +96,24 @@ fun GroupBalanceContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxSize(.88f)
-                    .verticalScroll(enabled = true, state = ScrollState(1))
+                    .verticalScroll(enabled = true, state = ScrollState(1)),
             ) {
                 groupInfo.members.forEach { member ->
-                    Box(
+                    Card(
+//                        backgroundColor = MaterialTheme.colors.surface,
                         modifier = Modifier
-                            .width(300.dp)
+                            .fillMaxWidth(.85f)
                             .border(
-                                BorderStroke(1.dp, Billboard_green),
+                                BorderStroke(1.dp, MaterialTheme.colors.onPrimary),
                                 shape = MaterialTheme.shapes.large,
-                            )
-                            .padding(15.dp)
+                            ),
+                        shape = MaterialTheme.shapes.large,
+                        elevation = 7.dp
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(15.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text( text = member, textAlign = TextAlign.Center, fontSize = 19.sp )
@@ -118,7 +122,7 @@ fun GroupBalanceContent(
 
                             Divider(
                                 modifier = Modifier.height(1.dp),
-                                color = Billboard_green
+                                color = MaterialTheme.colors.onPrimary
                             )
 
                             Spacer(modifier = Modifier.height(10.dp))
@@ -132,7 +136,7 @@ fun GroupBalanceContent(
                                     color = Billboard_Red
                                     amount = other.value * -1
                                 } else if (other.value > 0){
-                                    color = Billboard_green
+                                    color = MaterialTheme.colors.onPrimary
                                     amount = other.value
                                 }
                                 Row(

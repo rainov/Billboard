@@ -99,7 +99,7 @@ fun AddEditMemberContent(
 
         editGroup = newGroup
         newBalance = newGroup.balance
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup(newGroup, userVM, "Group member added")
         memberEmail = ""
     }
 
@@ -166,7 +166,8 @@ fun AddEditMemberContent(
                         expenseSnapshot.get("groupid").toString(),
                         expenseSnapshot.get("rest") as MutableList<String>,
                         expenseSnapshot.get("expid").toString(),
-                        expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>
+                        expenseSnapshot.get("paidvalues") as MutableMap<String, Boolean>,
+                        expenseSnapshot.get("receiptURL").toString()
                     )
 
                     //Edit payer//
@@ -198,8 +199,10 @@ fun AddEditMemberContent(
         }
 
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+
+        groupsVM.editGroup(newGroup, userVM, "Group member change email")
         memberEmail = ""
+        /* TODO refresh expenses */
         groupsVM.getGroups()
         navControl.navigate(group.id)
     }
@@ -223,7 +226,7 @@ fun AddEditMemberContent(
 
         memberEmail = ""
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup(newGroup, userVM, "Group member added as admin")
     }
 
     //Function to delete a member from the admin group list
@@ -245,7 +248,7 @@ fun AddEditMemberContent(
 
         memberEmail = ""
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup( newGroup, userVM, "Group member removed admin")
     }
 
     //Function to check if a member's balance is clear
@@ -294,7 +297,7 @@ fun AddEditMemberContent(
         )
 
         editGroup = newGroup
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup( newGroup, userVM, "Group member deleted")
         memberEmail = ""
 
     }
@@ -362,7 +365,6 @@ fun AddEditMemberContent(
 
                 OutlinedButton(
                     onClick = { if(memberEmail.isNotEmpty()){
-                        if(memberEmail.)
                         if(group.members.contains(memberEmail)) {
                         existingMemberAlert.value = true
                     } else {

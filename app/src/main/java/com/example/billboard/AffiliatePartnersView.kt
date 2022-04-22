@@ -6,10 +6,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -29,10 +32,10 @@ fun AffiliatePartnersView(
         bottomBar = { BottomBarAffiliate( navControl, selectedCategory ) },
         content = { AffiliatePartnersContent( partners, affiliateNavControl, selectedCategory, categories ) },
         drawerContent = { DrawerMainScreen (
-            scState,
-            scope,
-            DrawerContent( navControl, scState, scope )
-        )
+                scState,
+                scope,
+                DrawerContent( navControl, scState, scope )
+            )
         }
     )
 
@@ -52,7 +55,6 @@ fun AffiliatePartnersContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Spacer(modifier = Modifier.height(20.dp))
-
 
         if ( categoryName.value == "" ) {
             categories.forEach { category ->
@@ -90,13 +92,20 @@ fun AffiliatePartnersContent(
                                 .fillMaxWidth(.8f)
                                 .height(70.dp),
                             shape = MaterialTheme.shapes.large,
+                            contentColor = MaterialTheme.colors.onPrimary,
                             elevation = 7.dp
                         ) {
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(text = partner.name, textAlign = TextAlign.Center, fontSize = 20.sp)
+                                AsyncImage(
+                                    model = partner.imgURL,
+                                    contentDescription = partner.name,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.clip(MaterialTheme.shapes.large)
+                                )
                             }
                         }
                         Spacer( modifier = Modifier.height(20.dp))

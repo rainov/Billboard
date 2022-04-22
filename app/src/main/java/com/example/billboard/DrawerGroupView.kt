@@ -59,7 +59,7 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             groupInfo.id
         )
 
-        groupsVM.editGroup(newGroup)
+        groupsVM.editGroup(newGroup, userVM, "User left a group" )
     }
 
     fun isBalanceClear() : Boolean {

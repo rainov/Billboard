@@ -1,5 +1,6 @@
 package com.example.billboard
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,7 +13,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
+import java.sql.Timestamp
 
 @Composable
 fun MainScreen(
@@ -39,6 +43,7 @@ fun MainScreen(
 
 @Composable
 fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, groupsVM: GroupsViewModel) {
+
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween

@@ -1,5 +1,7 @@
 package com.example.billboard
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
@@ -11,13 +13,13 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSetting: Boolean){
-
-    //val scope = rememberCoroutineScope()
+fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSetting: Boolean ){
 
     val affiliateVM: AffiliatePartnersViewModel = viewModel()
 
@@ -28,8 +30,16 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
     val groups = groupsVM.groups.value
 
     val auth = FirebaseAuth.getInstance()
+
     val user: FirebaseUser? = auth.currentUser
     if (user != null) {
+        FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                userVM.setUniqueId(task.result)
+            } else {
+                Log.e("Installations", "Unable to get Installation ID")
+            }
+        }
         userVM.setUser( user )
         groupsVM.setEmail(user.email.toString())
         userVM.setEmail(user.email.toString())
@@ -57,7 +67,7 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
                 MainScreen(navControl, groups, groupsVM, scState, scope )
             }
             composable( route = "CreateGroup") {
-                CreateGroupView( groupsVM, navControl, scState, scope )
+                CreateGroupView( groupsVM, navControl, scState, scope, userVM )
             }
             composable( route = "Affiliate") {
                 AffiliateNavContainer( navControl, scState, scope, affiliateVM, userVM )

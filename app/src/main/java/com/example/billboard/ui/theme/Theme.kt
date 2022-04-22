@@ -20,7 +20,8 @@ private val LightColorPalette = lightColors(
     secondary = Teal200,
     background = BillBoard_Background_Green,
     onPrimary = Color.Black,
-    surface = Billboard_green
+    surface = Billboard_green,
+    onSecondary = BillBoard_Grey
 
     /* Other default colors to override
     background = Color.White,
