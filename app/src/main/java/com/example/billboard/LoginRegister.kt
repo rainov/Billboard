@@ -1,5 +1,13 @@
 package com.example.billboard
 
+/*===================================================/
+|| The LoginRegister View is the first view displayed
+|| if no user is logged in.
+|| There is two showed form, the first one is the log
+|| in form, the second one is the register form.
+|| There is also a button to reset the user's
+|| password.
+/====================================================*/
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -50,6 +58,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
 
     var resendVerificationLink by remember { mutableStateOf(false)}
 
+    //Alert dialog to reset the user's password
     if (dialogForgotPw.value) {
 
         AlertDialog(
@@ -88,6 +97,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                 }
 
             },
+            //The submit button handles the errors if the input field is empty/not an email
             confirmButton = {
                 OutlinedButton(
                     onClick = {
@@ -129,6 +139,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         )
     }
 
+    //Alert dialog if the email input is not a valid email
     if(validEmailAlert){
         AlertDialog(
             onDismissRequest = {
@@ -158,6 +169,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         )
     }
 
+    //Alert dialog that handles 3 cases of errors : empty fields, incorrect email/password, passwords does not match
     if (openDialog.value) {
 
         AlertDialog(
@@ -187,6 +199,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         )
     }
 
+    //Alert dialog if the users email is not verified, with button to send the link again
     if (notVerified) {
         AlertDialog(
             onDismissRequest = {
@@ -233,13 +246,12 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     ) {
                         Text(text = stringResource(R.string.resend))
                     }
-                } else {
-                    null
                 }
             }
         )
     }
 
+    //Alert dialog if couldn't register the new user (email already existing in database)
     if (emailInUse) {
         AlertDialog(
             onDismissRequest = {
@@ -271,6 +283,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         )
     }
 
+    //Alert dialog when registration is successful
     if (registerSuccess) {
         AlertDialog(
             onDismissRequest = {
@@ -302,6 +315,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         )
     }
 
+    //Log in function that set the user email in the viewModels and log in with database
     fun login(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth.signInWithEmailAndPassword(email, password)
@@ -335,6 +349,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
         }
     }
 
+    //Register function that store the input data in the database and send a verification link
     fun register(email: String, password: String, repeatPass: String, username: String) {
         if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && repeatPass.isNotEmpty()) {
             if (password == repeatPass) {

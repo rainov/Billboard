@@ -273,7 +273,7 @@ fun ExpenseViewContent(
                                                 )
                                             },
                                             modifier = Modifier
-                                                .width(150.dp)
+                                                .fillMaxWidth(.8f)
                                                 .height(37.dp),
                                             shape = MaterialTheme.shapes.large,
                                             colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),

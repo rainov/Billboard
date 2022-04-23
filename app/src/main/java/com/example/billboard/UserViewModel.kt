@@ -1,5 +1,10 @@
 package com.example.billboard
 
+/*===================================================/
+|| The UserViewModel stores the current logged in user
+|| data (email, username and id for the logs)
+/====================================================*/
+
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -19,6 +24,8 @@ class UserViewModel: ViewModel() {
 
     var user = mutableStateOf<FirebaseUser?>(null)
 
+    //Setter functions for the different parameters
+
     fun setUser( userAuth: FirebaseUser? ) {
         user.value = userAuth
     }
@@ -35,6 +42,7 @@ class UserViewModel: ViewModel() {
         userName.value = username
     }
 
+    //Functions to store/remove the user value depends if the user sign in/out
     fun signIn( userInfo: FirebaseUser ) {
         user.value = userInfo
         Log.d("message", "SignedIn")
@@ -45,6 +53,7 @@ class UserViewModel: ViewModel() {
         user.value = null
     }
 
+    //Function to store the user's logs from the actionType passed as parameter in the database
     fun logAction( actionType: String ) {
         val time = Calendar.getInstance().time.toString()
         val newLog = LogAction( uniqueID.value, time, actionType )

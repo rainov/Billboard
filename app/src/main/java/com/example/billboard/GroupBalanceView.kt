@@ -68,8 +68,7 @@ fun GroupBalanceContent(
     var totalSpent = 0.0
     expenses.forEach { expense ->
         totalSpent = (((totalSpent+ expense.amount)*100.0).roundToInt()) / 100.0
-        Log.d("****", expense.amount.toString())
-        Log.d("****", totalSpent.toString())
+
     }
 
     Column(

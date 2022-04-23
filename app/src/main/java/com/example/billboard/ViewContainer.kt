@@ -1,5 +1,11 @@
 package com.example.billboard
 
+/*===================================================/
+|| This View is initializing every viewModels of the app
+|| and contains the first level navigation controller.
+|| Redirect towards log in page or main screen view.
+/====================================================*/
+
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.material.DrawerValue
@@ -21,6 +27,8 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSetting: Boolean ){
 
+    //Initializing the viewModels
+
     val affiliateVM: AffiliatePartnersViewModel = viewModel()
 
     val userVM: UserViewModel = viewModel()
@@ -29,10 +37,15 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
 
     val groups = groupsVM.groups.value
 
+
+    //Fetching and storing all the data about the current user
+
     val auth = FirebaseAuth.getInstance()
 
     val user: FirebaseUser? = auth.currentUser
+
     if (user != null) {
+        //Fetching the ID of the app installation to store the logs of the user
         FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 userVM.setUniqueId(task.result)
@@ -40,11 +53,17 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
                 Log.e("Installations", "Unable to get Installation ID")
             }
         }
+
+        //Settling the user email in the viewModels
         userVM.setUser( user )
         groupsVM.setEmail(user.email.toString())
         userVM.setEmail(user.email.toString())
+
+        //Fetching the groups and affiliates
         groupsVM.getGroups()
         affiliateVM.getPartners()
+
+        //Fetching the user username
         Firebase.firestore
             .collection("users")
             .document(user.email.toString())
@@ -54,13 +73,16 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
             }
     }
 
+    //Initializing the variable for the hamburger menu
     val scState = rememberScaffoldState(
         rememberDrawerState(initialValue = DrawerValue.Closed)
     )
 
+    //If no user logged in, redirection towards Log view
     if (userVM.user.value == null) {
         LogRegView( userVM, groupsVM, scState, scope, auth )
     } else {
+        //Otherwise, redirection towards MainScreen View
         val navControl = rememberNavController()
         NavHost(navController = navControl, startDestination = "MainScreen") {
             composable(route = "MainScreen") {
