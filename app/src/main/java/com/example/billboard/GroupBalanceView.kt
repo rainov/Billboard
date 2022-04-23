@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.example.billboard.ui.theme.Billboard_Red
 import kotlinx.coroutines.CoroutineScope
+import kotlin.math.roundToInt
 
 @Composable
 fun GroupBalanceView (
@@ -61,9 +62,7 @@ fun GroupBalanceContent(
 
     var totalSpent = 0.0
     expenses.forEach { expense ->
-        totalSpent += expense.amount
-        Log.d("****", expense.amount.toString())
-        Log.d("****", totalSpent.toString())
+        totalSpent = (((totalSpent + expense.amount) * 100.0).roundToInt()) / 100.0
     }
 
     Column(

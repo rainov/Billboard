@@ -31,7 +31,7 @@
     <string name="delete">Delete</string>
     <string name="delete_conf">Delete confirmation</string>
     <string name="delete_conf_mess">Are you sure you want to delete this expense ?</string>
-    <string name="edit_expense">Edit an expense line</string>
+    <string name="edit_expense">Edit expense</string>
     <string name="add_expense">Add new expense</string>
     <string name="expense_name">Expense name</string>
     <string name="expense_amount">Expense amount</string>

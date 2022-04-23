@@ -1,4 +1,13 @@
 package com.example.billboard
+
+/*===================================================/
+|| This view is either ADD or EDIT, depending on the
+|| expense that is passed to it. Adding new expense
+|| passes an empty expense class, but when navigated
+|| from an existing expense page, it passes the expense
+|| from firebase.
+/====================================================*/
+
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,7 +19,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,7 +42,6 @@ fun AddEditExpenseView(
 ) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-//        bottomBar = { BottomBarBack(expenseNavControl) },
         content = {
             AddEditExpenseViewContent(
                 groupInfo = groupInfo,
@@ -69,15 +76,25 @@ fun AddEditExpenseViewContent(
     val dialogAmountTooLittle = remember { mutableStateOf(false)}
     var payerButtonText by remember { mutableStateOf("")}
 
+
+    //////////////////////
+    // Main container  //
+    ////////////////////
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        ///////////////////////////////
+        // Upper part of the screen //
+        /////////////////////////////
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            //////////////////////////////
+            // Head line on the screen //
+            ////////////////////////////
             if (expense.expid.isNotEmpty()) {
                 Text(
                     text = stringResource(R.string.edit_expense),
@@ -94,6 +111,9 @@ fun AddEditExpenseViewContent(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            ///////////////////////////////
+            // Expense name input field //
+            /////////////////////////////
             OutlinedTextField(
                 value = expenseName,
                 onValueChange = { expenseName = it },
@@ -110,7 +130,12 @@ fun AddEditExpenseViewContent(
                     .padding(0.dp),
                 shape = MaterialTheme.shapes.large
             )
+
             Spacer(modifier = Modifier.height(20.dp))
+
+            /////////////////////////////////
+            // Expense amount input field //
+            ///////////////////////////////
             OutlinedTextField(
                 value = expenseAmount,
                 onValueChange = { expenseAmount = it },
@@ -128,10 +153,16 @@ fun AddEditExpenseViewContent(
                     .padding(0.dp),
                 shape = MaterialTheme.shapes.large
             )
+
             Spacer(modifier = Modifier.height(20.dp))
-            Column() {
+
+            Column {
                 Text( text = stringResource(R.string.payer_member))
                 Spacer(modifier = Modifier.height(10.dp))
+
+                ///////////////////////
+                // Drop down button //
+                /////////////////////
                 OutlinedButton(
                     onClick = { menuExpanded = !menuExpanded },
                     modifier = Modifier
@@ -140,14 +171,16 @@ fun AddEditExpenseViewContent(
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
-                    payerButtonText = if ( payerMember.isEmpty() ) {
+                    payerButtonText = payerMember.ifEmpty {
                         stringResource(R.string.select)
-                    } else {
-                        payerMember
                     }
                     Text(text = payerButtonText )
                     Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu" )
                 }
+
+                /////////////////////
+                // Drop down menu //
+                ///////////////////
                 DropdownMenu(
                     expanded = menuExpanded,
                     onDismissRequest = { menuExpanded = false },
@@ -179,17 +212,20 @@ fun AddEditExpenseViewContent(
                 modifier = Modifier.fillMaxWidth(fraction = 0.75f),
                 horizontalAlignment = Alignment.Start
             ){
+
                 Text(text = stringResource(R.string.rest))
                 Spacer(modifier = Modifier.height(10.dp))
 
+                //////////////////////////////////////////////
+                // Scrolling column containing the members //
+                ////////////////////////////////////////////
                 Column( modifier = Modifier
                     .fillMaxHeight(.5f)
-                    .verticalScroll(enabled = true, state = ScrollState(1)),
-//                    horizontalAlignment = Alignment.CenterHorizontally
+                    .verticalScroll(enabled = true, state = ScrollState(1))
                 ) {
                     groupMembers.forEach { member ->
                         if (member != payerMember) {
-                            Row() {
+                            Row {
                                 CheckBox(member, membersWhoPay, expense)
                                 Text(member)
                                 Spacer(modifier = Modifier.height(5.dp))
@@ -201,6 +237,9 @@ fun AddEditExpenseViewContent(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            //////////////////////
+            // Add/Edit button //
+            ////////////////////
             Button(modifier = Modifier
                 .fillMaxWidth(.75f)
                 .height(40.dp),
@@ -243,6 +282,9 @@ fun AddEditExpenseViewContent(
                 }
             }
 
+            /////////////////////////
+            // Input error Dialog //
+            ///////////////////////
             if (openDialog.value) {
                 AlertDialog(
                     onDismissRequest = {
@@ -271,6 +313,10 @@ fun AddEditExpenseViewContent(
                 )
             }
 
+
+            //////////////////////////
+            // Amount error Dialog //
+            ////////////////////////
             if (dialogAmountTooLittle.value) {
                 AlertDialog(
                     onDismissRequest = {
@@ -299,6 +345,10 @@ fun AddEditExpenseViewContent(
                 )
             }
         }
+
+        ////////////////////////////
+        // Bottom navigation bar //
+        //////////////////////////
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -328,6 +378,9 @@ fun AddEditExpenseViewContent(
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+// This composable is used to add/remove people from the expense participants list //
+////////////////////////////////////////////////////////////////////////////////////
 @Composable
 fun CheckBox(member : String, membersWhoPay : MutableList<String>, expense : ExpenseClass){
     val checkState = remember {mutableStateOf(false)}
