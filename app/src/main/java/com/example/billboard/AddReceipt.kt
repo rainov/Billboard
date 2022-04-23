@@ -1,4 +1,11 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.example.billboard
+
+/*===================================================/
+|| This view is used to upload a picture of a receipt
+|| from the device gallery
+/====================================================*/
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -26,7 +33,6 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import androidx.compose.foundation.Image
 
-
 @Composable
 fun AddReceipt(
     expense: ExpenseClass,
@@ -35,7 +41,6 @@ fun AddReceipt(
     scope: CoroutineScope,
     expenseVM: ExpensesViewModel,
 ) {
-
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(showMenu = false, scState, false, scope) },
@@ -47,18 +52,34 @@ fun AddReceipt(
 @Composable
 fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, expenseVM: ExpensesViewModel ) {
 
+    ///////////////////////////////
+    // Image path on the device //
+    /////////////////////////////
     var selectedImageUri by remember {
         mutableStateOf<Uri?>(null)
     }
     val context = LocalContext.current
+
+    /////////////////////////////////////////
+    // Extension for storing in firestore //
+    ///////////////////////////////////////
     var imageExtension by remember { mutableStateOf("") }
 
+    ///////////////////////////////////////////////////////////
+    // Bitmap image for displaying preview before uploading //
+    /////////////////////////////////////////////////////////
     val bitmap =  remember {
         mutableStateOf<Bitmap?>(null)
     }
 
+    //////////////////////////////
+    // Reference for firestore //
+    ////////////////////////////
     val storageRef = Firebase.storage.reference
 
+    /////////////////////////////////////////////////
+    // Launcher for selecting picture fom gallery //
+    ///////////////////////////////////////////////
     val launcher = rememberLauncherForActivityResult(contract =
     ActivityResultContracts.GetContent()) { uri: Uri? ->
         selectedImageUri = uri
@@ -69,6 +90,9 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
         }
     }
 
+    //////////////////////////////////////
+    // Task information toast messages //
+    ////////////////////////////////////
     fun upToast(context: Context){
         Toast.makeText( context, "UPLOADING", Toast.LENGTH_SHORT).show()
     }
@@ -76,6 +100,9 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
         Toast.makeText( context, "UPLOADING COMPLETE", Toast.LENGTH_SHORT).show()
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // Upload image function, using the expense view model for updating the expense in firebase //
+    /////////////////////////////////////////////////////////////////////////////////////////////
     fun uploadImage() {
         upToast(context)
         val receiptRef = storageRef.child("Receipt" + System.currentTimeMillis() + "." + imageExtension)
@@ -91,16 +118,23 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
             }
     }
 
-
+    ///////////////////////
+    // Container column //
+    /////////////////////
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
         Spacer(modifier = Modifier.height(50.dp))
+
         Row(
             modifier = Modifier.weight((1f))
         ) {
 
+            //////////////////////////////////////////////////////////
+            // Image preview, when a file is selected from gallery //
+            ////////////////////////////////////////////////////////
             selectedImageUri?.let {
                 if (Build.VERSION.SDK_INT < 28) {
                     bitmap.value = MediaStore.Images
@@ -120,6 +154,10 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
             }
 
         }
+
+        //////////////////////////////////////////////
+        // Container column for the action buttons //
+        ////////////////////////////////////////////
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,6 +166,9 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            //////////////////////////
+            // Select image button //
+            ////////////////////////
             OutlinedButton(
                 onClick = {
                     launcher.launch("image/*")
@@ -143,6 +184,9 @@ fun AddReceiptContent( expenseNavControl: NavController, expense: ExpenseClass, 
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            ////////////////////////////////////////////////////////
+            // Upload button, visible only when file is selected //
+            //////////////////////////////////////////////////////
             if ( selectedImageUri != null ) {
                 OutlinedButton(
                     onClick = {

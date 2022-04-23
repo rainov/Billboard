@@ -20,7 +20,7 @@ class UserViewModel: ViewModel() {
 
     var userEmail = mutableStateOf("")
     var userName = mutableStateOf("")
-    var uniqueID = mutableStateOf("")
+    private var uniqueID = mutableStateOf("")
 
     var user = mutableStateOf<FirebaseUser?>(null)
 

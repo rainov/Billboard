@@ -5,6 +5,7 @@ package com.example.billboard
 || field needed.
 /====================================================*/
 
+@Suppress("SpellCheckingInspection")
 data class ExpenseClass(
     var name: String,
     var amount: Double,

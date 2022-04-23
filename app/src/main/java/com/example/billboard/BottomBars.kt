@@ -1,5 +1,10 @@
 package com.example.billboard
 
+/*===================================================/
+|| Here are stored all composes that are used as
+|| bottom bars in different app views
+/====================================================*/
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,27 +20,38 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 
-//MAIN SCREEN BOTTOM
+/////////////////////////////
+// MAIN SCREEN BOTTOM BAR //
+///////////////////////////
 @Composable
 fun BottomBarMainScreen(
     navControl: NavController
 ) {
+    ////////////////
+    // Container //
+    //////////////
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Divider(
             modifier = Modifier
                 .height(1.dp)
                 .fillMaxWidth(.83f),
             color = Billboard_green
         )
+
         Row(
             Modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.End
         ) {
+
+            ///////////////////////////////////////
+            // Circle Add button for new groups //
+            /////////////////////////////////////
             FloatingActionButton(
                 onClick = { navControl.navigate( "CreateGroup" ) },
                 backgroundColor = Billboard_green,
@@ -51,9 +67,13 @@ fun BottomBarMainScreen(
         }
     }
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//GROUP VIEW BOTTOM
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////
+// GROUP VIEW BOTTOM BAR //
+//////////////////////////
 @Composable
 fun BottomBarGroupScreen(
     navControl: NavController,
@@ -66,16 +86,24 @@ fun BottomBarGroupScreen(
     val openDialog = remember { mutableStateOf(false) }
     val openErrors = remember { mutableStateOf(false) }
 
+    ////////////////
+    // Container //
+    //////////////
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Divider(
             modifier = Modifier
                 .height(1.dp)
                 .fillMaxWidth(.83f),
             color = Billboard_green
         )
+
+        ////////////////////////////////////
+        // Container row for the buttons //
+        //////////////////////////////////
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -83,6 +111,10 @@ fun BottomBarGroupScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
+
+            ////////////////////////
+            // Back arrow button //
+            //////////////////////
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "back icon",
@@ -91,6 +123,9 @@ fun BottomBarGroupScreen(
                     .padding(35.dp, 30.dp)
             )
 
+            //////////////////////////////////////////////////
+            // Delete button visible only for group admins //
+            ////////////////////////////////////////////////
             if(groupInfo.admins.contains(userVM.userEmail.value)) {
                 OutlinedButton(
                     onClick = {
@@ -111,6 +146,9 @@ fun BottomBarGroupScreen(
                 }
             }
 
+            ////////////////////////////////////////////////////////////////////////////////////////////
+            // Add expense button, visible only if there is at least 1 member except the group admin //
+            //////////////////////////////////////////////////////////////////////////////////////////
             if (groupInfo.members.size > 1 ) {
                 FloatingActionButton(onClick = { expenseNavControl.navigate("addExpense")},
                     backgroundColor = Billboard_green,
@@ -128,6 +166,9 @@ fun BottomBarGroupScreen(
     }
 
 
+    /////////////////////////////////////////////////////////
+    // Delete confirmation pop up dialog for empty groups //
+    ///////////////////////////////////////////////////////
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = {
@@ -140,6 +181,9 @@ fun BottomBarGroupScreen(
                 Text(text = stringResource(R.string.delete_grp))
             },
             confirmButton = {
+                ////////////////////
+                // Delete button //
+                //////////////////
                 OutlinedButton(
                     onClick = {
                         openDialog.value = false
@@ -158,6 +202,9 @@ fun BottomBarGroupScreen(
                 }
             },
             dismissButton = {
+                ////////////////////
+                // Cancel button //
+                //////////////////
                 OutlinedButton(
                     onClick = {
                         openDialog.value = false
@@ -174,6 +221,9 @@ fun BottomBarGroupScreen(
         )
     }
 
+    /////////////////////////////////////////////////////////
+    // Delete warning for groups with dirty balance sheet //
+    ///////////////////////////////////////////////////////
     if (openErrors.value) {
         AlertDialog(
             onDismissRequest = {
@@ -186,6 +236,9 @@ fun BottomBarGroupScreen(
                 Text(text = stringResource(R.string.delete_grp_err))
             },
             confirmButton = {
+                ////////////////////
+                // Delete button //
+                //////////////////
                 OutlinedButton(
                     onClick = {
                         openErrors.value = false
@@ -204,6 +257,9 @@ fun BottomBarGroupScreen(
                 }
             },
             dismissButton = {
+                ////////////////////
+                // Cancel button //
+                //////////////////
                 OutlinedButton(
                     onClick = {
                         openErrors.value = false
@@ -221,13 +277,20 @@ fun BottomBarGroupScreen(
         )
     }
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//BALANCE VIEW + ADD EDIT EXPENSE VIEW
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////
+// BALANCE VIEW BOTTOM BAR //
+////////////////////////////
 @Composable
 fun BottomBarBack(
     expenseNavControl: NavController
 ) {
+    ///////////////////////
+    // Container column //
+    /////////////////////
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -245,6 +308,9 @@ fun BottomBarBack(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
+            ////////////////////////
+            // Back arrow button //
+            //////////////////////
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "back icon",
@@ -255,9 +321,13 @@ fun BottomBarBack(
         }
     }
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//EXPENSE VIEW BOTTOM
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////
+// EXPENSE VIEW BOTTOM BAR //
+////////////////////////////
 @Composable
 fun BottomBarExpenseView(
     navControl: NavController,
@@ -269,6 +339,9 @@ fun BottomBarExpenseView(
     groupInfo: GroupClass,
     userVM: UserViewModel
 ) {
+    ///////////////////////
+    // Container column //
+    /////////////////////
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -279,6 +352,10 @@ fun BottomBarExpenseView(
                 .fillMaxWidth(.83f),
             color = Billboard_green
         )
+
+        ///////////////////////////////////////////
+        // Row container for the action buttons //
+        /////////////////////////////////////////
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -291,11 +368,17 @@ fun BottomBarExpenseView(
             val openDialogDelete = remember { mutableStateOf(false) }
             val openDialogClear = remember { mutableStateOf(false) }
 
+            ////////////////////////
+            // Back arrow button //
+            //////////////////////
             Icon(
                 painter = painterResource(id = R.drawable.ic_back),
                 contentDescription = "back icon",
                 modifier = Modifier.clickable { expenseNavControl.navigate("group") })
 
+            //////////////////////////////////////////////////
+            // Delete button visible only for group admins //
+            ////////////////////////////////////////////////
             if (isUserAdmin) {
                 OutlinedButton(
                     onClick = {
@@ -316,6 +399,9 @@ fun BottomBarExpenseView(
                 }
             }
 
+            //////////////////////////////////////////////////
+            // Clear button visible only for group admins //
+            ////////////////////////////////////////////////
             if (isUserAdmin) {
                 OutlinedButton(
                     onClick = {
@@ -332,6 +418,9 @@ fun BottomBarExpenseView(
                 }
             }
 
+            //////////////////////////////////////////////////
+            // Edit button visible only for group admins //
+            ////////////////////////////////////////////////
             if (isUserAdmin) {
                 OutlinedButton(
                     onClick = {
@@ -348,8 +437,10 @@ fun BottomBarExpenseView(
                 }
             }
 
+            ////////////////////////////////////////////////////////////
+            // Delete confirmation pop up for clear balance expenses //
+            //////////////////////////////////////////////////////////
             if (openDialogDelete.value) {
-
                 AlertDialog(
                     onDismissRequest = {
                         openDialogDelete.value = false
@@ -361,12 +452,14 @@ fun BottomBarExpenseView(
                         Text(text = stringResource(R.string.delete_conf_mess))
                     },
                     confirmButton = {
+                        ////////////////////
+                        // Delete button //
+                        //////////////////
                         OutlinedButton(
                             onClick = {
                                 openDialogDelete.value = false
                                 expensesViewModel.deleteExpenseLine(
                                     expense,
-                                    expenseNavControl,
                                     groupsViewModel,
                                     groupInfo,
                                     navControl,
@@ -383,6 +476,9 @@ fun BottomBarExpenseView(
                         }
                     },
                     dismissButton = {
+                        ////////////////////
+                        // Cancel button //
+                        //////////////////
                         OutlinedButton(
                             onClick = {
                                 openDialogDelete.value = false
@@ -399,6 +495,9 @@ fun BottomBarExpenseView(
                 )
             }
 
+            ////////////////////////////////////////////////////////////
+            // Delete confirmation pop up for dirty balance expenses //
+            //////////////////////////////////////////////////////////
             if (openDialogDeleteWithDebts.value) {
                 AlertDialog(
                     onDismissRequest = {
@@ -411,6 +510,9 @@ fun BottomBarExpenseView(
                         Text(text = stringResource(R.string.delete_conf_mess_debts))
                     },
                     confirmButton = {
+                        ////////////////////
+                        // Delete button //
+                        //////////////////
                         OutlinedButton(
                             onClick = {
                                 openDialogDeleteWithDebts.value = false
@@ -432,6 +534,9 @@ fun BottomBarExpenseView(
                         }
                     },
                     dismissButton = {
+                        ////////////////////
+                        // Cancel button //
+                        //////////////////
                         OutlinedButton(
                             onClick = {
                                 openDialogDeleteWithDebts.value = false
@@ -448,6 +553,9 @@ fun BottomBarExpenseView(
                 )
             }
 
+            ////////////////////////////////////////
+            // Clear expense confirmation pop up //
+            //////////////////////////////////////
             if (openDialogClear.value) {
                 AlertDialog(
                     onDismissRequest = {
@@ -460,13 +568,15 @@ fun BottomBarExpenseView(
                         Text(text = stringResource(R.string.clear_conf))
                     },
                     confirmButton = {
+                        ////////////////////
+                        // Confirm button //
+                        //////////////////
                         OutlinedButton(
                             onClick = {
                                 openDialogClear.value = false
                                 expensesViewModel.eraseAllDebts(
                                     groupInfo,
                                     expense,
-                                    expenseNavControl,
                                     groupsViewModel,
                                     navControl,
                                     userVM
@@ -482,6 +592,9 @@ fun BottomBarExpenseView(
                         }
                     },
                     dismissButton = {
+                        ////////////////////
+                        // Cancel button //
+                        //////////////////
                         OutlinedButton(
                             onClick = {
                                 openDialogClear.value = false
@@ -501,8 +614,12 @@ fun BottomBarExpenseView(
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////
+// ABOUT US BOTTOM BAR //
+////////////////////////
 @Composable
 fun BottomBarAboutUs(
     navControl: NavController
@@ -513,6 +630,9 @@ fun BottomBarAboutUs(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Start
     ) {
+        ////////////////////////
+        // Back arrow button //
+        //////////////////////
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "back icon",
@@ -523,8 +643,12 @@ fun BottomBarAboutUs(
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////
+// AFFILIATE PARTNERS CATEGORIES VIEW BOTTOM BAR //
+//////////////////////////////////////////////////
 @Composable
 fun BottomBarAffiliate(
     navControl: NavController,
@@ -536,6 +660,9 @@ fun BottomBarAffiliate(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Start
     ) {
+        ////////////////////////
+        // Back arrow button //
+        //////////////////////
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "back icon",
@@ -552,8 +679,12 @@ fun BottomBarAffiliate(
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////
+// AFFILIATE PARTNER VIEW BOTTOM BAR //
+//////////////////////////////////////
 @Composable
 fun BottomBarPartner(
     affiliateNavControl: NavController
@@ -564,6 +695,9 @@ fun BottomBarPartner(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Start
     ) {
+        ////////////////////////
+        // Back arrow button //
+        //////////////////////
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "back icon",
@@ -574,8 +708,12 @@ fun BottomBarPartner(
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////
+// ADD RECEIPT VIEW BOTTOM BAR //
+////////////////////////////////
 @Composable
 fun BottomBarAddReceipt(
     expenseNavControl: NavController,
@@ -587,6 +725,9 @@ fun BottomBarAddReceipt(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Start
     ) {
+        ////////////////////////
+        // Back arrow button //
+        //////////////////////
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "back icon",

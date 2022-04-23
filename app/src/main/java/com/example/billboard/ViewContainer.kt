@@ -86,7 +86,7 @@ fun ViewContainer( scope: CoroutineScope, themeStore: ThemePreference, themeSett
         val navControl = rememberNavController()
         NavHost(navController = navControl, startDestination = "MainScreen") {
             composable(route = "MainScreen") {
-                MainScreen(navControl, groups, groupsVM, scState, scope )
+                MainScreen(navControl, groups, scState, scope )
             }
             composable( route = "CreateGroup") {
                 CreateGroupView( groupsVM, navControl, scState, scope, userVM )

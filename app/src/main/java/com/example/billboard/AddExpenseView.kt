@@ -9,7 +9,7 @@ package com.example.billboard
 || from firebase.
 /====================================================*/
 
-
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -44,9 +44,6 @@ fun AddEditExpenseView(
 ) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-
-//        bottomBar = { BottomBarBack(expenseNavControl) },
-
         content = {
             AddEditExpenseViewContent(
                 groupInfo = groupInfo,
@@ -60,6 +57,7 @@ fun AddEditExpenseView(
     )
 }
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AddEditExpenseViewContent(
                    groupInfo: GroupClass,
@@ -179,8 +177,9 @@ fun AddEditExpenseViewContent(
                 ) {
                     if (payerMember.isEmpty()){
                         payerButtonText = stringResource(R.string.select)
+
                     } else {
-                        var uname = remember { mutableStateOf("default")}
+                        val uname = remember { mutableStateOf("default")}
                         getUsername(payerMember, uname)
                         if(uname.value == "null") uname.value = payerMember
                         payerButtonText = uname.value
@@ -199,7 +198,7 @@ fun AddEditExpenseViewContent(
                         .fillMaxWidth(.75f)
                 ) {
                     groupMembers.forEach { member ->
-                        var uname = remember { mutableStateOf("default")}
+                        val uname = remember { mutableStateOf("default")}
                         getUsername(member, uname)
                         if(uname.value == "null") uname.value = member
                         DropdownMenuItem(onClick = {
@@ -238,14 +237,13 @@ fun AddEditExpenseViewContent(
                     .verticalScroll(enabled = true, state = ScrollState(1))
                 ) {
                     groupMembers.forEach { member ->
-                        var uname = remember { mutableStateOf("default")}
+                        val uname = remember { mutableStateOf("default")}
                         getUsername(member, uname)
                         if(uname.value == "null") uname.value = member
                         if (member != payerMember) {
                             Row {
                                 CheckBox(member, membersWhoPay, expense)
                                 Text(uname.value)
-
                                 Spacer(modifier = Modifier.height(5.dp))
                             }
                         }
@@ -264,37 +262,37 @@ fun AddEditExpenseViewContent(
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                 onClick = {
-                if (expenseName.isNotEmpty() && expenseAmount != "0.0" && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
-                    if(expenseAmount.toDoubleOrNull() == null) {
-                        dialogInvalidAmnt.value = true
-                    } else {
-                        if (expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01) {
-                            dialogAmountTooLittle.value = true
+                    if (expenseName.isNotEmpty() && expenseAmount != "0.0" && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
+                        if(expenseAmount.toDoubleOrNull() == null) {
+                            dialogInvalidAmnt.value = true
                         } else {
-                            newExpense.name = expenseName
-                            newExpense.amount = expenseAmount.toDouble()
-                            newExpense.payer = payerMember
-                            newExpense.rest = membersWhoPay
-                            if (expense.expid.isEmpty()) {
-                                expensesViewModel.addExpenseLine(
-                                    newExpense,
-                                    expenseNavControl,
-                                    groupInfo,
-                                    groupsVM,
-                                    userVM
-                                )
+                            if (expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01) {
+                                dialogAmountTooLittle.value = true
                             } else {
-                                expensesViewModel.editExpenseLine(
-                                    expenseNavControl,
-                                    groupInfo,
-                                    groupsVM,
-                                    newExpense,
-                                    userVM
-                                )
+                                newExpense.name = expenseName
+                                newExpense.amount = expenseAmount.toDouble()
+                                newExpense.payer = payerMember
+                                newExpense.rest = membersWhoPay
+                                if (expense.expid.isEmpty()) {
+                                    expensesViewModel.addExpenseLine(
+                                        newExpense,
+                                        expenseNavControl,
+                                        groupInfo,
+                                        groupsVM,
+                                        userVM
+                                    )
+                                } else {
+                                    expensesViewModel.editExpenseLine(
+                                        expenseNavControl,
+                                        groupInfo,
+                                        groupsVM,
+                                        newExpense,
+                                        userVM
+                                    )
+                                }
                             }
                         }
-                    }
-                } else {
+                    } else {
                     openDialog.value = true
                 }}){
                 if (expense.expid.isNotEmpty()) {

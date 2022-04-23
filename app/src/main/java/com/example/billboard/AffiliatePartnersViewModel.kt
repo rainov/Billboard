@@ -1,5 +1,11 @@
 package com.example.billboard
 
+/*===================================================/
+|| View model for the affiliate partners. All that its
+|| doing is to fetch the partners information from
+|| our database and creates a list with categories
+/====================================================*/
+
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase

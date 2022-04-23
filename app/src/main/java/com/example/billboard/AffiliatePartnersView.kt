@@ -1,5 +1,11 @@
 package com.example.billboard
 
+/*===================================================/
+|| This is the starting page for the affiliate navigation
+|| stack. It displays cards with the categories of our
+|| partners services
+/====================================================*/
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -49,13 +55,23 @@ fun AffiliatePartnersContent(
     categories: MutableList<String>
 ) {
 
+    ///////////////////////
+    // Container column //
+    /////////////////////
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
+
         Spacer(modifier = Modifier.height(20.dp))
 
+        ////////////////////////////////////////////////////////////////////////
+        // This statement checks if there is selected category from the user //
+        // and if it is empty, shows cards with the categories. If there is //
+        // category selected, it shows cards with our partners from that   //
+        // category                                                       //
+        ///////////////////////////////////////////////////////////////////
         if ( categoryName.value == "" ) {
             categories.forEach { category ->
                 Card(
