@@ -1,5 +1,11 @@
 package com.example.billboard
 
+/*===================================================/
+|| This view is showing the information for a group
+|| expense. From here, the expense can be deleted,
+|| edited or cleared.
+/====================================================*/
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
@@ -21,6 +27,9 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlin.math.roundToInt
 
+///////////////////////////////////
+// Main scaffold view container //
+/////////////////////////////////
 @Composable
 fun ExpenseView(
     expense: ExpenseClass,
@@ -64,6 +73,9 @@ fun ExpenseView(
     )
 }
 
+//////////////////////////////////
+// Content of the Expense view //
+////////////////////////////////
 @Composable
 fun ExpenseViewContent(
     expense: ExpenseClass,
@@ -85,20 +97,32 @@ fun ExpenseViewContent(
 
     val amountForEach = ((expense.amount / ( expense.rest.size + 1 )) * 100.0 ).roundToInt() / 100.0
 
+    ///////////////////////
+    // Container column //
+    /////////////////////
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
+        //////////////////////////////////////////////////////////////////
+        // Top column with card displaying information for the expense //
+        ////////////////////////////////////////////////////////////////
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            ///////////////////////////////
+            // Headline - Expense name  //
+            /////////////////////////////
             Text(text = expenseName, textAlign = TextAlign.Center, fontSize = 30.sp)
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            ////////////////
+            // Info card //
+            //////////////
             Card(
                 modifier = Modifier
                     .fillMaxWidth(.85f)
@@ -109,15 +133,22 @@ fun ExpenseViewContent(
                 elevation = 7.dp,
                 shape = MaterialTheme.shapes.large
             ) {
+                /////////////////////////
+                // Inside card column //
+                ///////////////////////
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        //////////////////
+                        // Amount paid //
+                        ////////////////
                         Text(
                             text = stringResource(R.string.amount_paid),
                             fontSize = 18.sp
@@ -125,35 +156,53 @@ fun ExpenseViewContent(
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(text = expenseAmount + "€", fontSize = 21.sp)
                     }
+
                     Spacer(modifier = Modifier.height(5.dp))
+
                     Divider(
                         modifier = Modifier
                             .height(1.dp)
                             .fillMaxWidth(.9f),
                         color = MaterialTheme.colors.onPrimary
                     )
+
                     Spacer(modifier = Modifier.height(5.dp))
 
+                    //////////////
+                    // Paid by //
+                    ////////////
                     Text(text = stringResource(R.string.payer_member), fontSize = 17.sp)
+
                     Spacer(modifier = Modifier.height(5.dp))
+
                     Divider(
                         modifier = Modifier
                             .height(1.dp)
                             .fillMaxWidth(.83f),
                         color = MaterialTheme.colors.onPrimary
                     )
+
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text(text = expensePayer, fontSize = 20.sp)
+
+                    ///////////////////////////////////////////////////////////////////////////////////////////////
+                    // The user who paid the bill... If the user is registered, his/her username is displayed.  //
+                    // If the payer is not registered, the part before @ in his email is shown.                //
+                    ////////////////////////////////////////////////////////////////////////////////////////////
+                    var uname = remember { mutableStateOf("default")}
+                    getUsername(expensePayer, uname)
+                    if(uname.value == "null") uname.value = expensePayer
+                    Text(text = uname.value, fontSize = 20.sp)
                     if(!groupInfo.members.contains(expensePayer)){
-                        Text( text = "Deleted", fontSize = 12.sp, color = Billboard_green)
+                        Text( text = "Deleted", fontSize = 12.sp, color = MaterialTheme.colors.onPrimary)
                     }
                 }
             }
 
-            //TODO need to discuss about default currency, can the user choose one or the group
-
             Spacer(modifier = Modifier.height(10.dp))
 
+            /////////////////////////////////////////////////
+            // Button to upload/show receipt for the bill //
+            ///////////////////////////////////////////////
             if ( receiptUrl.isEmpty() ) {
                 OutlinedButton(
                     onClick = {
@@ -188,6 +237,9 @@ fun ExpenseViewContent(
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            ////////////////////////
+            // Participants text //
+            //////////////////////
             Text(text = stringResource(R.string.rest), fontSize = 18.sp)
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -196,11 +248,14 @@ fun ExpenseViewContent(
                 modifier = Modifier
                     .height(1.dp)
                     .fillMaxWidth(.83f),
-                color = MaterialTheme.colors.onPrimary
+                color = Billboard_green
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
+            //////////////////////////////////////////////////////////////////
+            // Vertical scroll column, containing all expense participants //
+            ////////////////////////////////////////////////////////////////
             Column(
                 modifier = Modifier
                     .fillMaxWidth(.83f)
@@ -209,6 +264,9 @@ fun ExpenseViewContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 expenseRest.forEach { member ->
+                    //////////////////////////////////////////
+                    // Card with info for each participant //
+                    ////////////////////////////////////////
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         elevation = 7.dp,
@@ -220,18 +278,36 @@ fun ExpenseViewContent(
                                 .padding(2.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = member, modifier = Modifier.padding(10.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
+                            /////////////////////////////////////////////////////////////////////
+                            // Username/email of the user based on if he/she is registered or not //
+                            ///////////////////////////////////////////////////////////////////
+                            var uname = remember { mutableStateOf("default")}
+                            getUsername(member, uname)
+                            if(uname.value == "null") uname.value = member
+                            Text(text = uname.value, modifier = Modifier.padding(10.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
+
+                            /////////////////////////////////////////////
+                            // Text describing the status of the debt //
+                            ///////////////////////////////////////////
                             if( expense.paidvalues[member] == false ) {
                                 Text( text = stringResource(R.string.owes) + " " + amountForEach + stringResource(R.string.euro_sign) )
                             } else {
                                 Text( text = stringResource(R.string.has_paid) + " " + amountForEach + stringResource(R.string.euro_sign) )
                             }
+
                             Spacer(modifier = Modifier.height(5.dp))
+
+                            ////////////////////////////////////////////////////////////////////////
+                            // Erase debt and refund debt buttons, visible only for group admins //
+                            //////////////////////////////////////////////////////////////////////
                             if (!groupInfo.members.contains(member)) {
-                                Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
+                                Text(text = "Deleted", color = MaterialTheme.colors.onPrimary)
                             } else if(groupInfo.members.contains(expensePayer)){
                                 if (isUserAdmin.value || userVM.userEmail.value == expensePayer) {
                                     if (expense.paidvalues[member] == false) {
+                                        ////////////////////////
+                                        // Erase debt button //
+                                        //////////////////////
                                         OutlinedButton(
                                             onClick = {
                                                 expensesViewModel.eraseDebt(
@@ -254,6 +330,9 @@ fun ExpenseViewContent(
                                             Text(text = stringResource(R.string.erase_debt))
                                         }
                                     } else {
+                                        /////////////////////////
+                                        // Refund debt button //
+                                        ///////////////////////
                                         OutlinedButton(
                                             onClick = {
                                                 expensesViewModel.cancelEraseDebt(

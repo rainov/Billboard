@@ -1,5 +1,9 @@
 package com.example.billboard
 
+/*===================================================/
+|| Create new group view
+/====================================================*/
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -28,6 +32,9 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController, us
 
     var groupName by remember { mutableStateOf("")}
 
+    ///////////////////////
+    // Container column //
+    /////////////////////
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -36,6 +43,9 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController, us
 
         Spacer(modifier = Modifier.height(150.dp))
 
+        /////////////////////////////
+        // Group name input field //
+        ///////////////////////////
         OutlinedTextField(
             value = groupName,
             onValueChange = { groupName = it },
@@ -54,6 +64,9 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController, us
 
         Spacer(modifier = Modifier.height(15.dp))
 
+        //////////////////////////
+        // Create group button //
+        ////////////////////////
         OutlinedButton(
             onClick = {
                 groupsVM.createGroup( groupName, navControl, userVM )
@@ -69,6 +82,9 @@ fun CreateGroupContent( groupsVM: GroupsViewModel, navControl: NavController, us
 
         Spacer(modifier = Modifier.height(15.dp))
 
+        ////////////////////
+        // Cancel button //
+        //////////////////
         OutlinedButton(
             onClick = {
                 navControl.navigate("MainScreen")

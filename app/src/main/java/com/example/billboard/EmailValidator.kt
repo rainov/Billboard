@@ -1,5 +1,8 @@
 package com.example.billboard
 
+////////////////////////////////////
+// Simple email string validator //
+//////////////////////////////////
 class EmailValidator {
     companion object {
         @JvmStatic

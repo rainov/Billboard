@@ -65,6 +65,7 @@ fun AddEditMemberContent(
     val existingMemberAlert = remember { mutableStateOf(false)}
     val validEmailAlert = remember { mutableStateOf(false)}
     val deleteMemberAlert = remember { mutableStateOf(false)}
+    val emptyFieldAlert = remember { mutableStateOf(false)}
 
     //Add member function
     fun addMember() {
@@ -601,6 +602,33 @@ fun AddEditMemberContent(
                 }
             )
         }
+        if(emptyFieldAlert.value){
+            AlertDialog(
+                onDismissRequest = {
+                    emptyFieldAlert.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.error))
+                },
+                text = {
+                    Text(text = stringResource(R.string.all_inputs_required))
+                },
+                confirmButton = {
+                    OutlinedButton(
+                        onClick = {
+                            emptyFieldAlert.value = false
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     } else {
         val oldMember by remember { mutableStateOf(memberEmail) }
         Column(
@@ -631,10 +659,12 @@ fun AddEditMemberContent(
             OutlinedButton(
                 onClick = {
                     if (EmailValidator.isEmailValid(memberEmail)) {
-                        editMemberName(
-                            oldMember,
-                            memberEmail)
-                        boolEdit.value = false
+                        if (group.members.contains(memberEmail)) {
+                            existingMemberAlert.value = true
+                        } else {
+                            editMemberName(oldMember, memberEmail)
+                            boolEdit.value = false
+                        }
                     } else {
                         boolEdit.value = false
                         validEmailAlert.value = true

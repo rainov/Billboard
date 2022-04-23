@@ -1,5 +1,10 @@
 package com.example.billboard
 
+/*===================================================/
+|| Composable for the content of the app drawer in
+|| Group view
+/====================================================*/
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,8 +19,19 @@ import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+
+///////////////////////////////////////////////////
+// Drawer content for the Group view of the app //
+/////////////////////////////////////////////////
 @Composable
-fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope: CoroutineScope, groupInfo: GroupClass, expenseNavControl: NavController, userVM : UserViewModel, groupsVM: GroupsViewModel) {
+fun DrawerGroupContent( navControl: NavController,
+                        scState: ScaffoldState,
+                        scope: CoroutineScope,
+                        groupInfo: GroupClass,
+                        expenseNavControl: NavController,
+                        userVM : UserViewModel,
+                        groupsVM: GroupsViewModel
+) {
 
     var membersList by remember { mutableStateOf(groupInfo.members) }
     var adminsList by remember { mutableStateOf(groupInfo.admins) }
@@ -50,6 +66,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
         membersList = tempMembers
 
 
+        /////////////////////////////////////////////////////////////////
+        // New group info for updating firebase data with information //
+        ///////////////////////////////////////////////////////////////
         val newGroup = GroupClass(
             adminsList,
             groupInfo.expenses,
@@ -73,6 +92,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
         return groupInfo.admins.contains(userVM.userEmail.value) && groupInfo.admins.size >= 2 || !groupInfo.admins.contains(userVM.userEmail.value)
     }
 
+    ///////////////////////
+    // Container column //
+    /////////////////////
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,14 +103,24 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        /////////////////////////////
+        // Top part of the screen //
+        ///////////////////////////
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+
             Spacer(modifier = Modifier.height(15.dp))
+
+            ////////////////////////////
+            // Headline - Group name //
+            //////////////////////////
             Text(text = groupInfo.name, fontSize = 30.sp)
+
             Spacer(modifier = Modifier.height(15.dp))
+
             Divider(
                 modifier = Modifier
                     .height(1.dp)
@@ -97,6 +129,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             )
         }
 
+        ////////////////////////////////
+        // Middle part of the screen //
+        //////////////////////////////
         Column(
             modifier = Modifier
                 .weight(2f)
@@ -105,24 +140,47 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column() {
+                ///////////////////////////////////////////////////////////////////////
+                // Email and admin indicator ( if the user is admin ) for each user //
+                /////////////////////////////////////////////////////////////////////
                 groupInfo.members.forEach { member ->
                     Row() {
+                        // Email
                         Text(text = member, fontSize = 20.sp)
+
                         Spacer(modifier = Modifier.width(5.dp))
+
+                        // Admin indicator
                         if (groupInfo.admins.contains(member)) {
                             Text(text = "Admin", fontSize = 12.sp, color = Billboard_green)
                         }
                     }
+
+                    Row(){
+                        // Username if registered user
+                        var uname = remember { mutableStateOf("default")}
+                        getUsername(member, uname)
+                        if(uname.value == "null") uname.value = member
+                        Text(text = "(" + uname.value + ")")
+                    }
+
                     Spacer(modifier = Modifier.height(20.dp))
                 }
 
             }
+
+            ////////////////////////////////////////////////////
+            // Container column for the group action buttons //
+            //////////////////////////////////////////////////
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (groupInfo.admins.contains(userVM.userEmail.value)) {
+                    /////////////////////////////////////////////////////////
+                    // Edit members button, visible only for group admins //
+                    ///////////////////////////////////////////////////////
                     OutlinedButton(
                         onClick = {
                             expenseNavControl.navigate("addMembers")
@@ -139,6 +197,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                     Spacer(modifier = Modifier.height(10.dp))
                 }
 
+                /////////////////////////
+                // Leave group button //
+                ///////////////////////
                 OutlinedButton(
                     onClick = {
                         if(isBalanceClear()){
@@ -165,6 +226,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
             }
         }
 
+        ////////////////////////////////
+        // Bottom part of the screen //
+        //////////////////////////////
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -180,6 +244,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
             Spacer(modifier = Modifier.height(15.dp))
 
+            //////////////////////
+            // Settings button //
+            ////////////////////
             OutlinedButton(
                 onClick = {
                     navControl.navigate("Settings")
@@ -196,6 +263,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            //////////////////////
+            // About us button //
+            ////////////////////
             OutlinedButton(
                 onClick = {
                     navControl.navigate("About")
@@ -223,6 +293,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////
+    // Error dialog pop up for when trying top leave a group and the balance is dirty //
+    ///////////////////////////////////////////////////////////////////////////////////
     if(alert_dialog_balance.value){
         AlertDialog(
             onDismissRequest = {
@@ -235,6 +308,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                 Text(text = stringResource(R.string.err_balance_clear))
             },
             confirmButton = {
+                ////////////////////
+                // Cancel button //
+                //////////////////
                 OutlinedButton(
                     onClick = {
                         alert_dialog_balance.value = false
@@ -251,6 +327,9 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
         )
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Error dialog pop up for when trying top leave a group and you are the only admin in the group //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     if(alert_dialog_admin.value){
         AlertDialog(
             onDismissRequest = {

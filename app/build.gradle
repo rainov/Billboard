@@ -73,5 +73,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "com.google.zxing:core:3.3.2"
-    implementation("io.coil-kt:coil-compose:2.0.0-rc03")
+    implementation "io.coil-kt:coil-compose:2.0.0-rc03"
+    implementation 'com.google.firebase:firebase-storage-ktx'
 }

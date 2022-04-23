@@ -1,5 +1,10 @@
 package com.example.billboard
 
+/*===================================================/
+|| The view model controlling all actions for the
+|| groups.
+/====================================================*/
+
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,14 +14,26 @@ import com.google.firebase.ktx.Firebase
 
 class GroupsViewModel: ViewModel() {
 
-//    var userEmail = Firebase.auth.currentUser?.email.toString()
+    //////////////////////////////////////////////////////////////////////////////////
+    // The app uses the email of the users to filter the groups from the database. //
+    // We did that so when people who are not yet registered to the app, but are  //
+    // added to some group by registered user, will have all the groups visible  //
+    // when they register.                                                      //
+    /////////////////////////////////////////////////////////////////////////////
     var userEmail = mutableStateOf("")
     fun setEmail( email: String ) {
         userEmail.value = email
     }
 
+    ////////////////////////////////////////////////////////////////////
+    // All fetched groups are stored here as a list of Group classes //
+    //////////////////////////////////////////////////////////////////
     var groups = mutableStateOf( listOf<GroupClass>())
 
+    ////////////////////////////////////////////////////////////////
+    // Get groups function that fetches all corresponding to the //
+    // user email groups and stores them in the groups list     //
+    /////////////////////////////////////////////////////////////
     fun getGroups() {
         Log.d("EMAIL", userEmail.value)
         Log.d("getGroups called ", "TRUE")
@@ -46,6 +63,9 @@ class GroupsViewModel: ViewModel() {
             }
     }
 
+    ////////////////////////////////
+    // Create new group function //
+    //////////////////////////////
     fun createGroup( name: String, navControl: NavController, userVM: UserViewModel) {
         val adminsList: List<String> = listOf(userEmail.value)
         val expensesList: List<String> = listOf()
@@ -67,6 +87,9 @@ class GroupsViewModel: ViewModel() {
             }
     }
 
+    //////////////////////////
+    // Edit group function //
+    ////////////////////////
     fun editGroup( group: GroupClass, userVM: UserViewModel, actionType: String ) {
         Firebase.firestore
             .collection("groups")
@@ -78,20 +101,27 @@ class GroupsViewModel: ViewModel() {
             }
     }
 
+    ////////////////////////////
+    // Delete group function //
+    //////////////////////////
     fun deleteGroup(group : GroupClass, userVM: UserViewModel) {
-        //First delete all expenses related to the group
+
         val fexp = Firebase.firestore.collection("expenses")
         val fgrp = Firebase.firestore.collection("groups")
 
+        /////////////////////////////////////////////////////
+        // First delete all expenses related to the group //
+        ///////////////////////////////////////////////////
         group.expenses.forEach { exp ->
             fexp.document(exp).delete()
         }
 
-        //Then delete the group
+        ////////////////////////////
+        // Then delete the group //
+        //////////////////////////
         fgrp.document(group.id).delete().addOnSuccessListener {
             userVM.logAction("Deleted group")
         }
-
         getGroups()
     }
 }

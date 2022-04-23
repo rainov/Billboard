@@ -52,10 +52,11 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
     val ddd = themeStore.getTheme.collectAsState(initial = Boolean)
     val checkedState = remember { mutableStateOf(ddd.value) }
-//    val checkedState = remember { mutableStateOf(darkMode.value) }
     val openDialog = remember { mutableStateOf(false) }
+    val emptyFieldAlert = remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf(userVM.userName.value) }
     var editUserName by remember { mutableStateOf(false)}
+    val deleteAcntAlert = remember { mutableStateOf(false)}
 
     fun saveUserName( newUserName: String ) {
         Firebase.firestore
@@ -91,7 +92,6 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(stringResource(R.string.send))
                 }
@@ -106,7 +106,75 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
-//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+    if (emptyFieldAlert.value) {
+
+        AlertDialog(
+            onDismissRequest = {
+                emptyFieldAlert.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.error))
+            },
+            text = {
+                Text(text = stringResource(R.string.all_inputs_required))
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        emptyFieldAlert.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+    if (deleteAcntAlert.value) {
+
+        AlertDialog(
+            onDismissRequest = {
+                deleteAcntAlert.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.confirm))
+            },
+            text = {
+                Text(text = stringResource(R.string.conf_delete))
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                ) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        deleteAcntAlert.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
                     Text(stringResource(R.string.cancel))
                 }
@@ -226,7 +294,9 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                 verticalArrangement = Arrangement.Bottom
             ) {
                 OutlinedButton(
-                    onClick = { },
+                    onClick = {
+                              deleteAcntAlert.value = true
+                    },
                     modifier = Modifier
                         .fillMaxWidth(.75f)
                         .height(40.dp),
@@ -252,15 +322,12 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Billboard_green,
                         cursorColor = MaterialTheme.colors.onPrimary,
-//                        cursorColor = Color.White,
                         textColor = MaterialTheme.colors.onPrimary,
-//                        textColor = Color.White,
                         focusedLabelColor = MaterialTheme.colors.onPrimary
-//                        focusedLabelColor = Color.White
+
                     ),
                     modifier = Modifier
-                        .height(64.dp)
-                        .clickable { Log.d("MESSAGE", "CLICKED") },
+                        .height(64.dp),
                     shape = MaterialTheme.shapes.large
                 )
 
@@ -268,7 +335,11 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
                 OutlinedButton(
                     onClick = {
-                        saveUserName(userName)
+                        if(userName.isNotEmpty()) {
+                            saveUserName(userName)
+                        } else {
+                            emptyFieldAlert.value = true
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth(.75f)
@@ -276,7 +347,6 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                     elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-//                    colors = ButtonDefaults.outlinedButtonColors( contentColor = Billboard_green )
                 ) {
                     Text( text = stringResource(R.string.save))
                 }
@@ -294,7 +364,6 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
                     elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
-//                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
                 ) {
                     Text(text = stringResource(R.string.cancel))
                 }
@@ -313,3 +382,4 @@ fun resetPassword(userVM: UserViewModel, email : String = ""){
         }
     }
 }
+

@@ -1,7 +1,6 @@
 package com.example.billboard
 
 import android.annotation.SuppressLint
-import android.app.appsearch.StorageInfo
 import android.util.Log
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.rememberDrawerState
@@ -13,13 +12,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
-import java.util.*
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable

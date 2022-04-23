@@ -1,20 +1,33 @@
 package com.example.billboard
 
+/*===================================================/
+|| The view model controlling all actions for the
+|| expenses
+/====================================================*/
+
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.roundToInt
 
 class ExpensesViewModel: ViewModel() {
 
+    //////////////////////////////////////////////////////////////
+    // All fetched expenses are stored as Expense classes here //
+    ////////////////////////////////////////////////////////////
     var expenses = mutableListOf<ExpenseClass>()
 
     val fexp = Firebase.firestore.collection("expenses")
     val fgrp = Firebase.firestore.collection("groups")
 
+    ///////////////////////////////
+    // Add new expense function //
+    /////////////////////////////
     fun addExpenseLine(
         newExpense: ExpenseClass,
         expenseNavControl: NavController,
@@ -23,35 +36,37 @@ class ExpensesViewModel: ViewModel() {
         userVM: UserViewModel
     ) {
 
-
-
         var amountforeach: Double = newExpense.amount / (newExpense.rest.size + 1)
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
 
         Log.d("*****", amountforeach.toString())
 
+        /////////////////////////////////////////////////////////////
+        // This block is executed only for newly created expenses //
+        // Here the group balance is calculated and the group is //
+        // updated with the new balance                         //
+        /////////////////////////////////////////////////////////
         if ( newExpense.expid.isEmpty() ) {
             newExpense.rest.forEach { member ->
                 val previousamt = group.balance[member]?.getValue(newExpense.payer) as Double
                 val prevAmountPayer = group.balance[newExpense.payer]?.getValue(member) as Double
                 val formatedMemberAmt = ((- 1 * amountforeach + previousamt)*100.0).roundToInt() / 100.0
                 group.balance[member]?.set(newExpense.payer, formatedMemberAmt)
-                group.balance[newExpense.payer]?.set(member, (((amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0) )
+                group.balance[newExpense.payer]?.set(member, ((amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0)
                 newExpense.paidvalues[member] = false
-
-                Log.d("*****", previousamt.toString())
-                Log.d("*****", prevAmountPayer.toString())
-                Log.d("*****", group.balance[member].toString())
-                Log.d("*****", group.balance[newExpense.payer].toString())
             }
         }
 
-
-
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        // Adding the expense to firebase and updating the corresponding group in groups collection //
+        /////////////////////////////////////////////////////////////////////////////////////////////
         fexp.add(newExpense)
             .addOnSuccessListener { expense ->
                 Log.d("Add new expense", expense.id)
                 fexp.document(expense.id).update("expid", expense.id)
+                ///////////////////////////////////////////////////
+                // This is the logic for newly created expenses //
+                /////////////////////////////////////////////////
                 if ( newExpense.expid.isEmpty() ) {
                     userVM.logAction("Expense added")
                     fgrp.document(newExpense.groupid)
@@ -62,6 +77,9 @@ class ExpensesViewModel: ViewModel() {
                             expenseNavControl.navigate("group")
                         }
                 } else {
+                    ////////////////////////////////////////////////////
+                    // This is the logic when the expense was edited //
+                    //////////////////////////////////////////////////
                     userVM.logAction("Expense edited")
                     fexp.document(newExpense.expid)
                         .delete()
@@ -80,6 +98,14 @@ class ExpensesViewModel: ViewModel() {
             }
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////////////
+    // Logic for editing an existing expense. It uses the old expense to calculate //
+    // the balance for the group and creates a new expense that is passed to the  //
+    // Add expense function. The old expense is deleted from the database        //
+    //////////////////////////////////////////////////////////////////////////////
     fun editExpenseLine(
         expenseNavControl: NavController,
         group: GroupClass,
@@ -111,14 +137,22 @@ class ExpensesViewModel: ViewModel() {
                 var newSingleShare: Double = newExpense.amount / (newExpense.rest.size + 1)
                 newSingleShare = (newSingleShare * 100.0).roundToInt() / 100.0
 
+                ///////////////////////////////////////////////////////////
+                // Calculation of the balance that has to be subtracted //
+                /////////////////////////////////////////////////////////
                 oldExpense.rest.forEach { member ->
                     val oldPayer = group.balance[member]?.getValue(oldExpense.payer) as Double
                     val oldMember = group.balance[oldExpense.payer]?.getValue(member) as Double
-                    group.balance[member]?.set(oldExpense.payer, (((oldPayer + oldSingleShare)*100.0).roundToInt())/100.0)
+                    group.balance[member]?.set(oldExpense.payer, ((oldPayer + oldSingleShare)*100.0).roundToInt() / 100.0)
                     val formatedPayerAmt = ((oldMember - oldSingleShare)*100.0).roundToInt() / 100.0
                     group.balance[oldExpense.payer]?.set(member, formatedPayerAmt)
                 }
 
+                newExpense.date = SimpleDateFormat("yyyy/MM/dd_HH/mm/ss").format(Date()).toString()
+
+                /////////////////////////////////////////////////////////////////////////////////////
+                // Update the groups collection with the new group balance for the edited expense //
+                ///////////////////////////////////////////////////////////////////////////////////
                 Firebase.firestore
                     .collection("groups")
                     .document(newExpense.groupid)
@@ -127,21 +161,29 @@ class ExpensesViewModel: ViewModel() {
                         newExpense.rest.forEach { member ->
                             val newPayer = group.balance[member]?.getValue(newExpense.payer) as Double
                             val newMember = group.balance[newExpense.payer]?.getValue(member) as Double
-                            group.balance[member]?.set(newExpense.payer, (((newPayer - newSingleShare)*100.0).roundToInt())/100.0)
-                            group.balance[newExpense.payer]?.set(member, (((newMember + newSingleShare)*100.0).roundToInt())/100.0)
+                            group.balance[member]?.set(newExpense.payer, ((newPayer - newSingleShare)*100.0).roundToInt() / 100.0)
+                            group.balance[newExpense.payer]?.set(member, ((newMember + newSingleShare)*100.0).roundToInt() / 100.0)
                             newExpense.paidvalues[member] = false
                             if(newExpense.paidvalues.containsKey(newExpense.payer)) {
                                 newExpense.paidvalues.remove(newExpense.payer)
                             }
                         }
+                        //////////////////////////////////////////////////////
+                        // Passing the new expense to Add expense function //
+                        ////////////////////////////////////////////////////
                         addExpenseLine( newExpense, expenseNavControl, group, groupsVM, userVM )
                     }
             }
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////
+    // Logic for the deletion of an expense //
+    /////////////////////////////////////////
     fun deleteExpenseLine(
         expense: ExpenseClass,
-        expenseNavControl : NavController,
         groupsVM: GroupsViewModel,
         group: GroupClass,
         navControl : NavController,
@@ -168,7 +210,7 @@ class ExpensesViewModel: ViewModel() {
                             val previousamt = group.balance[member]?.getValue(expense.payer) as Double
                             val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
                             val formatedPayerAmt = ((- 1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
-                            group.balance[member]?.set(expense.payer, (((amountforeach + previousamt)*100.0).roundToInt()) / 100.0 )
+                            group.balance[member]?.set(expense.payer, ((amountforeach + previousamt)*100.0).roundToInt() / 100.0)
                             group.balance[expense.payer]?.set(member, formatedPayerAmt )
                         }
 
@@ -179,6 +221,12 @@ class ExpensesViewModel: ViewModel() {
             }
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////
+    // Logic for the deletion of an expense with dirty balance //
+    ////////////////////////////////////////////////////////////
     fun deleteExpenseLineCancelEraseDebts(
         expense: ExpenseClass,
         groupsVM: GroupsViewModel,
@@ -209,7 +257,7 @@ class ExpensesViewModel: ViewModel() {
                                     group.balance[expense.payer]?.getValue(member) as Double
                                 group.balance[member]?.set(
                                     expense.payer,
-                                    (((amountforeach + previousamt!!)*100.0).roundToInt())/100.0
+                                    ((amountforeach + previousamt!!)*100.0).roundToInt() / 100.0
                                 )
                                 val formatedPayerAmt = (( -1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
                                 group.balance[expense.payer]?.set(
@@ -226,6 +274,12 @@ class ExpensesViewModel: ViewModel() {
             }
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////
+    // Function that clears the debt of a single person //
+    /////////////////////////////////////////////////////
     fun eraseDebt(group: GroupClass, member : String, expense: ExpenseClass, expenseNavControl: NavController,
                   groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel ){
 
@@ -235,7 +289,7 @@ class ExpensesViewModel: ViewModel() {
         val previousamt = group.balance[member]?.getValue(expense.payer) as Double
         val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
         val formatedPayerAmt = (( -1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
-        group.balance[member]?.set(expense.payer, (((amountforeach + previousamt!!) * 100.0).roundToInt()) / 100.0 )
+        group.balance[member]?.set(expense.payer, ((amountforeach + previousamt!!)*100.0).roundToInt() / 100.0)
         group.balance[expense.payer]?.set(member, formatedPayerAmt)
 
         expense.paidvalues[member] = true
@@ -250,6 +304,12 @@ class ExpensesViewModel: ViewModel() {
         expenseNavControl.navigate(expense.expid)
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////
+    // Function that brings back the debt of a single person //
+    //////////////////////////////////////////////////////////
     fun cancelEraseDebt(group: GroupClass, member : String, expense: ExpenseClass, expenseNavControl: NavController,
                   groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel ){
 
@@ -260,7 +320,7 @@ class ExpensesViewModel: ViewModel() {
         val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
         val formatedPayerAmt = (( - 1 * amountforeach + previousamt)*100.0).roundToInt() / 100.0
         group.balance[member]?.set(expense.payer, formatedPayerAmt)
-        group.balance[expense.payer]?.set(member, (((amountforeach + prevAmountPayer)*100.0).roundToInt())/100.0)
+        group.balance[expense.payer]?.set(member, ((amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0)
 
         expense.paidvalues[member] = false
 
@@ -274,6 +334,12 @@ class ExpensesViewModel: ViewModel() {
         expenseNavControl.navigate(expense.expid)
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////
+    // Function that clears the debt of all people at once //
+    ////////////////////////////////////////////////////////
     fun eraseAllDebts(group: GroupClass, expense: ExpenseClass, expenseNavControl: NavController,
                       groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel){
 
@@ -285,7 +351,7 @@ class ExpensesViewModel: ViewModel() {
                 val previousamt = group.balance[member]?.getValue(expense.payer) as Double
                 val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
                 val formatedPayerAmt = (( - 1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
-                group.balance[member]?.set(expense.payer, (((amountforeach + previousamt!!)*100.0).roundToInt())/100.0)
+                group.balance[member]?.set(expense.payer, ((amountforeach + previousamt!!)*100.0).roundToInt() / 100.0)
                 group.balance[expense.payer]?.set(member, formatedPayerAmt)
                 expense.paidvalues[member] = true
             }
@@ -301,11 +367,16 @@ class ExpensesViewModel: ViewModel() {
                 groupsVM.getGroups()
             }
 
-
         groupsVM.getGroups()
         navControl.navigate(group.id)
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Fetching all expenses for a certain group and storing them as Expense classes //
+    //////////////////////////////////////////////////////////////////////////////////
     fun getExpenses(groupId: String) {
 
         Firebase.firestore
@@ -336,6 +407,12 @@ class ExpensesViewModel: ViewModel() {
             }
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    // Updating existing expense with a receipt URL string from the firebase storage //
+    //////////////////////////////////////////////////////////////////////////////////
     fun addReceipt( id: String, receiptURL: String, expenseNavControl: NavController){
         Firebase.firestore
             .collection("expenses")

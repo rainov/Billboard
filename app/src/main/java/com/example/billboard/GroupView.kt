@@ -1,10 +1,12 @@
 package com.example.billboard
 
+/*===================================================/
+|| This view is showing information for a single group.
+|| From here can be added expenses, members, navigate
+|| to group balance and expense view
+/====================================================*/
 
-import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -12,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,8 +22,10 @@ import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.example.billboard.ui.theme.BillBoard_Grey
 import kotlinx.coroutines.CoroutineScope
-import java.util.*
 
+//////////////////////////////
+// Main scaffold container //
+////////////////////////////
 @Composable
 fun GroupView(
     groupInfo: GroupClass,
@@ -50,38 +53,52 @@ fun GroupView(
     )
 }
 
+//////////////////////////////
+// Content of the scaffold //
+////////////////////////////
 @Composable
 fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expenseNavControl: NavController, navControl: NavController ) {
 
-    var totalSpent = 0.0
-    expenses.forEach { expense ->
-        totalSpent += expense.amount
-    }
-
+    /////////////////////////////////////////////////////////////////////////////////////
+    // If the group is just created and there are not any members except the creator, //
+    // here is displayed an invitation to add members to the group                   //
+    //////////////////////////////////////////////////////////////////////////////////
     if (groupInfo.members.size == 1 && groupInfo.expenses.isEmpty()) {
 
+        ///////////////////////
+        // Container column //
+        /////////////////////
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+
             Spacer(modifier = Modifier.height(50.dp))
+
             Row(
                 modifier = Modifier.weight((1f))
             ) {
-
+                ///////////////////////////////
+                // Group name as a headline //
+                /////////////////////////////
                 Text(
                     text = groupInfo.name,
-                    modifier = Modifier.clickable { navControl.navigate("MainScreen") },
                     textAlign = TextAlign.Center,
                     fontSize = 30.sp
                 )
-
             }
+
+            ////////////////////////////////////////////////////////////////////
+            // Inner container column for the message and Add members button //
+            //////////////////////////////////////////////////////////////////
             Column(
                 modifier = Modifier.weight(2f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
+                //////////////////////////////////////////////////////////
+                // Text message saying that you are alone in the group //
+                ////////////////////////////////////////////////////////
                 Text(
                     text = stringResource(R.string.lonely_message),
                     textAlign = TextAlign.Center,
@@ -90,6 +107,9 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //////////////////////////////////////////////////////////////
+                // Add members button, navigating to Add/Edit members view //
+                ////////////////////////////////////////////////////////////
                 OutlinedButton(
                     onClick = {
                         expenseNavControl.navigate("addMembers")
@@ -105,11 +125,17 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
             }
         }
     } else {
+        ///////////////////////////////////////////////////////////////////////////
+        // If there are already group members added, the following is displayed //
+        /////////////////////////////////////////////////////////////////////////
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
 
+            /////////////////////////////
+            // Inner container column //
+            ///////////////////////////
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -117,6 +143,9 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
+                ////////////////////////////
+                // Headline - Group name //
+                //////////////////////////
                 Text(
                     text = groupInfo.name,
                     textAlign = TextAlign.Center,
@@ -125,18 +154,9 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-//                var adminlist = ""
-//                groupInfo.admins.forEach { admin ->
-//                    adminlist = if (adminlist.isEmpty()) admin.substringBefore("@")
-//                    else adminlist + ", " + admin.substringBefore("@")
-//                }
-//
-//                var memberlist = ""
-//                groupInfo.members.forEach { member ->
-//                    memberlist = if (memberlist.isEmpty()) member.substringBefore("@")
-//                    else memberlist + ", " + member.substringBefore("@")
-//                }
-
+                //////////////////////////////////////////////////
+                // Button navigating to the group balance view //
+                ////////////////////////////////////////////////
                 OutlinedButton(
                     onClick = { expenseNavControl.navigate("groupBalance") },
                     modifier = Modifier
@@ -162,7 +182,10 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = "Group expenses", fontSize = 20.sp, textAlign = TextAlign.Center)
+                ////////////////////////////
+                // Text - Group expenses //
+                //////////////////////////
+                Text(text = stringResource(R.string.group_expenses), fontSize = 20.sp, textAlign = TextAlign.Center)
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -175,6 +198,9 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                 Spacer(modifier = Modifier.height(10.dp))
 
+                ///////////////////////////////////////////////////////////////////////////
+                // Vertical scroll column containing all group expenses, sorted by date //
+                /////////////////////////////////////////////////////////////////////////
                 Column(
                     Modifier
                         .fillMaxWidth()
@@ -182,7 +208,8 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         .verticalScroll(enabled = true, state = ScrollState(1)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    expenses.forEach { expense ->
+
+                    expenses.sortedByDescending { exp -> exp.date }.forEach { expense ->
                         var color = BillBoard_Grey
                         expense.paidvalues.forEach { key ->
                             if (!key.value) color = MaterialTheme.colors.surface
@@ -190,6 +217,9 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
 
                         Spacer(modifier = Modifier.height(5.dp))
 
+                        /////////////////////////////////////////////////////////////////////////////////
+                        // Button for each expense, navigating to the corresponding expense view page //
+                        ///////////////////////////////////////////////////////////////////////////////
                         OutlinedButton(
                             onClick = { expenseNavControl.navigate( expense.expid ) },
                             modifier = Modifier
