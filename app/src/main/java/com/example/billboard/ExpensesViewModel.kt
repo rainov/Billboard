@@ -6,6 +6,8 @@ import androidx.navigation.NavController
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.roundToInt
 
 class ExpensesViewModel: ViewModel() {
@@ -117,6 +119,8 @@ class ExpensesViewModel: ViewModel() {
                     group.balance[oldExpense.payer]?.set(member, formatedPayerAmt)
                 }
 
+                newExpense.date = SimpleDateFormat("yyyy/MM/dd_HH/mm/ss").format(Date()).toString()
+
                 Firebase.firestore
                     .collection("groups")
                     .document(newExpense.groupid)
@@ -167,7 +171,7 @@ class ExpensesViewModel: ViewModel() {
                             val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
                             val formatedPayerAmt = ((- 1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
                             group.balance[member]?.set(expense.payer, amountforeach + previousamt )
-                            group.balance[expense.payer]?.set(member, - 1 * amountforeach + prevAmountPayer )
+                            group.balance[expense.payer]?.set(member, formatedPayerAmt )
                         }
 
                         fsgrp.update("balance", group.balance, "expenses", FieldValue.arrayRemove(expense.expid))
@@ -341,8 +345,6 @@ class ExpensesViewModel: ViewModel() {
             .document(id)
             .update("receiptURL", receiptURL)
             .addOnSuccessListener {
-//                groupsVM.getGroups()
-//                getExpenses(groupId)
                 expenseNavControl.navigate(id)
             }
     }

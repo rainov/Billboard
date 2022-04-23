@@ -5,6 +5,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -16,6 +19,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
 import com.example.billboard.ui.theme.Billboard_Red
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -123,7 +128,10 @@ fun GroupBalanceContent(
                                 .padding(15.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text( text = member, textAlign = TextAlign.Center, fontSize = 19.sp )
+                            val username = remember { mutableStateOf("default")}
+                            getUsername(member, username)
+                            if(username.value == null) username.value = member
+                            Text( text = username.value, textAlign = TextAlign.Center, fontSize = 19.sp )
 
                             Spacer(modifier = Modifier.height(5.dp))
 
@@ -160,5 +168,22 @@ fun GroupBalanceContent(
                 }
             }
         }
+    }
+}
+
+fun getUsername(member : String, username: MutableState<String>){
+    Firebase.firestore
+        .collection("users")
+        .document(member)
+        .get()
+        .addOnSuccessListener {
+            val uname = it.get("username").toString()
+
+            if(uname != null) {
+                username.value = uname
+            } else { username.value = member }
+        }
+        .addOnFailureListener {
+        username.value = member
     }
 }

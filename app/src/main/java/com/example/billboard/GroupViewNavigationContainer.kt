@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
@@ -52,7 +53,7 @@ fun GroupViewNavigationContainer(
             val amount = 0.0
             val payer = ""
             val expid = ""
-            val date = Calendar.getInstance().time.toString()
+            val date = SimpleDateFormat("yyyy/MM/dd_HH/mm/ss").format(Date()).toString()
             val rest = mutableListOf<String>()
             val paidvalues = mutableMapOf<String,Boolean>()
             val receiptURL = ""

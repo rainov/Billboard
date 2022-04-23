@@ -182,7 +182,8 @@ fun GroupViewContent( groupInfo: GroupClass, expenses: List<ExpenseClass>, expen
                         .verticalScroll(enabled = true, state = ScrollState(1)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    expenses.forEach { expense ->
+
+                    expenses.sortedByDescending { exp -> exp.date }.forEach { expense ->
                         var color = BillBoard_Grey
                         expense.paidvalues.forEach { key ->
                             if (!key.value) color = MaterialTheme.colors.surface

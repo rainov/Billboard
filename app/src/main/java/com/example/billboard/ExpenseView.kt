@@ -145,7 +145,7 @@ fun ExpenseViewContent(
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(text = expensePayer, fontSize = 20.sp)
                     if(!groupInfo.members.contains(expensePayer)){
-                        Text( text = "Deleted", fontSize = 12.sp, color = Billboard_green)
+                        Text( text = "Deleted", fontSize = 12.sp, color = MaterialTheme.colors.onPrimary)
                     }
                 }
             }
@@ -196,7 +196,7 @@ fun ExpenseViewContent(
                 modifier = Modifier
                     .height(1.dp)
                     .fillMaxWidth(.83f),
-                color = MaterialTheme.colors.onPrimary
+                color = Billboard_green
             )
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -228,7 +228,7 @@ fun ExpenseViewContent(
                             }
                             Spacer(modifier = Modifier.height(5.dp))
                             if (!groupInfo.members.contains(member)) {
-                                Text(text = "Deleted", fontSize = 12.sp, color = Billboard_green)
+                                Text(text = "Deleted", color = MaterialTheme.colors.onPrimary)
                             } else if(groupInfo.members.contains(expensePayer)){
                                 if (isUserAdmin.value || userVM.userEmail.value == expensePayer) {
                                     if (expense.paidvalues[member] == false) {
