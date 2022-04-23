@@ -22,6 +22,7 @@ import com.example.billboard.ui.theme.Billboard_Red
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
+import kotlin.math.roundToInt
 
 @Composable
 fun GroupBalanceView (
@@ -66,7 +67,7 @@ fun GroupBalanceContent(
 
     var totalSpent = 0.0
     expenses.forEach { expense ->
-        totalSpent += expense.amount
+        totalSpent = (((totalSpent+ expense.amount)*100.0).roundToInt()) / 100.0
         Log.d("****", expense.amount.toString())
         Log.d("****", totalSpent.toString())
     }
@@ -128,10 +129,10 @@ fun GroupBalanceContent(
                                 .padding(15.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            val username = remember { mutableStateOf("default")}
-                            getUsername(member, username)
-                            if(username.value == null) username.value = member
-                            Text( text = username.value, textAlign = TextAlign.Center, fontSize = 19.sp )
+                            var uname = remember { mutableStateOf("default")}
+                            getUsername(member, uname)
+                            if(uname.value == "null") uname.value = member
+                            Text( text = uname.value, textAlign = TextAlign.Center, fontSize = 19.sp )
 
                             Spacer(modifier = Modifier.height(5.dp))
 
@@ -158,7 +159,10 @@ fun GroupBalanceContent(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text( text = other.key + ": " )
+                                    var uname = remember { mutableStateOf("default")}
+                                    getUsername(other.key, uname)
+                                    if(uname.value == "null") uname.value = other.key
+                                    Text( text = uname.value + ": " )
                                     Text( text = amount.toString(), color = color)
                                 }
                             }
@@ -171,19 +175,12 @@ fun GroupBalanceContent(
     }
 }
 
-fun getUsername(member : String, username: MutableState<String>){
+fun getUsername(member : String, username : MutableState<String>){
     Firebase.firestore
         .collection("users")
         .document(member)
         .get()
         .addOnSuccessListener {
-            val uname = it.get("username").toString()
-
-            if(uname != null) {
-                username.value = uname
-            } else { username.value = member }
+                username.value = it.get("username").toString()
+            }
         }
-        .addOnFailureListener {
-        username.value = member
-    }
-}

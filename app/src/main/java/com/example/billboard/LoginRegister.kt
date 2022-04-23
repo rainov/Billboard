@@ -44,6 +44,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
     var notVerified by remember { mutableStateOf(false) }
     var emailInUse by remember { mutableStateOf(false) }
     var registerSuccess by remember { mutableStateOf( false ) }
+    var validEmailAlert by remember { mutableStateOf(false)}
 
     var emailinput by remember { mutableStateOf("")}
 
@@ -90,9 +91,15 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
             confirmButton = {
                 OutlinedButton(
                     onClick = {
-                        if(emailinput.isNotEmpty()){
+                        if(emailinput.isEmpty()) {
+                            dialogForgotPw.value = false
+                            validEmailAlert = true
+                        } else if ( emailinput.isNotEmpty() && EmailValidator.isEmailValid(emailinput)) {
                             dialogForgotPw.value = false
                             resetPassword(userVM, emailinput)
+                        } else {
+                            dialogForgotPw.value = false
+                            validEmailAlert = true
                         }
                         Log.d("Email value", emailinput)
                     },
@@ -117,6 +124,35 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary )
                 ) {
                     Text(text = stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    if(validEmailAlert){
+        AlertDialog(
+            onDismissRequest = {
+                validEmailAlert = false
+            },
+            title = {
+                Text(text = stringResource(R.string.error))
+            },
+            text = {
+                Text(text = stringResource(R.string.not_valid_email))
+            },
+            confirmButton = {
+                OutlinedButton(
+                    onClick = {
+                        validEmailAlert = false
+                        email = ""
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                ) {
+                    Text(text = stringResource(R.string.ok))
                 }
             }
         )
@@ -525,7 +561,11 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
             if (registerSwitch) {
                 OutlinedButton(
                     onClick = {
-                        register(email, password, repeatPassword, username)
+                        if ( EmailValidator.isEmailValid(email) ) {
+                            register(email, password, repeatPassword, username)
+                        } else {
+                            validEmailAlert = true
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth(.75f)

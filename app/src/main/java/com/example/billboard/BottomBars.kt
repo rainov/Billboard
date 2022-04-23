@@ -189,6 +189,10 @@ fun BottomBarGroupScreen(
                 OutlinedButton(
                     onClick = {
                         openErrors.value = false
+                        groupsVM.deleteGroup(
+                            groupInfo,
+                            userVM
+                        )
                     },
                     modifier = Modifier
                         .width(100.dp)
@@ -196,9 +200,24 @@ fun BottomBarGroupScreen(
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
-                    Text(stringResource(R.string.ok))
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        openErrors.value = false
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                ) {
+                    Text(stringResource(R.string.cancel))
                 }
             }
+
         )
     }
 }
@@ -211,7 +230,8 @@ fun BottomBarBack(
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
     ) {
         Divider(
             modifier = Modifier

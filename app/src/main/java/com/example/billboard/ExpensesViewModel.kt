@@ -36,7 +36,12 @@ class ExpensesViewModel: ViewModel() {
                 val prevAmountPayer = group.balance[newExpense.payer]?.getValue(member) as Double
                 val formatedMemberAmt = ((- 1 * amountforeach + previousamt)*100.0).roundToInt() / 100.0
                 group.balance[member]?.set(newExpense.payer, formatedMemberAmt)
-                group.balance[newExpense.payer]?.set(member, amountforeach + prevAmountPayer )
+                group.balance[newExpense.payer]?.set(member, ((amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0)
+
+                Log.d("***EXP***", amountforeach.toString())
+                Log.d("***EXP***", prevAmountPayer.toString())
+                Log.d("***EXP***", (amountforeach + prevAmountPayer).toString())
+
                 newExpense.paidvalues[member] = false
 
                 Log.d("*****", previousamt.toString())
@@ -114,7 +119,7 @@ class ExpensesViewModel: ViewModel() {
                 oldExpense.rest.forEach { member ->
                     val oldPayer = group.balance[member]?.getValue(oldExpense.payer) as Double
                     val oldMember = group.balance[oldExpense.payer]?.getValue(member) as Double
-                    group.balance[member]?.set(oldExpense.payer, oldPayer + oldSingleShare)
+                    group.balance[member]?.set(oldExpense.payer, ((oldPayer + oldSingleShare)*100.0).roundToInt() / 100.0)
                     val formatedPayerAmt = ((oldMember - oldSingleShare)*100.0).roundToInt() / 100.0
                     group.balance[oldExpense.payer]?.set(member, formatedPayerAmt)
                 }
@@ -129,8 +134,8 @@ class ExpensesViewModel: ViewModel() {
                         newExpense.rest.forEach { member ->
                             val newPayer = group.balance[member]?.getValue(newExpense.payer) as Double
                             val newMember = group.balance[newExpense.payer]?.getValue(member) as Double
-                            group.balance[member]?.set(newExpense.payer, newPayer - newSingleShare)
-                            group.balance[newExpense.payer]?.set(member, newMember + newSingleShare)
+                            group.balance[member]?.set(newExpense.payer, ((newPayer - newSingleShare)*100.0).roundToInt() / 100.0)
+                            group.balance[newExpense.payer]?.set(member, ((newMember + newSingleShare)*100.0).roundToInt() / 100.0)
                             newExpense.paidvalues[member] = false
                             if(newExpense.paidvalues.containsKey(newExpense.payer)) {
                                 newExpense.paidvalues.remove(newExpense.payer)
@@ -170,12 +175,11 @@ class ExpensesViewModel: ViewModel() {
                             val previousamt = group.balance[member]?.getValue(expense.payer) as Double
                             val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
                             val formatedPayerAmt = ((- 1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
-                            group.balance[member]?.set(expense.payer, amountforeach + previousamt )
+                            group.balance[member]?.set(expense.payer, ((amountforeach + previousamt)*100.0).roundToInt() / 100.0)
                             group.balance[expense.payer]?.set(member, formatedPayerAmt )
                         }
 
                         fsgrp.update("balance", group.balance, "expenses", FieldValue.arrayRemove(expense.expid))
-
                         groupsVM.getGroups()
                         navControl.navigate(group.id)
                     }
@@ -212,7 +216,7 @@ class ExpensesViewModel: ViewModel() {
                                     group.balance[expense.payer]?.getValue(member) as Double
                                 group.balance[member]?.set(
                                     expense.payer,
-                                    amountforeach + previousamt!!
+                                    ((amountforeach + previousamt!!)*100.0).roundToInt() / 100.0
                                 )
                                 val formatedPayerAmt = (( -1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
                                 group.balance[expense.payer]?.set(
@@ -238,7 +242,7 @@ class ExpensesViewModel: ViewModel() {
         val previousamt = group.balance[member]?.getValue(expense.payer) as Double
         val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
         val formatedPayerAmt = (( -1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
-        group.balance[member]?.set(expense.payer, amountforeach + previousamt!!)
+        group.balance[member]?.set(expense.payer, ((amountforeach + previousamt!!)*100.0).roundToInt() / 100.0)
         group.balance[expense.payer]?.set(member, formatedPayerAmt)
 
         expense.paidvalues[member] = true
@@ -263,7 +267,7 @@ class ExpensesViewModel: ViewModel() {
         val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
         val formatedPayerAmt = (( - 1 * amountforeach + previousamt)*100.0).roundToInt() / 100.0
         group.balance[member]?.set(expense.payer, formatedPayerAmt)
-        group.balance[expense.payer]?.set(member, amountforeach + prevAmountPayer)
+        group.balance[expense.payer]?.set(member, ((amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0)
 
         expense.paidvalues[member] = false
 
@@ -288,7 +292,7 @@ class ExpensesViewModel: ViewModel() {
                 val previousamt = group.balance[member]?.getValue(expense.payer) as Double
                 val prevAmountPayer = group.balance[expense.payer]?.getValue(member) as Double
                 val formatedPayerAmt = (( - 1 * amountforeach + prevAmountPayer)*100.0).roundToInt() / 100.0
-                group.balance[member]?.set(expense.payer, amountforeach + previousamt!!)
+                group.balance[member]?.set(expense.payer, ((amountforeach + previousamt!!)*100.0).roundToInt() / 100.0)
                 group.balance[expense.payer]?.set(member, formatedPayerAmt)
                 expense.paidvalues[member] = true
             }

@@ -63,6 +63,7 @@ fun AddEditMemberContent(
 
     val boolEdit = remember { mutableStateOf(false)}
     val existingMemberAlert = remember { mutableStateOf(false)}
+    val validEmailAlert = remember { mutableStateOf(false)}
     val deleteMemberAlert = remember { mutableStateOf(false)}
     val emptyFieldAlert = remember { mutableStateOf(false)}
 
@@ -364,12 +365,15 @@ fun AddEditMemberContent(
                 Spacer(modifier = Modifier.height(15.dp))
 
                 OutlinedButton(
-                    onClick = { if(memberEmail.isNotEmpty()){
-                        if(group.members.contains(memberEmail)) {
-                        existingMemberAlert.value = true
-                    } else {
-                        addMember() }} else emptyFieldAlert.value = true
-                              },
+                    onClick = {
+                        if (group.members.contains(memberEmail)) {
+                            existingMemberAlert.value = true
+                        } else if (!EmailValidator.isEmailValid(memberEmail)) {
+                            validEmailAlert.value = true
+                        } else {
+                            addMember()
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth(.75f)
                         .height(40.dp),
@@ -541,6 +545,36 @@ fun AddEditMemberContent(
                 }
             )
         }
+
+        if(validEmailAlert.value){
+            AlertDialog(
+                onDismissRequest = {
+                    validEmailAlert.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.error))
+                },
+                text = {
+                    Text(text = stringResource(R.string.not_valid_email))
+                },
+                confirmButton = {
+                    OutlinedButton(
+                        onClick = {
+                            validEmailAlert.value = false
+                            memberEmail = ""
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.ok))
+                    }
+                }
+            )
+        }
+
         if(deleteMemberAlert.value){
             AlertDialog(
                 onDismissRequest = {
@@ -624,19 +658,19 @@ fun AddEditMemberContent(
 
             OutlinedButton(
                 onClick = {
-                    if (memberEmail.isNotEmpty()) {
+                    if (EmailValidator.isEmailValid(memberEmail)) {
                         if (group.members.contains(memberEmail)) {
                             existingMemberAlert.value = true
                         } else {
                         editMemberName(
                             oldMember,
-                            memberEmail
-                        )
+                            memberEmail)
                         boolEdit.value = false
+                    }} else {
+                        boolEdit.value = false
+                        validEmailAlert.value = true
                     }
-                } else {
-                    emptyFieldAlert.value = true
-            }},
+                    },
                 modifier = Modifier
                     .fillMaxWidth(.75f)
                     .height(40.dp),

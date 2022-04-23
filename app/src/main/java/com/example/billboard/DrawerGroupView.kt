@@ -113,6 +113,12 @@ fun DrawerGroupContent(navControl: NavController, scState: ScaffoldState, scope:
                             Text(text = "Admin", fontSize = 12.sp, color = Billboard_green)
                         }
                     }
+                    Row(){
+                        var uname = remember { mutableStateOf("default")}
+                        getUsername(member, uname)
+                        if(uname.value == "null") uname.value = member
+                        Text(text = "(" + uname.value + ")")
+                    }
                     Spacer(modifier = Modifier.height(20.dp))
                 }
 

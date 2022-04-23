@@ -143,7 +143,10 @@ fun ExpenseViewContent(
                         color = MaterialTheme.colors.onPrimary
                     )
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text(text = expensePayer, fontSize = 20.sp)
+                    var uname = remember { mutableStateOf("default")}
+                    getUsername(expensePayer, uname)
+                    if(uname.value == "null") uname.value = expensePayer
+                    Text(text = uname.value, fontSize = 20.sp)
                     if(!groupInfo.members.contains(expensePayer)){
                         Text( text = "Deleted", fontSize = 12.sp, color = MaterialTheme.colors.onPrimary)
                     }
@@ -220,7 +223,10 @@ fun ExpenseViewContent(
                                 .padding(2.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = member, modifier = Modifier.padding(10.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
+                            var uname = remember { mutableStateOf("default")}
+                            getUsername(member, uname)
+                            if(uname.value == "null") uname.value = member
+                            Text(text = uname.value, modifier = Modifier.padding(10.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
                             if( expense.paidvalues[member] == false ) {
                                 Text( text = stringResource(R.string.owes) + " " + amountForEach + stringResource(R.string.euro_sign) )
                             } else {
