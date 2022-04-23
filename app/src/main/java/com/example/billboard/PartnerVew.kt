@@ -1,5 +1,11 @@
 package com.example.billboard
 
+/*===================================================/
+|| The PartnerVew display information about our partner
+|| discount and show a QR Code
+|| (part of the app Business Plan)
+/====================================================*/
+
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.compose.foundation.Image
@@ -28,6 +34,8 @@ fun PartnerView(
     scState: ScaffoldState,
     scope: CoroutineScope
 ) {
+
+    //Create a QR Code with the partner name and user email
 
     val qrContent = partner.name + userVM.userEmail
 

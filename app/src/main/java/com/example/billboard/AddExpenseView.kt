@@ -173,13 +173,13 @@ fun AddEditExpenseViewContent(
                     shape = MaterialTheme.shapes.large,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
                 ) {
-                    payerButtonText = if ( payerMember.isEmpty() ) {
-                        stringResource(R.string.select)
+                    if (payerMember.isEmpty()){
+                        payerButtonText = stringResource(R.string.select)
                     } else {
                         var uname = remember { mutableStateOf("default")}
                         getUsername(payerMember, uname)
                         if(uname.value == "null") uname.value = payerMember
-                        uname.value
+                        payerButtonText = uname.value
                     }
                     Text(text = payerButtonText )
                     Icon(Icons.Filled.ArrowDropDown, "Arrow for dropdownmenu" )
@@ -238,9 +238,10 @@ fun AddEditExpenseViewContent(
                         getUsername(member, uname)
                         if(uname.value == "null") uname.value = member
                         if (member != payerMember) {
-                            Row() {
+                            Row {
                                 CheckBox(member, membersWhoPay, expense)
                                 Text(uname.value)
+
                                 Spacer(modifier = Modifier.height(5.dp))
                             }
                         }
@@ -266,26 +267,30 @@ fun AddEditExpenseViewContent(
                             if (expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01) {
                                 dialogAmountTooLittle.value = true
                             } else {
-                                newExpense.name = expenseName
-                                newExpense.amount = expenseAmount.toDouble()
-                                newExpense.payer = payerMember
-                                newExpense.rest = membersWhoPay
-                                if (expense.expid.isEmpty()) {
-                                    expensesViewModel.addExpenseLine(
-                                        newExpense,
-                                        expenseNavControl,
-                                        groupInfo,
-                                        groupsVM,
-                                        userVM
-                                    )
+                                if (expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01) {
+                                    dialogAmountTooLittle.value = true
                                 } else {
-                                    expensesViewModel.editExpenseLine(
-                                        expenseNavControl,
-                                        groupInfo,
-                                        groupsVM,
-                                        newExpense,
-                                        userVM
-                                    )
+                                    newExpense.name = expenseName
+                                    newExpense.amount = expenseAmount.toDouble()
+                                    newExpense.payer = payerMember
+                                    newExpense.rest = membersWhoPay
+                                    if (expense.expid.isEmpty()) {
+                                        expensesViewModel.addExpenseLine(
+                                            newExpense,
+                                            expenseNavControl,
+                                            groupInfo,
+                                            groupsVM,
+                                            userVM
+                                        )
+                                    } else {
+                                        expensesViewModel.editExpenseLine(
+                                            expenseNavControl,
+                                            groupInfo,
+                                            groupsVM,
+                                            newExpense,
+                                            userVM
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -386,32 +391,6 @@ fun AddEditExpenseViewContent(
                             Text(stringResource(R.string.close))
                         }
                     }
-                )
-            }
-        }
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Divider(
-                modifier = Modifier
-                    .height(1.dp)
-                    .fillMaxWidth(.83f),
-                color = Billboard_green
-            )
-            Row(
-                Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "back icon",
-                    modifier = Modifier
-                        .clickable { expenseNavControl.navigate("group") }
-                        .padding(35.dp, 20.dp)
                 )
             }
         }

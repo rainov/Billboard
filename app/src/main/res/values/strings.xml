@@ -99,6 +99,7 @@
     <string name="change_image">Change image</string>
     <string name="upload_image">Upload image</string>
     <string name="group_expenses">Group expenses</string>
+    <string name="no_receipt">No receipt, you can add one if you like.</string>
     <string name="not_valid_email">Please use a valid email address!</string>
-    <string name="amount_too_short">The expense amount is too little for the member of people involved in it. The littlest amount per people is 0.01€.</string>
+    <string name="amount_too_short">The expense amount is too little for the member of people involved in it. The smallest amount per person is 0.01€.</string>
 </resources>

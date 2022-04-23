@@ -1,5 +1,11 @@
 package com.example.billboard
 
+/*===================================================/
+|| The Receipt View, can be access from the Expense
+|| View. The user can select an image from its device
+|| and add it in the Expense. The image is displayed in
+|| this view and can be modified.
+/====================================================*/
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -40,7 +46,8 @@ fun ReceiptViewContent(expenseNavControl: NavController, expenseID: String, rece
         Row(
             modifier = Modifier.weight((2f))
         ) {
-            AsyncImage(model = receiptURL, contentDescription = "receipt")
+            //The image is displayed here, nothing is showed if receiptURL is empty
+                AsyncImage(model = receiptURL, contentDescription = "receipt")
         }
         Column(
             modifier = Modifier.weight(1f),
@@ -50,6 +57,7 @@ fun ReceiptViewContent(expenseNavControl: NavController, expenseID: String, rece
 
             Spacer(modifier = Modifier.height(20.dp))
 
+                //Button to add an image, redirect to AddReceiptView
                 OutlinedButton(
                     onClick = {
                         expenseNavControl.navigate("${expenseID}_addReceipt")

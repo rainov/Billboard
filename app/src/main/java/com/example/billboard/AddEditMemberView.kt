@@ -8,8 +8,8 @@ package com.example.billboard
 || buttons to edit, change admin status and delete
 /====================================================*/
 
+import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
@@ -45,6 +45,7 @@ fun AddEditMemberView(
 
 }
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AddEditMemberContent(
     groupsVM: GroupsViewModel,
@@ -62,6 +63,7 @@ fun AddEditMemberContent(
     var newBalance by remember { mutableStateOf(group.balance) }
 
     val boolEdit = remember { mutableStateOf(false)}
+
     val existingMemberAlert = remember { mutableStateOf(false)}
     val validEmailAlert = remember { mutableStateOf(false)}
     val deleteMemberAlert = remember { mutableStateOf(false)}
@@ -74,7 +76,6 @@ fun AddEditMemberContent(
 
         membersList.forEach { member ->
             val oldMemberBalance = editGroup.balance[member]!!
-            val newMemberBalance = mutableMapOf(memberEmail to 0.0)
             newMemberBalanceMap[member] = 0.0
             oldMemberBalance[memberEmail] = 0.0
             newBalance[member] = oldMemberBalance
@@ -203,7 +204,6 @@ fun AddEditMemberContent(
 
         groupsVM.editGroup(newGroup, userVM, "Group member change email")
         memberEmail = ""
-        /* TODO refresh expenses */
         groupsVM.getGroups()
         navControl.navigate(group.id)
     }
@@ -331,6 +331,7 @@ fun AddEditMemberContent(
 
                 Spacer(modifier = Modifier.height(15.dp))
 
+                //Input to enter a new member email
                 OutlinedTextField(
                     value = memberEmail,
                     onValueChange = { memberEmail = it },
@@ -349,6 +350,7 @@ fun AddEditMemberContent(
 
                 Spacer(modifier = Modifier.height(15.dp))
 
+                //Checkbox to add the new member as an admin
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
@@ -364,12 +366,15 @@ fun AddEditMemberContent(
 
                 Spacer(modifier = Modifier.height(15.dp))
 
+                //Submit button with errors handling : existing member, not valid email, empty field
                 OutlinedButton(
                     onClick = {
                         if (group.members.contains(memberEmail)) {
                             existingMemberAlert.value = true
                         } else if (!EmailValidator.isEmailValid(memberEmail)) {
                             validEmailAlert.value = true
+                        } else if (memberEmail.isEmpty()){
+                            emptyFieldAlert.value = true
                         } else {
                             addMember()
                         }
@@ -412,6 +417,7 @@ fun AddEditMemberContent(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
 
+                        //An user can't edit himself as he will be kicked out
                         if (userVM.userEmail.value != member) {
                                 OutlinedButton(
                                     onClick = {
@@ -428,6 +434,7 @@ fun AddEditMemberContent(
                                 }
                         }
 
+                        //Make admin or remove admin buttons depends on the current user status
                         if (!group.admins.contains(member)) {
                             OutlinedButton(
                                 onClick = {
@@ -464,6 +471,7 @@ fun AddEditMemberContent(
                             }
                         }
 
+                        //User cannot delete themself, they have to leave the group
                         if (userVM.userEmail.value != member) {
                             OutlinedButton(
                                 onClick = { if(isMemberBalanceClear(member)) { memberEmail = member; deleteMember() } else {deleteMemberAlert.value = true} },
@@ -518,6 +526,7 @@ fun AddEditMemberContent(
         }
         }
         }
+        //Alert dialog when trying to add existing member
         if(existingMemberAlert.value){
             AlertDialog(
                 onDismissRequest = {
@@ -546,6 +555,7 @@ fun AddEditMemberContent(
             )
         }
 
+        //Alert dialog when trying to add an user with incorrect formed email
         if(validEmailAlert.value){
             AlertDialog(
                 onDismissRequest = {
@@ -575,6 +585,7 @@ fun AddEditMemberContent(
             )
         }
 
+        //Alert dialog if delete a member with not clear balance
         if(deleteMemberAlert.value){
             AlertDialog(
                 onDismissRequest = {
@@ -602,6 +613,8 @@ fun AddEditMemberContent(
                 }
             )
         }
+
+        //Alert dialog when input field are empty
         if(emptyFieldAlert.value){
             AlertDialog(
                 onDismissRequest = {
@@ -630,6 +643,7 @@ fun AddEditMemberContent(
             )
         }
     } else {
+        //Edit member username form
         val oldMember by remember { mutableStateOf(memberEmail) }
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -656,6 +670,7 @@ fun AddEditMemberContent(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            //Submit button with errors checks : valid email and empty field
             OutlinedButton(
                 onClick = {
                     if (EmailValidator.isEmailValid(memberEmail)) {

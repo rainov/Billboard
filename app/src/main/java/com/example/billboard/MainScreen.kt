@@ -1,29 +1,27 @@
 package com.example.billboard
 
-import android.util.Log
+/*===================================================/
+|| The MainScreen display the group list where the
+|| user is member.
+/====================================================*/
+
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.billboard.ui.theme.Billboard_green
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
-import java.sql.Timestamp
 
 @Composable
 fun MainScreen(
     navControl: NavController,
     groups: List<GroupClass>,
-    groupsVM: GroupsViewModel,
     scState: ScaffoldState,
     scope: CoroutineScope
 ) {
@@ -32,7 +30,7 @@ fun MainScreen(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope) },
         bottomBar = { BottomBarMainScreen( navControl ) },
-        content = { MainScreenContent( navControl, groups, groupsVM) },
+        content = { MainScreenContent( navControl, groups) },
         drawerContent = { DrawerMainScreen (
                 scState,
                 scope,
@@ -43,11 +41,10 @@ fun MainScreen(
 }
 
 @Composable
-fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, groupsVM: GroupsViewModel) {
+fun MainScreenContent( navControl: NavController, groups: List<GroupClass>) {
 
     Column(
         Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.SpaceBetween
     ){
         //Group cards
         Column(
@@ -78,6 +75,7 @@ fun MainScreenContent( navControl: NavController, groups: List<GroupClass>, grou
             verticalArrangement = Arrangement.Top
         ) {
 
+            //Each group name is clickable and redirect to the corresponding group view
             groups.forEach { group ->
                 Spacer(modifier = Modifier.height(5.dp))
 

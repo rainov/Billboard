@@ -1,5 +1,13 @@
 package com.example.billboard
 
+/*===================================================/
+|| The TopBar View contains the BillBoard logo and
+|| the hamburger menu icon to access it.
+|| The two boolean parameters are used to show the
+|| open menu icon when the menu is closed and the
+|| close arrow when the menu is open.
+/====================================================*/
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -30,6 +38,7 @@ import kotlinx.coroutines.launch
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        //The hamburger menu icon is displayed when the menu is closed
         if ( showMenu ) {
             Icon(
                 painter = painterResource(R.drawable.menu_icon),
@@ -45,6 +54,7 @@ import kotlinx.coroutines.launch
             Text( text = "Bill", color = Color(0xFFadd27d), style = MaterialTheme.typography.h1 )
             Text( text = "Board", style = MaterialTheme.typography.h1 )
         }
+        //The close arrow is displayed when the hamburger menu is open
         if ( showCloseArrow ) {
             Icon(
                 painter = painterResource(R.drawable.ic_back),

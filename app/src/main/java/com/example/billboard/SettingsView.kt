@@ -1,7 +1,15 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.example.billboard
 
+/*===================================================/
+|| The Setting View where the user can change its
+|| username, reset its password, sign out, change the
+|| app theme.
+|| The delete account is not yet implemented.
+/====================================================*/
+
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -35,7 +43,7 @@ fun SettingsView (
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(true, scState, false, scope ) },
-        content = { SettingsContent( navControl, userVM, scState, scope, auth, themeStore, themeSetting ) },
+        content = { SettingsContent( navControl, userVM, scope, auth, themeStore, themeSetting ) },
         drawerContent = { DrawerMainScreen (
                 scState,
                 scope,
@@ -48,7 +56,7 @@ fun SettingsView (
 
 
 @Composable
-fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: ScaffoldState, scope: CoroutineScope, auth: FirebaseAuth, themeStore: ThemePreference, themeSetting: Boolean ) {
+fun SettingsContent( navControl: NavController, userVM: UserViewModel, scope: CoroutineScope, auth: FirebaseAuth, themeStore: ThemePreference, themeSetting: Boolean ) {
 
     val ddd = themeStore.getTheme.collectAsState(initial = Boolean)
     val checkedState = remember { mutableStateOf(ddd.value) }
@@ -58,6 +66,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
     var editUserName by remember { mutableStateOf(false)}
     val deleteAcntAlert = remember { mutableStateOf(false)}
 
+    //Function to store the new username
     fun saveUserName( newUserName: String ) {
         Firebase.firestore
             .collection("users")
@@ -69,6 +78,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             }
     }
 
+    //Alert dialog to display confirmation message for password reset
     if (openDialog.value) {
 
         AlertDialog(
@@ -112,6 +122,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             }
         )
     }
+
+    //Alert dialog to handle empty username field error
     if (emptyFieldAlert.value) {
 
         AlertDialog(
@@ -140,6 +152,8 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
             }
         )
     }
+
+    //Alert dialog for confirmation message when deleting the user account (not finished)
     if (deleteAcntAlert.value) {
 
         AlertDialog(
@@ -188,7 +202,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
+        //If the editUserName is false, the settings view chose the different settings option, otherwise it shows the edit username form
         if ( !editUserName ) {
 
             Spacer( modifier = Modifier.height(70.dp))
@@ -203,6 +217,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                 verticalArrangement = Arrangement.Center
             ) {
 
+                //Edit username button, display an edit form
                 OutlinedButton(
                     onClick = {
                         editUserName = true
@@ -219,6 +234,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //Reset password button, open an alert dialog
                 OutlinedButton(
                     onClick = {
                         openDialog.value = true
@@ -235,6 +251,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //Sign out buttons, use the function from the UserViewModel
                 OutlinedButton(
                     onClick = { userVM.signOut(auth) },
                     modifier = Modifier
@@ -249,6 +266,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //Theme switch that remember the last theme chosen
                 Row (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
@@ -258,7 +276,6 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                         checked = themeSetting,
                         onCheckedChange = {
                             checkedState.value = it
-                            //darkMode.value = it
                             scope.launch {
                                 themeStore.saveTheme(it)
                             }
@@ -274,6 +291,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //Redirection to MainScreenView button
                 OutlinedButton(
                     onClick = {
                         navControl.navigate("MainScreen")
@@ -293,6 +311,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                     .weight(1f),
                 verticalArrangement = Arrangement.Bottom
             ) {
+                //Delete account button, open an alert dialog
                 OutlinedButton(
                     onClick = {
                               deleteAcntAlert.value = true
@@ -309,6 +328,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
                 Spacer(modifier = Modifier.height(30.dp))
             }
         } else {
+            //The edit username form is displayed
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
@@ -333,6 +353,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //Submit button with empty field error handler
                 OutlinedButton(
                     onClick = {
                         if(userName.isNotEmpty()) {
@@ -353,6 +374,7 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //Cancel button
                 OutlinedButton(
                     onClick = {
                         userName = userVM.userName.value
@@ -372,10 +394,9 @@ fun SettingsContent( navControl: NavController, userVM: UserViewModel, scState: 
     }
 }
 
+//Function to reset the user's password, done with the Firebase function
 fun resetPassword(userVM: UserViewModel, email : String = ""){
-    var useremail : String
-    if(email.isEmpty()) useremail = userVM.userEmail.value
-    else useremail = email
+    val useremail = email.ifEmpty { userVM.userEmail.value }
     FirebaseAuth.getInstance().sendPasswordResetEmail(useremail).addOnCompleteListener { task ->
         if (task.isSuccessful) {
             Log.d("Email sent to ", useremail)
