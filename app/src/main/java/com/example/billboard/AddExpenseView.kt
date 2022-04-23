@@ -1,6 +1,9 @@
 package com.example.billboard
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -8,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -30,7 +34,7 @@ fun AddEditExpenseView(
 ) {
     Scaffold(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
-        bottomBar = { BottomBarBack(expenseNavControl) },
+//        bottomBar = { BottomBarBack(expenseNavControl) },
         content = {
             AddEditExpenseViewContent(
                 groupInfo = groupInfo,
@@ -177,12 +181,19 @@ fun AddEditExpenseViewContent(
             ){
                 Text(text = stringResource(R.string.rest))
                 Spacer(modifier = Modifier.height(10.dp))
-                groupMembers.forEach { member ->
-                    if (member != payerMember) {
-                        Row() {
-                            CheckBox(member, membersWhoPay, expense)
-                            Text(member)
-                            Spacer(modifier = Modifier.height(5.dp))
+
+                Column( modifier = Modifier
+                    .fillMaxHeight(.5f)
+                    .verticalScroll(enabled = true, state = ScrollState(1)),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    groupMembers.forEach { member ->
+                        if (member != payerMember) {
+                            Row() {
+                                CheckBox(member, membersWhoPay, expense)
+                                Text(member)
+                                Spacer(modifier = Modifier.height(5.dp))
+                            }
                         }
                     }
                 }
@@ -196,35 +207,35 @@ fun AddEditExpenseViewContent(
                 shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.outlinedButtonColors( contentColor = MaterialTheme.colors.onPrimary ),
                 onClick = {
-                if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
-                    if(expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01){
-                        dialogAmountTooLittle.value = true
-                    } else {
-                    newExpense.name = expenseName
-                    newExpense.amount = expenseAmount.toDouble()
-                    newExpense.payer = payerMember
-                    newExpense.rest = membersWhoPay
-                    if (expense.expid.isEmpty()) {
-                        expensesViewModel.addExpenseLine(
-                            newExpense,
-                            expenseNavControl,
-                            groupInfo,
-                            groupsVM,
-                            userVM
-                        )
-                    } else {
-                        expensesViewModel.editExpenseLine(
-                            expenseNavControl,
-                            groupInfo,
-                            groupsVM,
-                            newExpense,
-                            userVM
-                        )
-                    }
-                    }
-                } else {
-                    openDialog.value = true
-                }}){
+                    if (expenseName.isNotEmpty() && expenseAmount.toDouble() != 0.0 && payerMember.isNotEmpty() && membersWhoPay.isNotEmpty()) {
+                        if(expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01){
+                            dialogAmountTooLittle.value = true
+                        } else {
+                        newExpense.name = expenseName
+                        newExpense.amount = expenseAmount.toDouble()
+                        newExpense.payer = payerMember
+                        newExpense.rest = membersWhoPay
+                        if (expense.expid.isEmpty()) {
+                            expensesViewModel.addExpenseLine(
+                                newExpense,
+                                expenseNavControl,
+                                groupInfo,
+                                groupsVM,
+                                userVM
+                            )
+                        } else {
+                            expensesViewModel.editExpenseLine(
+                                expenseNavControl,
+                                groupInfo,
+                                groupsVM,
+                                newExpense,
+                                userVM
+                            )
+                        }
+                        }
+                    } else { openDialog.value = true }
+                }
+            ){
                 if (expense.expid.isNotEmpty()) {
                     Text(text = stringResource(R.string.edit))
                 } else {
@@ -285,6 +296,32 @@ fun AddEditExpenseViewContent(
                             Text(stringResource(R.string.close))
                         }
                     }
+                )
+            }
+        }
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Divider(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth(.83f),
+                color = Billboard_green
+            )
+            Row(
+                Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "back icon",
+                    modifier = Modifier
+                        .clickable { expenseNavControl.navigate("group") }
+                        .padding(35.dp, 20.dp)
                 )
             }
         }
