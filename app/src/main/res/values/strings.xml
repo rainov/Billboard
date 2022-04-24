@@ -46,7 +46,7 @@
     <string name ="send">Send</string>
     <string name ="forgot_pwd">Forgot password ?</string>
     <string name ="passwd_reset_mess">A reset link will be send to the following email address</string>
-    <string name ="email_reset">Please enter your email address to receive a reset link</string>
+    <string name ="email_reset">Please enter your email address to receive a reset link if you are already registered.</string>
     <string name="input_err">Input error:</string>
     <string name="ok">OK</string>
     <string name="err_signin">Email and/or password are wrong.</string>
@@ -92,6 +92,7 @@
     <string name="amount_invalid">Amount is not valid. It should be "EURO.CENTS" OR "EURO" OR ".CENTS". Please retry.</string>
     <string name="euro_sign">€</string>
     <string name="owes">Owes: </string>
+    <string name="delete_m_mess">Are you sure you want to delete the following member from the group :</string>
     <string name="has_paid">Has paid: </string>
     <string name="add_receipt">Add receipt</string>
     <string name="show_receipt">Show receipt</string>

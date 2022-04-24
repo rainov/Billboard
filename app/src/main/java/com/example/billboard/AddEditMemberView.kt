@@ -68,6 +68,7 @@ fun AddEditMemberContent(
     val validEmailAlert = remember { mutableStateOf(false)}
     val deleteMemberAlert = remember { mutableStateOf(false)}
     val emptyFieldAlert = remember { mutableStateOf(false)}
+    val deleteMemConf = remember { mutableStateOf(false)}
 
     //Add member function
     fun addMember() {
@@ -474,7 +475,7 @@ fun AddEditMemberContent(
                         //User cannot delete themself, they have to leave the group
                         if (userVM.userEmail.value != member) {
                             OutlinedButton(
-                                onClick = { if(isMemberBalanceClear(member)) { memberEmail = member; deleteMember() } else {deleteMemberAlert.value = true} },
+                                onClick = { if(isMemberBalanceClear(member)) { memberEmail = member; deleteMemConf.value = true } else {deleteMemberAlert.value = true} },
                                 modifier = Modifier
                                     .width(80.dp)
                                     .height(35.dp),
@@ -630,6 +631,50 @@ fun AddEditMemberContent(
                     OutlinedButton(
                         onClick = {
                             emptyFieldAlert.value = false
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
+
+        //Alert dialog when deleting user
+        if(deleteMemConf.value){
+            AlertDialog(
+                onDismissRequest = {
+                    deleteMemConf.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.delete_conf))
+                },
+                text = {
+                    Text(text = stringResource(R.string.delete_m_mess) + " " + memberEmail)
+                },
+                confirmButton = {
+                    OutlinedButton(
+                        onClick = {
+                            deleteMember()
+                            deleteMemConf.value = false
+                        },
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                        shape = MaterialTheme.shapes.large,
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    ) {
+                        Text(text = stringResource(R.string.delete))
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(
+                        onClick = {
+                            deleteMemConf.value = false
                         },
                         modifier = Modifier
                             .width(100.dp)

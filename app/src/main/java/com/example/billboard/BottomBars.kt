@@ -578,7 +578,6 @@ fun BottomBarExpenseView(
                                     groupInfo,
                                     expense,
                                     groupsViewModel,
-                                    navControl,
                                     userVM
                                 )
                             },

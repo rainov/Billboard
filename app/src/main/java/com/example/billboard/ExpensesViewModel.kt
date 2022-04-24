@@ -251,7 +251,7 @@ class ExpensesViewModel: ViewModel() {
                     .addOnSuccessListener {
                         Log.d("Delete group expense", expense.expid)
 
-                        expense.rest.forEach { member ->
+                       expense.rest.forEach { member ->
                             if(expense.paidvalues[member] == false) {
                                 //User balance needs to be increased and payer decreased
                                 val previousamt =
@@ -344,7 +344,7 @@ class ExpensesViewModel: ViewModel() {
     // Function that clears the debt of all people at once //
     ////////////////////////////////////////////////////////
     fun eraseAllDebts(group: GroupClass, expense: ExpenseClass,
-                      groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel){
+                      groupsVM: GroupsViewModel, userVM: UserViewModel){
 
         var amountforeach: Double = expense.amount / (expense.rest.size + 1)
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
@@ -369,9 +369,6 @@ class ExpensesViewModel: ViewModel() {
                 userVM.logAction("Cleared all debts in an expense")
                 groupsVM.getGroups()
             }
-
-        groupsVM.getGroups()
-        navControl.navigate(group.id)
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
