@@ -48,7 +48,7 @@
     <string name ="passwd_reset_mess">A reset link will be send to the following email address</string>
     <string name ="email_reset">Please enter your email address to receive a reset link</string>
     <string name="input_err">Input error:</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="err_signin">Email and/or password are wrong.</string>
     <string name="add_as_admin">Add as group admin</string>
     <string name="member_email">Member\'s email</string>
@@ -101,5 +101,5 @@
     <string name="no_receipt">No receipt, you can add one if you like.</string>
     <string name="group_expenses">Group expenses</string>
     <string name="not_valid_email">Please use a valid email address!</string>
-    <string name="amount_too_short">The expense amount is too little for the member of people involved in it. The littlest amount per people is 0.01€.</string>
+    <string name="amount_too_short">The expense amount is too little for the member of people involved in it. The smallest amount per person is 0.01€.</string>
 </resources>

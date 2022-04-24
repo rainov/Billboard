@@ -43,7 +43,7 @@ fun AddEditExpenseView(
     userVM: UserViewModel
 ) {
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState, false, scope) },
+        topBar = { TopBar(showMenu = false, scState, false, scope) },
         content = {
             AddEditExpenseViewContent(
                 groupInfo = groupInfo,
@@ -177,7 +177,6 @@ fun AddEditExpenseViewContent(
                 ) {
                     if (payerMember.isEmpty()){
                         payerButtonText = stringResource(R.string.select)
-
                     } else {
                         val uname = remember { mutableStateOf("default")}
                         getUsername(payerMember, uname)
@@ -269,32 +268,36 @@ fun AddEditExpenseViewContent(
                             if (expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01) {
                                 dialogAmountTooLittle.value = true
                             } else {
-                                newExpense.name = expenseName
-                                newExpense.amount = expenseAmount.toDouble()
-                                newExpense.payer = payerMember
-                                newExpense.rest = membersWhoPay
-                                if (expense.expid.isEmpty()) {
-                                    expensesViewModel.addExpenseLine(
-                                        newExpense,
-                                        expenseNavControl,
-                                        groupInfo,
-                                        groupsVM,
-                                        userVM
-                                    )
+                                if (expenseAmount.toDouble() / (membersWhoPay.size + 1) < 0.01) {
+                                    dialogAmountTooLittle.value = true
                                 } else {
-                                    expensesViewModel.editExpenseLine(
-                                        expenseNavControl,
-                                        groupInfo,
-                                        groupsVM,
-                                        newExpense,
-                                        userVM
-                                    )
+                                    newExpense.name = expenseName
+                                    newExpense.amount = expenseAmount.toDouble()
+                                    newExpense.payer = payerMember
+                                    newExpense.rest = membersWhoPay
+                                    if (expense.expid.isEmpty()) {
+                                        expensesViewModel.addExpenseLine(
+                                            newExpense,
+                                            expenseNavControl,
+                                            groupInfo,
+                                            groupsVM,
+                                            userVM
+                                        )
+                                    } else {
+                                        expensesViewModel.editExpenseLine(
+                                            expenseNavControl,
+                                            groupInfo,
+                                            groupsVM,
+                                            newExpense,
+                                            userVM
+                                        )
+                                    }
                                 }
                             }
                         }
-                    } else {
-                    openDialog.value = true
-                }}){
+                    } else { openDialog.value = true }
+                }
+            ){
                 if (expense.expid.isNotEmpty()) {
                     Text(text = stringResource(R.string.edit))
                 } else {

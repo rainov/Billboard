@@ -31,11 +31,7 @@ fun MainScreen(
         topBar = { TopBar(true, scState, false, scope) },
         bottomBar = { BottomBarMainScreen( navControl ) },
         content = { MainScreenContent( navControl, groups) },
-        drawerContent = { DrawerMainScreen (
-                scState,
-                scope,
-                DrawerContent( navControl, scState, scope )
-            )
+        drawerContent = { DrawerMainScreen (navControl, scState, scope,)
         }
     )
 }

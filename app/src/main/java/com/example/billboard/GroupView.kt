@@ -43,11 +43,7 @@ fun GroupView(
         topBar = { TopBar(showMenu = true, scState, false, scope) },
         bottomBar = { BottomBarGroupScreen(navControl, expenseNavControl, groupInfo, groupsViewModel, userVM )},
         drawerContent = {
-            DrawerMainScreen (
-                scState,
-                scope,
-                DrawerGroupContent(navControl, scState, scope, groupInfo, expenseNavControl, userVM, groupsViewModel )
-            )
+            DrawerGroupView ( navControl, scState, scope, groupInfo, expenseNavControl, userVM, groupsViewModel )
         },
         content = { GroupViewContent( groupInfo, expenses, expenseNavControl) },
     )
