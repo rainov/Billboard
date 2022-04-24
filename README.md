@@ -34,6 +34,7 @@ advertise their products/services to our end-users. Users can find discount code
 - IDE - Android studio Bumblebee (2021.1.1 Patch 2)
 - Android toolkit - Jetpack Compose
 - External libraries used - `Coil` for async image loading and `zXing` for QR code generating.
+- UI designing tool - Figma
 
 ## Devices used for testing
 
