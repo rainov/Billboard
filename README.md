@@ -35,6 +35,7 @@ advertise their products/services to our end-users. Users can find discount code
 - Android toolkit - Jetpack Compose
 - External libraries used - `Coil` for async image loading and `zXing` for QR code generating.
 - UI designing tool - Figma
+- [Trello project management board](https://trello.com/b/k0kV3HH3/billboard-project-management-group-10)
 
 ## Devices used for testing
 
