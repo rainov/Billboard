@@ -251,7 +251,7 @@ class ExpensesViewModel: ViewModel() {
                     .addOnSuccessListener {
                         Log.d("Delete group expense", expense.expid)
 
-                        expense.rest.forEach { member ->
+                       expense.rest.forEach { member ->
                             if(expense.paidvalues[member] == false) {
                                 //User balance needs to be increased and payer decreased
                                 val previousamt =
@@ -369,7 +369,6 @@ class ExpensesViewModel: ViewModel() {
                 userVM.logAction("Cleared all debts in an expense")
                 groupsVM.getGroups()
             }
-
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
