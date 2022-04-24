@@ -203,7 +203,9 @@ fun ExpenseViewContent(
             /////////////////////////////////////////////////
             // Button to upload/show receipt for the bill //
             ///////////////////////////////////////////////
-            if ( receiptUrl.isEmpty() ) {
+            if ( receiptUrl.isEmpty() && userVM.userEmail.value == expensePayer ||
+                receiptUrl.isEmpty() && groupInfo.admins.contains(userVM.userEmail.toString())
+            ) {
                 OutlinedButton(
                     onClick = {
                         expenseNavControl.navigate("${expense.expid}_addReceipt")
@@ -218,7 +220,7 @@ fun ExpenseViewContent(
                 {
                     Text(text = stringResource(R.string.add_receipt))
                 }
-            } else {
+            } else if ( receiptUrl.isNotEmpty() ){
                 OutlinedButton(
                     onClick = {
                         expenseNavControl.navigate("${expense.expid}_showReceipt")

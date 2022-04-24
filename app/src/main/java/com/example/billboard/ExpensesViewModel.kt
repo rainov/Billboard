@@ -344,7 +344,7 @@ class ExpensesViewModel: ViewModel() {
     // Function that clears the debt of all people at once //
     ////////////////////////////////////////////////////////
     fun eraseAllDebts(group: GroupClass, expense: ExpenseClass,
-                      groupsVM: GroupsViewModel, navControl: NavController, userVM: UserViewModel){
+                      groupsVM: GroupsViewModel, userVM: UserViewModel){
 
         var amountforeach: Double = expense.amount / (expense.rest.size + 1)
         amountforeach = (amountforeach * 100.0).roundToInt() / 100.0
@@ -370,8 +370,6 @@ class ExpensesViewModel: ViewModel() {
                 groupsVM.getGroups()
             }
 
-        groupsVM.getGroups()
-        navControl.navigate(group.id)
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

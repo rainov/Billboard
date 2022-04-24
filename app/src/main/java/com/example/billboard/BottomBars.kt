@@ -196,7 +196,8 @@ fun BottomBarGroupScreen(
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text(stringResource(R.string.delete))
                 }
@@ -213,7 +214,8 @@ fun BottomBarGroupScreen(
                         .width(100.dp)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Billboard_green)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text(text = stringResource(R.string.cancel))
                 }
@@ -578,7 +580,6 @@ fun BottomBarExpenseView(
                                     groupInfo,
                                     expense,
                                     groupsViewModel,
-                                    navControl,
                                     userVM
                                 )
                             },
@@ -668,7 +669,7 @@ fun BottomBarAffiliate(
             contentDescription = "back icon",
             modifier = Modifier
                 .clickable {
-                    if( categoryName.value == "" ){
+                    if (categoryName.value == "") {
                         navControl.navigate("MainScreen")
                     } else {
                         categoryName.value = ""
@@ -702,7 +703,7 @@ fun BottomBarPartner(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "back icon",
             modifier = Modifier
-                .clickable { affiliateNavControl.navigate("affiliate_categories")}
+                .clickable { affiliateNavControl.navigate("affiliate_categories") }
                 .padding(35.dp, 30.dp)
         )
     }
@@ -732,7 +733,7 @@ fun BottomBarAddReceipt(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = "back icon",
             modifier = Modifier
-                .clickable { expenseNavControl.navigate(expId)}
+                .clickable { expenseNavControl.navigate(expId) }
                 .padding(35.dp, 30.dp)
         )
     }

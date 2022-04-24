@@ -500,30 +500,30 @@ fun AddEditMemberContent(
                 }
             }
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            OutlinedButton(
-                onClick = {
-                    expenseNavControl.navigate("group")
-                },
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .height(40.dp),
-                shape = MaterialTheme.shapes.large,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
-                elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(R.string.cancel))
-            }
 
-            Spacer(modifier = Modifier.height(15.dp))
-        }
+                Spacer(modifier = Modifier.height(20.dp))
+
+                OutlinedButton(
+                    onClick = {
+                        expenseNavControl.navigate("group")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(40.dp),
+                    shape = MaterialTheme.shapes.large,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
+                ) {
+                    Text(text = stringResource(R.string.exit))
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+            }
         }
         }
         //Alert dialog when trying to add existing member
