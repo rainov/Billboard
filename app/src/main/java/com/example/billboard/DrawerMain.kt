@@ -1,8 +1,8 @@
 package com.example.billboard
 
 /*===================================================/
-|| App drawer container. The content is changing
-|| according to the current view of the app.
+|| Composable for the content of the app drawer outside
+|| of group view
 /====================================================*/
 
 import androidx.compose.foundation.background
@@ -23,14 +23,14 @@ import kotlinx.coroutines.launch
 //////////////////////////////////////////////////////////////////////
 @Composable
 fun DrawerMainScreen(
+    navControl: NavController,
     scState: ScaffoldState,
-    scope: CoroutineScope,
-    contentComp: Unit
+    scope: CoroutineScope
 ) {
     Scaffold(
         scaffoldState = scState,
         topBar = { TopBar(false, scState, true, scope) },
-        content = { contentComp }
+        content = { DrawerContent(navControl , scState, scope ) }
     )
 }
 

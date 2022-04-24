@@ -51,10 +51,7 @@ fun GroupBalanceView (
         bottomBar = { BottomBarBack(expenseNavControl) },
         content = { GroupBalanceContent( groupInfo, expenses ) },
         drawerContent = {
-            DrawerMainScreen (
-                scState,
-                scope,
-                DrawerGroupContent(
+            DrawerGroupView (
                     navControl,
                     scState,
                     scope,
@@ -62,10 +59,10 @@ fun GroupBalanceView (
                     expenseNavControl,
                     userVM,
                     groupsVM
-                )
             )
         }
     )
+
 }
 
 ///////////////////////////////

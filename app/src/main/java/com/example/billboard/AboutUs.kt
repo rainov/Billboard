@@ -42,11 +42,7 @@ fun AboutUs (
         topBar = { TopBar(true, scState, false, scope ) },
         bottomBar = { BottomBarAboutUs(navControl) },
         content = { AboutUsContent() },
-        drawerContent = { DrawerMainScreen (
-            scState,
-            scope,
-            DrawerContent(navControl , scState, scope )
-        )
+        drawerContent = { DrawerMainScreen (navControl, scState, scope)
         }
     )
 

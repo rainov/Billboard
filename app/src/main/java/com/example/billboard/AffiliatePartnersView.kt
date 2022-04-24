@@ -37,11 +37,7 @@ fun AffiliatePartnersView(
         topBar = { TopBar(true, scState, false, scope) },
         bottomBar = { BottomBarAffiliate( navControl, selectedCategory ) },
         content = { AffiliatePartnersContent( partners, affiliateNavControl, selectedCategory, categories ) },
-        drawerContent = { DrawerMainScreen (
-                scState,
-                scope,
-                DrawerContent( navControl, scState, scope )
-            )
+        drawerContent = { DrawerMainScreen ( navControl, scState, scope )
         }
     )
 

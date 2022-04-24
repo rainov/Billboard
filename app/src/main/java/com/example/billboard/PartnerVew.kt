@@ -55,11 +55,7 @@ fun PartnerView(
         topBar = { TopBar(true, scState, false, scope) },
         bottomBar = { BottomBarPartner( affiliateNavControl ) },
         content = { PartnerContent( partner, bitmap ) },
-        drawerContent = { DrawerMainScreen (
-            scState,
-            scope,
-            DrawerContent( navControl, scState, scope )
-        )
+        drawerContent = { DrawerMainScreen (navControl, scState, scope )
         }
     )
 

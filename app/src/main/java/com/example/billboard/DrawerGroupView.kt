@@ -5,12 +5,13 @@ package com.example.billboard
 || Group view
 /====================================================*/
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,6 +20,37 @@ import com.example.billboard.ui.theme.Billboard_green
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+
+
+////////////////////////////////////////////////////////////////////////
+// Main scaffold structure, the content is passed from the app views //
+//////////////////////////////////////////////////////////////////////
+@Composable
+fun DrawerGroupView(
+    navControl: NavController,
+    scState: ScaffoldState,
+    scope: CoroutineScope,
+    groupInfo: GroupClass,
+    expenseNavControl: NavController,
+    userVM: UserViewModel,
+    groupsVM: GroupsViewModel
+) {
+    Scaffold(
+        scaffoldState = scState,
+        topBar = { TopBar(false, scState, true, scope) },
+        content = {
+            DrawerGroupContent(
+                navControl,
+                scState,
+                scope,
+                groupInfo,
+                expenseNavControl,
+                userVM,
+                groupsVM
+            )
+        }
+    )
+}
 
 ///////////////////////////////////////////////////
 // Drawer content for the Group view of the app //
@@ -99,7 +131,8 @@ fun DrawerGroupContent( navControl: NavController,
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.SpaceBetween,
+//        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -107,7 +140,7 @@ fun DrawerGroupContent( navControl: NavController,
         // Top part of the screen //
         ///////////////////////////
         Column(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(.45f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -134,25 +167,32 @@ fun DrawerGroupContent( navControl: NavController,
         //////////////////////////////
         Column(
             modifier = Modifier
-                .weight(2f)
+                .weight(2.5f)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column() {
+            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth(.8f)
+                    .fillMaxHeight(.65f)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 ///////////////////////////////////////////////////////////////////////
                 // Email and admin indicator ( if the user is admin ) for each user //
                 /////////////////////////////////////////////////////////////////////
                 groupInfo.members.forEach { member ->
                     Row() {
                         // Email
-                        Text(text = member, fontSize = 20.sp)
+                        Text(text = member, fontSize = 16.sp)
 
                         Spacer(modifier = Modifier.width(5.dp))
 
                         // Admin indicator
                         if (groupInfo.admins.contains(member)) {
-                            Text(text = "Admin", fontSize = 12.sp, color = Billboard_green)
+                            Text(text = "Admin", fontSize = 11.sp, color = Billboard_green)
                         }
                     }
 
@@ -161,10 +201,10 @@ fun DrawerGroupContent( navControl: NavController,
                         var uname = remember { mutableStateOf("default")}
                         getUsername(member, uname)
                         if(uname.value == "null") uname.value = member
-                        Text(text = "(" + uname.value + ")")
+                        Text(text = "(" + uname.value + ")", fontSize = 15.sp)
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
 
             }

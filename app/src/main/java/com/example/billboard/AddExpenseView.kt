@@ -42,7 +42,7 @@ fun AddEditExpenseView(
     userVM: UserViewModel
 ) {
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState, false, scope) },
+        topBar = { TopBar(showMenu = false, scState, false, scope) },
         content = {
             AddEditExpenseViewContent(
                 groupInfo = groupInfo,
