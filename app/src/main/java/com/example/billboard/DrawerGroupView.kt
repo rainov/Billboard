@@ -162,7 +162,7 @@ fun DrawerGroupContent( navControl: NavController,
                         // Username if registered user
                         val uname = remember { mutableStateOf("default")}
                         getUsername(member, uname)
-                        if(uname.value == "null") uname.value = member
+                        if(uname.value == "null") uname.value = member.substringBefore("@")
                         Text(text = "(" + uname.value + ")")
                     }
 

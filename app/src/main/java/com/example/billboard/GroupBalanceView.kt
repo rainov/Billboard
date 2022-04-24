@@ -166,7 +166,7 @@ fun GroupBalanceContent(
                             ///////////////////////////////////////////////////////////////////
                             val uname = remember { mutableStateOf("default")}
                             getUsername(member, uname)
-                            if(uname.value == "null") uname.value = member
+                            if(uname.value == "null") uname.value = member.substringBefore("@")
                             Text( text = uname.value, textAlign = TextAlign.Center, fontSize = 19.sp )
 
                             Spacer(modifier = Modifier.height(5.dp))
@@ -198,7 +198,7 @@ fun GroupBalanceContent(
                                 ) {
                                     val uname = remember { mutableStateOf("default")}
                                     getUsername(other.key, uname)
-                                    if(uname.value == "null") uname.value = other.key
+                                    if(uname.value == "null") uname.value = other.key.substringBefore("@")
                                     Text( text = uname.value + ": " )
                                     Text( text = amount.toString(), color = color)
                                 }

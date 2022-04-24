@@ -190,7 +190,7 @@ fun ExpenseViewContent(
                     ////////////////////////////////////////////////////////////////////////////////////////////
                     val uname = remember { mutableStateOf("default")}
                     getUsername(expensePayer, uname)
-                    if(uname.value == "null") uname.value = expensePayer
+                    if(uname.value == "null") uname.value = expensePayer.substringBefore("@")
                     Text(text = uname.value, fontSize = 20.sp)
                     if(!groupInfo.members.contains(expensePayer)){
                         Text( text = "Deleted", fontSize = 12.sp, color = MaterialTheme.colors.onPrimary)
@@ -283,7 +283,7 @@ fun ExpenseViewContent(
                             ///////////////////////////////////////////////////////////////////
                             val uname = remember { mutableStateOf("default")}
                             getUsername(member, uname)
-                            if(uname.value == "null") uname.value = member
+                            if(uname.value == "null") uname.value = member.substringBefore("@")
                             Text(text = uname.value, modifier = Modifier.padding(10.dp), fontWeight = if(expense.paidvalues[member] == false) FontWeight.Bold else FontWeight.Light )
 
                             /////////////////////////////////////////////

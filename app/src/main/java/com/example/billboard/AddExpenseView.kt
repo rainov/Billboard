@@ -181,7 +181,7 @@ fun AddEditExpenseViewContent(
                     } else {
                         val uname = remember { mutableStateOf("default")}
                         getUsername(payerMember, uname)
-                        if(uname.value == "null") uname.value = payerMember
+                        if(uname.value == "null") uname.value = payerMember.substringBefore("@")
                         payerButtonText = uname.value
                     }
                     Text(text = payerButtonText )
@@ -200,7 +200,7 @@ fun AddEditExpenseViewContent(
                     groupMembers.forEach { member ->
                         val uname = remember { mutableStateOf("default")}
                         getUsername(member, uname)
-                        if(uname.value == "null") uname.value = member
+                        if(uname.value == "null") uname.value = member.substringBefore("@")
                         DropdownMenuItem(onClick = {
                             if(payerMember.isNotEmpty()) {
                                 membersWhoPay.add(payerMember)
@@ -239,7 +239,7 @@ fun AddEditExpenseViewContent(
                     groupMembers.forEach { member ->
                         val uname = remember { mutableStateOf("default")}
                         getUsername(member, uname)
-                        if(uname.value == "null") uname.value = member
+                        if(uname.value == "null") uname.value = member.substringBefore("@")
                         if (member != payerMember) {
                             Row {
                                 CheckBox(member, membersWhoPay, expense)
