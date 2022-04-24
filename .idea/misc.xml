@@ -4,6 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/compose-model-1647432340167.xml" value="0.31296296296296294" />
+        <entry key="..\:/Users/cleme/AndroidStudioProjects/BillBoard/app/src/main/res/drawable/ic_back.xml" value="0.1" />
+        <entry key="..\:/Users/cleme/AndroidStudioProjects/BillBoard/app/src/main/res/drawable/ic_baseline_add.xml" value="0.1" />
+        <entry key="..\:/Users/cleme/AndroidStudioProjects/BillBoard/app/src/main/res/drawable/ic_baseline_arrow_left_24.xml" value="0.1" />
+        <entry key="..\:/Users/cleme/AndroidStudioProjects/BillBoard/app/src/main/res/drawable/ic_baseline_arrow_right_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/forward.xml" value="0.2335" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.2335" />
       </map>
     </option>
   </component>
