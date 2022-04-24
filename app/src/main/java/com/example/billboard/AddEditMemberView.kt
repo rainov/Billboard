@@ -39,7 +39,7 @@ fun AddEditMemberView(
 ) {
 
     Scaffold(
-        topBar = { TopBar(showMenu = true, scState, false, scope ) },
+        topBar = { TopBar(showMenu = false, scState, false, scope ) },
         content = { AddEditMemberContent( groupsVM, userVM, group, expenseNavControl, navControl) }
     )
 
