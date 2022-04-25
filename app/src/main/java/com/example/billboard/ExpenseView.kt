@@ -8,6 +8,7 @@ package com.example.billboard
 || edited or cleared.
 /====================================================*/
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
@@ -88,6 +89,8 @@ fun ExpenseViewContent(
     userVM: UserViewModel
 ) {
     expensesViewModel.getExpenses(groupInfo.id)
+
+    Log.d("useremail", userVM.userEmail.toString())
 
     val expenseName = expense.name
     val expenseAmount = expense.amount.toString()
@@ -203,8 +206,8 @@ fun ExpenseViewContent(
             /////////////////////////////////////////////////
             // Button to upload/show receipt for the bill //
             ///////////////////////////////////////////////
-            if ( receiptUrl.isEmpty() && userVM.userEmail.value == expensePayer ||
-                receiptUrl.isEmpty() && groupInfo.admins.contains(userVM.userEmail.toString())
+            if (
+                receiptUrl.isEmpty() && ( userVM.userEmail.value == expensePayer || groupInfo.admins.contains(userVM.userEmail.value) )
             ) {
                 OutlinedButton(
                     onClick = {

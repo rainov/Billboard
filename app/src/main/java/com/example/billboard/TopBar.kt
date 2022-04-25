@@ -43,7 +43,8 @@ import kotlinx.coroutines.launch
             Icon(
                 painter = painterResource(R.drawable.menu_icon),
                 contentDescription = "hamburger menu",
-                modifier = Modifier.clickable { scope.launch { scState.drawerState.open() } }
+                modifier = Modifier
+                    .clickable { scope.launch { scState.drawerState.open() } }
             )
         } else {
             Spacer( modifier = Modifier.width(45.dp))

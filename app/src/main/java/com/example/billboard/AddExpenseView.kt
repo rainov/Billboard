@@ -420,7 +420,7 @@ fun AddEditExpenseViewContent(
                     painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "back icon",
                     modifier = Modifier
-                        .clickable { expenseNavControl.navigate("group") }
+                        .clickable { expenseNavControl.navigate(expense.expid) }
                         .padding(35.dp, 20.dp)
                 )
             }
