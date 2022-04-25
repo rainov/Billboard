@@ -419,6 +419,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                             focusedLabelColor = MaterialTheme.colors.onPrimary
                         ),
                         modifier = Modifier
+                            .fillMaxWidth(.75f)
                             .height(64.dp),
                         shape = MaterialTheme.shapes.large
                     )
@@ -445,6 +446,7 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         focusedLabelColor = MaterialTheme.colors.onPrimary
                     ),
                     modifier = Modifier
+                        .fillMaxWidth(.75f)
                         .height(64.dp),
                     shape = MaterialTheme.shapes.large
                 )
@@ -475,7 +477,9 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     focusedLabelColor = MaterialTheme.colors.onPrimary
                 ),
                 visualTransformation = if (showPassWd) VisualTransformation.None else PasswordVisualTransformation(),
-                modifier = Modifier.height(64.dp),
+                modifier = Modifier
+                    .fillMaxWidth(.75f)
+                    .height(64.dp),
                 shape = MaterialTheme.shapes.large,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
@@ -505,7 +509,9 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     ),
                     visualTransformation = if (showPassWd2) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    modifier = Modifier.height(64.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(.75f)
+                        .height(64.dp),
                     shape = MaterialTheme.shapes.large,
                 )
             }
@@ -526,7 +532,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colors.onPrimary,
                         backgroundColor = MaterialTheme.colors.surface
-                    )
+                    ),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text(text = stringResource(R.string.sign_in_text))
                 }
@@ -547,7 +554,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text(text = stringResource(R.string.new_user_text))
                 }
@@ -564,7 +572,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 )
                 {
                     Text(text = stringResource(R.string.forgot_pwd))
@@ -586,7 +595,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.onPrimary),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 ) {
                     Text(text = stringResource(R.string.register_text))
                 }
@@ -606,7 +616,8 @@ fun LogRegView( userVM: UserViewModel, groupsVM: GroupsViewModel, scState: Scaff
                         .fillMaxWidth(.75f)
                         .height(40.dp),
                     shape = MaterialTheme.shapes.large,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(7.dp, 5.dp, 0.dp)
                 )
                 {
                     Text(text = stringResource(R.string.registered_user_text))
