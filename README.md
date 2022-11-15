@@ -64,6 +64,11 @@ Users colection structure - Holds the username and a LOG for all user actions ma
 
 ## Screenshots
 
+All light theme screenshots are made on a physical device - OnePlus 7pro with gesture navigation.
+Some of the dark theme screenshots are from emulator of Pixel 5 with a navigation bar at the bottom.
+The OnePlus is 1440x3120 and the Pixel is 1080x2340 and that leads to slight difference is the QR codes, which are with a fixed resolution.
+
+
 Log in View - First view displayed when the user open the app for the first time. It allows the user to log in with his email and password, to switch to register view and to reset its password. The password can be visible by clicking the eye icon.
 ##
 ![App Screenshot](Screenshots/LogIn.bmp)
